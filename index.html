@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Flex Point Calculator</title>
+
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<header role="banner">
+		<h1>Flex Point Calculator</h1>
+	</header>
+
+	<div id="body-container">
+		<section id="instructions">
+			<h2>Start spending smarter.</h2>
+			<p>This is a tool to help  you keep track of how quickly you're spending your Flex Points. Follow these quick instructions to see your own personalized results, or <a href="#" id="demo-link">use sample demo data</a>.</p>
+			<ol>
+				<li>Click the link to log in to <a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)">Irish1Card&nbsp;GET</a> with your Notre Dame credentials.</li>
+				<li>Click "View All Transaction History" under the "My Recent Transactions" header.</li>
+				<li>Making sure "ALL in the past 6 Months" is selected in the Month/Year dropdown, copy the entire table and paste it into the text box below.</li>
+			</ol>
+
+			<label for="raw-data">Table data</label>
+			<textarea id="raw-data" cols="50" rows="2"></textarea><br />
+			<button id="submit">Submit</button>
+		</section>
+
+		<section id="results">
+			<h2 id="results-header">Results</h2>
+
+			<div class="stats-container">
+				<div class="stats-box">
+					<h3>You've been spending</h3>
+					<ul class="stats-list">
+						<li><span class="stat" id="pastPerDay">$&mdash;</span> per day</li>
+						<li><span class="stat" id="pastPerWeek">$&mdash;</span> per week</li>
+					</ul>
+					<p>so far this semester</p>
+				</div>
+
+				<div class="stats-box">
+					<h3>You need to spend</h3>
+					<ul class="stats-list">
+						<li><span class="stat" id="futurePerDay">$&mdash;</span> per day</li>
+						<li><span class="stat" id="futurePerWeek">$&mdash;</span> per week</li>
+					</ul>
+					<p>over the rest of the semester</p>
+				</div>
+			</div>
+
+			<div id="chart"></div>
+		</section>
+	</div>
+
+	<footer role="contentinfo">
+		<p>Made with <code>&lt;3</code> by <a href="https://github.com/stephen-hannon" target="_blank">Stephen Hannon</a>.</p>
+		<p style="font-size: 0.7em;">This app is not affiliated with the University of Notre Dame or CBORD.</p>
+	</footer>
+	
+	
+	<script type="text/javascript" src="highcharts.js"></script> <!-- https://code.highcharts.com/highcharts.js -->
+	<script type="text/javascript" src="script.js"></script>
+</body>
+</html>

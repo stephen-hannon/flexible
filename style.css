@@ -1,0 +1,117 @@
+/* color scheme: http://paletton.com/#uid=52T0G0kl7m0aAx-fXrhq5h8vubF */
+
+html {
+	font-family: sans-serif;
+	height: 100%;
+}
+body {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
+header {
+	background-color: #8DA739;
+	padding: 1em;
+}
+h1 {
+	margin: 0;
+}
+
+#body-container {
+	flex: 1;
+	display: flex;
+/* 	flex-wrap: wrap; */
+}
+section {
+	flex: 1;
+	padding: 0.8em;
+}
+#instructions {
+	min-width: 300px;
+	background-color: #52A464;
+}
+#results {
+	min-width: 500px;
+	background-color: #2D8540;
+}
+
+h2 {
+	margin: 0.3em 0;
+}
+#raw-data {
+	width: 100%;
+	background-color: transparent;
+	border: 1px solid #014610;
+	resize: none;
+}
+
+#submit {
+	background-color: #136726;
+	border-color: #136726;
+	color: white;
+}
+button {
+	padding: 0.4em 1em;
+	font-size: 1em;
+}
+
+.stats-container {
+	display: flex;
+	justify-content: space-evenly;
+}
+.stats-box {
+	flex: 1;
+	max-width: 250px;
+	padding: 0 0.5em;
+	margin: 0.5em;
+	background-color: aliceblue;
+}
+.stats-box h3,
+.stats-box p {
+	margin: 0.4em 0;
+}
+
+.stats-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+.stats-list li {
+	background-color: lightblue;
+	padding: 0.2em 0.5em;
+	margin: 0.3em 0;
+	box-sizing: border-box;
+	border-bottom: 2px solid steelblue;
+}
+.stats-box:last-child li {
+	border-bottom-style: dashed;
+}
+.stat {
+	font-size: 1.8em;
+}
+
+#results {
+	display: flex;
+	flex-direction: column;
+}
+#chart {
+	width: 100%;
+	min-height: 350px;
+	background-color: #FFFFFF;
+	flex: 1;
+}
+
+footer {
+	background-color: #4C6E8D;
+	color: white;
+	padding: 0.8em;
+}
+footer p {
+	margin: 0;
+	text-align: center;
+}
+footer a {
+	color: inherit;
+}

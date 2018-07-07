@@ -1,0 +1,15 @@
+{
+  "name": "flex",
+  "version": "1.0.0",
+  "description": "Flex Point usage calculator",
+  "main": "format-data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"hc": "cp ./node_modules/highcharts/highcharts.js highcharts.js && echo Done"
+  },
+  "author": "Stephen Hannon",
+  "license": "MIT",
+  "dependencies": {
+    "highcharts": "^6.1.1"
+  }
+}
