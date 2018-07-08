@@ -1,6 +1,6 @@
 # flex
 
-To update `highcharts.js`, run the following from the `flex` folder:
+To update `highcharts.js`, run the following from the `flex` directory:
 
 ```bash
 $ npm update
