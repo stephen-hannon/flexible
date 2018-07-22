@@ -1,4 +1,8 @@
-# flex
+# Online Flex Point Calculator
+
+See it in action at https://stephen-hannon.github.io/flex
+
+## Development
 
 To update `highcharts.js`, run the following from the `flex` directory:
 
