@@ -16,5 +16,5 @@ or
 
 ```bash
 $ npm update
-$ cp ./node_modules/highcharts/highcharts.js highcharts.js
+$ cp ./node_modules/highcharts/highcharts.js ./scripts/highcharts.js
 ```

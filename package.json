@@ -1,14 +1,23 @@
 {
-  "name": "flex",
-  "version": "1.0.0",
-  "description": "Flex Point usage calculator",
+  "name": "flexible",
+  "version": "0.1.0",
+  "description": "Flex Point usage analyzer",
+  "private": true,
   "main": "format-data.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "hc": "cp ./node_modules/highcharts/highcharts.js highcharts.js && echo Done"
+    "hc": "cp ./node_modules/highcharts/highcharts.js ./scripts/highcharts.js && echo Done"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+github.com/stephen-hannon/flexible.git"
+	},
   "author": "Stephen Hannon",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stephen-hannon/flexible/issues"
+  },
+  "homepage": "https://github.com/stephen-hannon/flexible#readme",
   "dependencies": {
     "highcharts": "^6.1.1"
   }

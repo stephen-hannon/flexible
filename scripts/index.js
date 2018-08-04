@@ -28,8 +28,9 @@ Flex.semesters = [
 	}
 ];
 Flex.NOW = Date.parse('2018-04-01');//1523577600000;
-Flex.NOW = Date.now();
+// Flex.NOW = Date.now();
 Flex.START_AMOUNT = 500;
+// TODO: permit other Flex Point plans: https://dining.nd.edu/services/meal-plans/on-campus-undergrads/
 
 Flex.semesters.forEach(function (semester) {
 	// If we're already past the start of the semester
