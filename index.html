@@ -5,15 +5,29 @@
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Flex Point Calculator</title>
+	<title>Flexible – A Flex Point Analyzer</title>
 
+	<link href="./favicon.ico?1" rel="shortcut icon" type="image/x-icon">
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans|PT+Serif:700" rel="stylesheet">
 	<link href="style.css" rel="stylesheet">
 </head>
 
 <body>
 	<header role="banner">
-		<h1>Flex Point Calculator</h1>
+		<h1>
+			<svg class="logo" viewBox="0 0 13 16" height="40">
+				<defs>
+					<path d="M0,2.5 h3.5 v1 h4 v2 h3 v1 h2 v3.5" id="chart-line" fill="none" />
+				</defs>
+				<mask id="line-mask">
+					<rect x="0" y="0" width="13" height="16" fill="white" />
+					<use href="#chart-line" stroke="black" stroke-width="2" />
+				</mask>
+
+				<path d="M0,0 h13 v3 h-9 v3 h9 v3 h-9 v7 h-4 v-16" stroke="none" fill="#2d8540" mask="url(#line-mask)" />
+				<use href="#chart-line" stroke="#0071bc" />
+			</svg>
+			Flexible &ndash; A Flex Point Analyzer</h1>
 	</header>
 
 	<div class="content-container">
@@ -59,12 +73,12 @@
 	</div>
 
 	<footer role="contentinfo">
-		<p>Made with <code>&lt;3</code> by <a href="https://github.com/stephen-hannon" target="_blank">Stephen Hannon</a>.</p>
+		<p>Made with <code>&lt;3</code> by <a href="https://github.com/stephen-hannon" target="_blank">Stephen Hannon</a>. See the code on <a href="https://github.com/stephen-hannon/flexible" target="_blank">GitHub</a>.</p>
 		<p style="font-size: .8em;">This app is not affiliated with the University of Notre Dame or CBORD.</p>
 	</footer>
 	
 	
-	<script type="text/javascript" src="highcharts.js"></script> <!-- https://code.highcharts.com/highcharts.js -->
-	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="scripts/highcharts.js"></script> <!-- https://code.highcharts.com/highcharts.js -->
+	<script type="text/javascript" src="scripts/index.js"></script>
 </body>
 </html>

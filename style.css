@@ -3,7 +3,8 @@
 html {
 	font-family: 'PT Sans', sans-serif;
 	font-size: 62.5%;
-	color: #222;
+	color: #333;
+	background-color: #52A464;
 	height: 100%;
 }
 
@@ -27,11 +28,14 @@ h1, h2, h3 {
 	font-weight: 700;
 }
 header {
-	background-color: #8DA739;
+	background-color: #b7cf68;
 	padding: 1.5rem;
 }
 h1 {
 	margin: 0;
+}
+.logo {
+  vertical-align: middle;
 }
 
 .content-container {

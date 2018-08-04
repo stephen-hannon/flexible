@@ -4,7 +4,7 @@
 console.log(process.argv);
 
 let fs = require('fs');
-const ALL_FILE = 'alldata.json';
+const ALL_FILE = './local/alldata.json';
 
 if (process.argv[2]) {
 	fs.readFile(process.argv[2], (err, data) => {
