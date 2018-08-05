@@ -29,7 +29,7 @@ Flex.semesters = [
 ];
 //Flex.NOW = Date.parse('2018-04-01');//1523577600000;
 Flex.NOW = Date.now();
-Flex.START_AMOUNT = 500;
+//Flex.START_AMOUNT = 500;
 // TODO: permit other Flex Point plans: https://dining.nd.edu/services/meal-plans/on-campus-undergrads/
 
 Flex.semesters.forEach(function (semester) {
@@ -100,8 +100,6 @@ Flex.makeChart = function (data) {
 			crosshair: {
 				snap: false
 			},
-//			max: Flex.START_AMOUNT,
-			min: 0,
 			title: {
 				text: 'Flex Points'
 			},
@@ -168,6 +166,7 @@ Flex.loadDemoData = function (evt) {
 					return entry[0] < Flex.NOW;
 				});
 				
+				Flex.START_AMOUNT = Flex.demoText[0][1];
 				Flex.amountRemaining = Flex.demoText[Flex.demoText.length - 1][1];
 				
 				Flex.processData(Flex.demoText);
@@ -228,9 +227,7 @@ Flex.processData = function (dataArr) {
 	Flex.makeChart(dataArr);
 }
 
-Flex.parseRawData = function () {
-	var rawData = document.getElementById('raw-data').value;
-	
+Flex.parseRawData = function (rawData) {
 	var data = rawData.split('\n').reverse().map(function (row) {
 		return row.split('\t');
 	});
@@ -274,9 +271,19 @@ Flex.parseRawData = function () {
 
 //// Event Listeners ////
 
-//document.addEventListener('DOMContentLoaded', Flex.parseRawData);
 document.addEventListener('DOMContentLoaded', Flex.loadDemoData);
 
 document.getElementById('demo-link').addEventListener('click', Flex.loadDemoData);
 
-document.getElementById('submit').addEventListener('click', Flex.parseRawData);
+document.forms['raw-data-form'].addEventListener('submit', function (event) {
+	event.preventDefault();
+	
+	Flex.formData = {};
+	
+	for(var field of document.forms['raw-data-form'].elements) {
+		Flex.formData[field.id] = field.value;
+	}
+	
+	Flex.START_AMOUNT = +Flex.formData['starting-balance'];
+	Flex.parseRawData(Flex.formData['raw-data']);
+})

@@ -59,6 +59,10 @@ section {
 h2 {
 	margin: 0.5rem 0;
 }
+
+.form-field {
+	margin: .8rem 0;
+}
 #raw-data {
 	width: 100%;
 	background-color: transparent;

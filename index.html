@@ -16,16 +16,13 @@
 	<header role="banner">
 		<h1>
 			<svg class="logo" viewBox="0 0 13 16" height="40">
-				<defs>
-					<path d="M0,2.5 h3.5 v1 h4 v2 h3 v1 h2 v3.5" id="chart-line" fill="none" />
-				</defs>
 				<mask id="line-mask">
 					<rect x="0" y="0" width="13" height="16" fill="white" />
-					<use href="#chart-line" stroke="black" stroke-width="2" />
+					<path d="M0,2.5 h3.5 v1 h4 v2 h3 v1 h2 v3.5" fill="none" stroke="black" stroke-width="2" />
 				</mask>
 
 				<path d="M0,0 h13 v3 h-9 v3 h9 v3 h-9 v7 h-4 v-16" stroke="none" fill="#2d8540" mask="url(#line-mask)" />
-				<use href="#chart-line" stroke="#0071bc" />
+				<path d="M0,2.5 h3.5 v1 h4 v2 h3 v1 h2 v3.5" fill="none" stroke="#0071bc" />
 			</svg>
 			Flexible &ndash; A Flex Point Analyzer</h1>
 	</header>
@@ -40,9 +37,30 @@
 				<li>Making sure "ALL in the past 6 Months" is selected in the Month/Year dropdown, copy the entire table and paste it into the text box below.</li>
 			</ol>
 
-			<label for="raw-data">Table data</label>
-			<textarea id="raw-data" cols="50" rows="2"></textarea><br />
-			<button id="submit">Submit</button>
+			<form id="raw-data-form" name="raw-data-form">
+				<div class="form-field">
+					<label for="starting-balance">Select your starting Flex Point balance:</label>
+					<select id="starting-balance" name="starting-balance">
+						<optgroup label="On-campus undergrads">
+							<option value="500" selected>$500 (Gold Plan; default)</option>
+							<option value="360">$360 (Green Plan)</option>
+						</optgroup>
+
+						<optgroup label="Off-campus grads &amp; undergrads">
+							<option value="275">$275 (Select 150)</option>
+							<option value="150">$150 (Select 120)</option>
+							<option value="110">$110 (multiple plans)</option>
+						</optgroup>
+					</select>
+				</div>
+
+				<div class="form-field">
+					<label for="raw-data">Table data (Don't worry, everything stays in your browser.)</label>
+					<textarea id="raw-data" autocomplete="off" required cols="50" rows="2"></textarea>
+				</div>
+				
+				<button type="submit" id="submit">Submit</button>
+			</form>
 		</section>
 
 		<section id="results">
