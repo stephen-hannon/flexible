@@ -27,8 +27,8 @@ Flex.semesters = [
 		end: 1526169600000 // Date.parse('2018-05-13')
 	}
 ];
-Flex.NOW = Date.parse('2018-04-01');//1523577600000;
-// Flex.NOW = Date.now();
+//Flex.NOW = Date.parse('2018-04-01');//1523577600000;
+Flex.NOW = Date.now();
 Flex.START_AMOUNT = 500;
 // TODO: permit other Flex Point plans: https://dining.nd.edu/services/meal-plans/on-campus-undergrads/
 
