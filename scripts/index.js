@@ -27,10 +27,9 @@ Flex.semesters = [
 		end: 1526169600000 // Date.parse('2018-05-13')
 	}
 ];
-//Flex.NOW = Date.parse('2018-04-01');//1523577600000;
+// Flex.NOW = Date.parse('2018-04-01');//1523577600000;
 Flex.NOW = Date.now();
-//Flex.START_AMOUNT = 500;
-// TODO: permit other Flex Point plans: https://dining.nd.edu/services/meal-plans/on-campus-undergrads/
+// Flex.START_AMOUNT = 500;
 
 Flex.semesters.forEach(function (semester) {
 	// If we're already past the start of the semester
@@ -40,16 +39,33 @@ Flex.semesters.forEach(function (semester) {
 	}
 });
 
+/**
+ * @private
+ * @param {number} amount - the currency amount, as a float
+ * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
+ */
+Flex.formatCurrency = function (amount) {
+	if (typeof amount !== 'number') return '';
+
+	return '$' + amount.toFixed(2);
+}
+
+/**
+ * Function to add two numbers that avoids floating-point errors like .1 + .2 !== .3
+ * @private
+ * @param {number} x
+ * @param {number} y
+ * @returns {number} x + y, with two digits of precision
+ */
+Flex.addCurrency = function (x, y) {
+	return Math.round((x + y) * 100) / 100;
+}
+
 
 /**
  * @param {array} data - array of points of the format [timestamp, amount]
  */
 Flex.makeChart = function (data) {
-	if (Flex.IN_SEMESTER) {
-		// add one final data point with current balance
-		data.push([Flex.NOW, Flex.amountRemaining]);
-	}
-	
 	var series = [
 		{
 			name: 'Ideal usage',
@@ -133,7 +149,7 @@ Flex.addRates = function (obj) {
 		
 		// sanity check: make sure element exists and amount is a number
 		if ($el && typeof amount === 'number') {
-			$el.textContent = '$' + amount.toFixed(2);
+			$el.textContent = Flex.formatCurrency(amount);
 		}
 	}
 	
@@ -141,7 +157,7 @@ Flex.addRates = function (obj) {
 	var now = new Date(Flex.NOW);
 	var dateString = MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
 	
-	document.getElementById('results-header').textContent = 'Results: $' + Flex.amountRemaining.toFixed(2) + ' remaining as of ' + dateString;
+	document.getElementById('results-header').textContent = 'Results: ' + Flex.formatCurrency(Flex.amountRemaining) + ' remaining as of ' + dateString;
 }
 
 Flex.loadDemoData = function (evt) {
@@ -227,45 +243,69 @@ Flex.processData = function (dataArr) {
 	Flex.makeChart(dataArr);
 }
 
+// How we parse:
+// Iterate through the table data (which is in reverse chronological order)
+// Prepend each flex point change to the beginning of the data list, assuming for now that it ends at zero.
+// Stop iterating when we reach a row that is the addition of the full balance (i.e., the semester start).
+// If this is never reached (i.e., some data is missing), ask them for their current balance and attempt to
+// display the data that way.
 Flex.parseRawData = function (rawData) {
-	var data = rawData.split('\n').reverse().map(function (row) {
+	var data = rawData.split('\n').map(function (row) {
 		return row.split('\t');
 	});
 	
 	Flex.amountRemaining = Flex.START_AMOUNT;
-	var flexData = [
-		[Flex.semester.start, Flex.START_AMOUNT]
-	];
+	var flexData = [];
+	var previousChange = 0;
+	var reachedBeginning = false;
 	
-	data.forEach(function (row) {
-		if (row[0] === 'Flex Points') {
-			// Add space before AM or PM so Date.parse understands it.
+	for(var i = 0; i < data.length; i++) {
+		var row = data[i];
+
+		if (row.length >= 4 && row[0] === 'Flex Points') {
 			var dateString = row[1]
 				.replace(/\s/g, ' ')
-				.replace(/\B[AP]M/, ' $&');
+				.replace(/\B[AP]M/, ' $&'); // Add space before AM or PM so Date.parse understands it.
 			var date = Date.parse(dateString);
 			
 			var minusMatch = row[3].match(/[\-\u2013]/); // look for a minus sign (hyphen or en-dash)
 			var spentMatch = row[3].match(/[\d\.]+/);
-			var amountChange = spentMatch ? Number(spentMatch[0]) : null;
+			var amountChange = spentMatch ? +spentMatch[0] : null;
 			
 			if (
 				!isNaN(date) &&
-				amountChange !== null &&
-				date > Flex.semester.start
-				&& date < Flex.NOW // debug
+				amountChange !== null
+				// && date < Flex.NOW // debug
 			) {
 				// account for positive/negative changes
 				if (minusMatch && minusMatch.index < spentMatch.index) {
 					amountChange = -amountChange;
 				}
 				
-				Flex.amountRemaining = Math.round((Flex.amountRemaining + amountChange) * 100) / 100;
-				flexData.push([date, Flex.amountRemaining]);
+				var firstAmount = flexData[0] ? Flex.addCurrency(flexData[0][1], -previousChange) : 0;
+				previousChange = amountChange;
+
+				flexData.unshift([date, firstAmount]);
+
+				if (amountChange === Flex.START_AMOUNT) {
+					reachedBeginning = true;
+					break;
+				}
 			}
 		}
-	});
-	
+	}
+
+	if (reachedBeginning && flexData[0][1] !== Flex.START_AMOUNT) {
+		var adjustmentAmount = Flex.START_AMOUNT - flexData[0][1];
+
+		flexData = flexData.map(function (original) {
+			original[1] = Flex.addCurrency(original[1], adjustmentAmount);
+			return original;
+		})
+	}
+
+	Flex.amountRemaining = flexData[flexData.length - 1][1];
+
 	Flex.processData(flexData);
 }
 
@@ -277,13 +317,13 @@ document.getElementById('demo-link').addEventListener('click', Flex.loadDemoData
 
 document.forms['raw-data-form'].addEventListener('submit', function (event) {
 	event.preventDefault();
-	
+
 	Flex.formData = {};
-	
+
 	for(var field of document.forms['raw-data-form'].elements) {
 		Flex.formData[field.id] = field.value;
 	}
-	
+
 	Flex.START_AMOUNT = +Flex.formData['starting-balance'];
 	Flex.parseRawData(Flex.formData['raw-data']);
 })
