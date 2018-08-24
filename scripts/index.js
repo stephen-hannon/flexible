@@ -29,7 +29,6 @@ Flex.semesters = [
 ];
 // Flex.NOW = Date.parse('2018-04-01');//1523577600000;
 Flex.NOW = Date.now();
-// Flex.START_AMOUNT = 500;
 
 Flex.semesters.forEach(function (semester) {
 	// If we're already past the start of the semester
@@ -178,9 +177,9 @@ Flex.loadDemoData = function (evt) {
 				Flex.demoText = JSON.parse(this.responseText).data;
 				
 				//DEBUG
-				Flex.demoText = Flex.demoText.filter(function (entry) {
-					return entry[0] < Flex.NOW;
-				});
+				// Flex.demoText = Flex.demoText.filter(function (entry) {
+				// 	return entry[0] < Flex.NOW;
+				// });
 				
 				Flex.START_AMOUNT = Flex.demoText[0][1];
 				Flex.amountRemaining = Flex.demoText[Flex.demoText.length - 1][1];
@@ -234,8 +233,22 @@ Flex.calculateRates = function () {
 	return returnObj;
 }
 
+/**
+ * @param {number[][]} dataArr
+ */
 Flex.processData = function (dataArr) {
 	Flex.AMOUNT_SPENT = Flex.START_AMOUNT - Flex.amountRemaining;
+	
+	var latestDate = dataArr[dataArr.length - 1][0];
+
+	for(var i = 0; i < Flex.semesters.length; i++) {
+		var semester = Flex.semesters[i];
+		if (latestDate > semester.start) {
+			Flex.semester = semester;
+			Flex.IN_SEMESTER = (Flex.amountRemaining !== 0);
+			break;
+		}
+	}
 	
 	var ratesObj = Flex.calculateRates();
 	Flex.addRates(ratesObj);
@@ -305,6 +318,10 @@ Flex.parseRawData = function (rawData) {
 	}
 
 	Flex.amountRemaining = flexData[flexData.length - 1][1];
+
+	if (Flex.amountRemaining !== 0) {
+		flexData.push([Flex.NOW, Flex.amountRemaining]);
+	}
 
 	Flex.processData(flexData);
 }

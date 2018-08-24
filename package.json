@@ -1,6 +1,6 @@
 {
   "name": "flexible",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Flex Point usage analyzer",
   "private": true,
   "main": "format-data.js",
