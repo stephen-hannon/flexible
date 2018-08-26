@@ -6,12 +6,13 @@
   "main": "format-data.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "hc": "cp ./node_modules/highcharts/highcharts.js ./scripts/highcharts.js && echo Done"
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --open --config webpack.dev.js"
   },
   "repository": {
     "type": "git",
     "url": "git+github.com/stephen-hannon/flexible.git"
-	},
+  },
   "author": "Stephen Hannon",
   "license": "MIT",
   "bugs": {
@@ -20,5 +21,11 @@
   "homepage": "https://github.com/stephen-hannon/flexible#readme",
   "dependencies": {
     "highcharts": "^6.1.1"
+  },
+  "devDependencies": {
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-merge": "^4.1.4"
   }
 }

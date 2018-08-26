@@ -1,10 +1,11 @@
 'use strict';
 /* eslint-env browser */
-/* global Highcharts */
+import Highcharts from 'highcharts';
+import sampleData from './sample-data.json';
 
 var Flex = {};
 
-Flex.demoText = '';
+Flex.demoText = sampleData.data;
 
 /* Array of semester data (starting with LATEST semester)
  * Keys in object:
@@ -161,43 +162,15 @@ Flex.addRates = function (obj) {
 
 Flex.loadDemoData = function (evt) {
 	evt.preventDefault();
+
+	// DEBUG
+	// Flex.demoText = Flex.demoText.filter(function (entry) {
+	// 	return entry[0] < Flex.NOW;
+	// });
 	
-	if (Flex.demoText) {
-		Flex.amountRemaining = Flex.demoText[Flex.demoText.length - 1][1];
-		Flex.processData(Flex.demoText);
-		return; // if we've already gotten the text, don't get it again
-	}
-	
-	var xhr = new XMLHttpRequest();
-	xhr.addEventListener('load', function () {
-		if (this.status >= 400) {
-			alert('Error loading demo data:\n' + this.statusText + '\n' + this.responseText);
-		} else {
-			try {
-				Flex.demoText = JSON.parse(this.responseText).data;
-				
-				//DEBUG
-				// Flex.demoText = Flex.demoText.filter(function (entry) {
-				// 	return entry[0] < Flex.NOW;
-				// });
-				
-				Flex.START_AMOUNT = Flex.demoText[0][1];
-				Flex.amountRemaining = Flex.demoText[Flex.demoText.length - 1][1];
-				
-				Flex.processData(Flex.demoText);
-			} catch (err) {
-				alert('Error parsing demo data');
-				throw err;
-			}
-		}
-	});
-	xhr.addEventListener('error', function () {
-		alert('Error loading demo data');
-	});
-	
-	xhr.overrideMimeType('application/json');
-	xhr.open('GET', './sample-data.json');
-	xhr.send();
+	Flex.START_AMOUNT = Flex.demoText[0][1];
+	Flex.amountRemaining = Flex.demoText[Flex.demoText.length - 1][1];
+	Flex.processData(Flex.demoText);
 }
 
 Flex.calculateRates = function () {
@@ -249,7 +222,7 @@ Flex.processData = function (dataArr) {
 			break;
 		}
 	}
-	
+
 	var ratesObj = Flex.calculateRates();
 	Flex.addRates(ratesObj);
 	
