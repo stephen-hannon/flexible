@@ -48,7 +48,7 @@ Flex.formatCurrency = function (amount) {
 	if (typeof amount !== 'number') return '';
 
 	return '$' + amount.toFixed(2);
-}
+};
 
 /**
  * Function to add two numbers that avoids floating-point errors like .1 + .2 !== .3
@@ -59,7 +59,7 @@ Flex.formatCurrency = function (amount) {
  */
 Flex.addCurrency = function (x, y) {
 	return Math.round((x + y) * 100) / 100;
-}
+};
 
 
 /**
@@ -84,7 +84,7 @@ Flex.makeChart = function (data) {
 			data: data
 		}
 	];
-	
+
 	// If we're in the middle of the semester, add a dashed line with projected usage
 	if (Flex.IN_SEMESTER) {
 		series.push({
@@ -98,7 +98,7 @@ Flex.makeChart = function (data) {
 			]
 		});
 	}
-	
+
 	return Highcharts.chart('chart', {
 		chart: {
 			type: 'line'
@@ -146,19 +146,19 @@ Flex.addRates = function (obj) {
 	for (var id in obj) {
 		var $el = document.getElementById(id);
 		var amount = obj[id];
-		
+
 		// sanity check: make sure element exists and amount is a number
 		if ($el && typeof amount === 'number') {
 			$el.textContent = Flex.formatCurrency(amount);
 		}
 	}
-	
+
 	var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 	var now = new Date(Flex.NOW);
 	var dateString = MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
-	
+
 	document.getElementById('results-header').textContent = 'Results: ' + Flex.formatCurrency(Flex.amountRemaining) + ' remaining as of ' + dateString;
-}
+};
 
 Flex.loadDemoData = function (evt) {
 	evt.preventDefault();
@@ -167,16 +167,17 @@ Flex.loadDemoData = function (evt) {
 	// Flex.demoText = Flex.demoText.filter(function (entry) {
 	// 	return entry[0] < Flex.NOW;
 	// });
-	
+
 	Flex.START_AMOUNT = Flex.demoText[0][1];
 	Flex.amountRemaining = Flex.demoText[Flex.demoText.length - 1][1];
 	Flex.processData(Flex.demoText);
-}
+};
 
 Flex.calculateRates = function () {
 	var MS_PER_DAY = 1000 * 60 * 60 * 24;
 	var DAYS_PER_WEEK = 7;
-	
+	var returnObj;
+
 	if (Flex.IN_SEMESTER) {
 		var msElapsed = Flex.NOW - Flex.semester.start;
 		var daysElapsed = msElapsed / MS_PER_DAY;
@@ -186,7 +187,7 @@ Flex.calculateRates = function () {
 		var daysRemaining = msRemaining / MS_PER_DAY;
 		var weeksRemaining = daysRemaining / DAYS_PER_WEEK;
 
-		var returnObj = {
+		returnObj = {
 			pastPerDay: Flex.AMOUNT_SPENT / daysElapsed,
 			pastPerWeek: Flex.AMOUNT_SPENT / weeksElapsed,
 			futurePerDay: Flex.amountRemaining / daysRemaining,
@@ -196,22 +197,22 @@ Flex.calculateRates = function () {
 		var msSemester = Flex.semester.end - Flex.semester.start;
 		var daysSemester = msSemester / MS_PER_DAY;
 		var weeksSemester = daysSemester / DAYS_PER_WEEK;
-		
-		var returnObj = {
+
+		returnObj = {
 			pastPerDay: Flex.START_AMOUNT / daysSemester,
 			pastPerWeek: Flex.START_AMOUNT / weeksSemester
 		};
 	}
-	
+
 	return returnObj;
-}
+};
 
 /**
  * @param {number[][]} dataArr
  */
 Flex.processData = function (dataArr) {
 	Flex.AMOUNT_SPENT = Flex.START_AMOUNT - Flex.amountRemaining;
-	
+
 	var latestDate = dataArr[dataArr.length - 1][0];
 
 	for(var i = 0; i < Flex.semesters.length; i++) {
@@ -225,9 +226,9 @@ Flex.processData = function (dataArr) {
 
 	var ratesObj = Flex.calculateRates();
 	Flex.addRates(ratesObj);
-	
+
 	Flex.makeChart(dataArr);
-}
+};
 
 // How we parse:
 // Iterate through the table data (which is in reverse chronological order)
@@ -239,12 +240,12 @@ Flex.parseRawData = function (rawData) {
 	var data = rawData.split('\n').map(function (row) {
 		return row.split('\t');
 	});
-	
+
 	Flex.amountRemaining = Flex.START_AMOUNT;
 	var flexData = [];
 	var previousChange = 0;
 	var reachedBeginning = false;
-	
+
 	for(var i = 0; i < data.length; i++) {
 		var row = data[i];
 
@@ -253,11 +254,11 @@ Flex.parseRawData = function (rawData) {
 				.replace(/\s/g, ' ')
 				.replace(/\B[AP]M/, ' $&'); // Add space before AM or PM so Date.parse understands it.
 			var date = Date.parse(dateString);
-			
-			var minusMatch = row[3].match(/[\-\u2013]/); // look for a minus sign (hyphen or en-dash)
-			var spentMatch = row[3].match(/[\d\.]+/);
+
+			var minusMatch = row[3].match(/[-\u2013]/); // look for a minus sign (hyphen or en-dash)
+			var spentMatch = row[3].match(/[\d.]+/);
 			var amountChange = spentMatch ? +spentMatch[0] : null;
-			
+
 			if (
 				!isNaN(date) &&
 				amountChange !== null
@@ -267,7 +268,7 @@ Flex.parseRawData = function (rawData) {
 				if (minusMatch && minusMatch.index < spentMatch.index) {
 					amountChange = -amountChange;
 				}
-				
+
 				var firstAmount = flexData[0] ? Flex.addCurrency(flexData[0][1], -previousChange) : 0;
 				previousChange = amountChange;
 
@@ -287,7 +288,7 @@ Flex.parseRawData = function (rawData) {
 		flexData = flexData.map(function (original) {
 			original[1] = Flex.addCurrency(original[1], adjustmentAmount);
 			return original;
-		})
+		});
 	}
 
 	Flex.amountRemaining = flexData[flexData.length - 1][1];
@@ -297,7 +298,7 @@ Flex.parseRawData = function (rawData) {
 	}
 
 	Flex.processData(flexData);
-}
+};
 
 //// Event Listeners ////
 
@@ -316,4 +317,4 @@ document.forms['raw-data-form'].addEventListener('submit', function (event) {
 
 	Flex.START_AMOUNT = +Flex.formData['starting-balance'];
 	Flex.parseRawData(Flex.formData['raw-data']);
-})
+});
