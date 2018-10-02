@@ -14,7 +14,7 @@ $ npm install
 Flexible uses [Webpack](https://webpack.js.org/) to bundle its assets, so start a development server to avoid manually re-compiling after each save:
 
 ```bash
-$ npm run serve
+$ npm run start
 ```
 
 To build for production, run:

@@ -157,7 +157,7 @@ Flex.addRates = function (obj) {
 	var now = new Date(Flex.NOW);
 	var dateString = MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
 
-	document.getElementById('results-header').textContent = 'Results: ' + Flex.formatCurrency(Flex.amountRemaining) + ' remaining as of ' + dateString;
+	document.getElementById('results-header').textContent = 'Results (as of ' + dateString + ')';
 };
 
 Flex.loadDemoData = function (evt) {
@@ -176,7 +176,7 @@ Flex.loadDemoData = function (evt) {
 Flex.calculateRates = function () {
 	var MS_PER_DAY = 1000 * 60 * 60 * 24;
 	var DAYS_PER_WEEK = 7;
-	var returnObj;
+	var returnObj = {};
 
 	if (Flex.IN_SEMESTER) {
 		var msElapsed = Flex.NOW - Flex.semester.start;
@@ -188,10 +188,12 @@ Flex.calculateRates = function () {
 		var weeksRemaining = daysRemaining / DAYS_PER_WEEK;
 
 		returnObj = {
-			pastPerDay: Flex.AMOUNT_SPENT / daysElapsed,
-			pastPerWeek: Flex.AMOUNT_SPENT / weeksElapsed,
+			pastPerDay: Flex.amountSpent / daysElapsed,
+			pastPerWeek: Flex.amountSpent / weeksElapsed,
+			pastTotal: Flex.amountSpent,
 			futurePerDay: Flex.amountRemaining / daysRemaining,
-			futurePerWeek: Flex.amountRemaining / weeksRemaining
+			futurePerWeek: Flex.amountRemaining / weeksRemaining,
+			futureTotal: Flex.amountRemaining
 		};
 	} else {
 		var msSemester = Flex.semester.end - Flex.semester.start;
@@ -200,7 +202,8 @@ Flex.calculateRates = function () {
 
 		returnObj = {
 			pastPerDay: Flex.START_AMOUNT / daysSemester,
-			pastPerWeek: Flex.START_AMOUNT / weeksSemester
+			pastPerWeek: Flex.START_AMOUNT / weeksSemester,
+			pastTotal: Flex.START_AMOUNT
 		};
 	}
 
@@ -211,7 +214,7 @@ Flex.calculateRates = function () {
  * @param {number[][]} dataArr
  */
 Flex.processData = function (dataArr) {
-	Flex.AMOUNT_SPENT = Flex.START_AMOUNT - Flex.amountRemaining;
+	Flex.amountSpent = Flex.START_AMOUNT - Flex.amountRemaining;
 
 	var latestDate = dataArr[dataArr.length - 1][0];
 
@@ -237,6 +240,8 @@ Flex.processData = function (dataArr) {
 // If this is never reached (i.e., some data is missing), ask them for their current balance and attempt to
 // display the data that way.
 Flex.parseRawData = function (rawData) {
+	Flex.NOW = Date.now(); // in case the page has been loaded for a long time
+
 	var data = rawData.split('\n').map(function (row) {
 		return row.split('\t');
 	});
