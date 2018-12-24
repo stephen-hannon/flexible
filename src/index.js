@@ -16,6 +16,12 @@ Flex.demoText = sampleData.data;
  */
 Flex.semesters = [
 	{
+		year: 2019.1,
+		name: 'Spring 2019',
+		start: 1547337600000, // Date.parse('2019-01-13')
+		end: 1557532800000 // Date.parse('2019-05-11')
+	},
+	{
 		year: 2018.2,
 		name: 'Fall 2018',
 		start: 1534482000000, // Date.parse('2018-8-17')
