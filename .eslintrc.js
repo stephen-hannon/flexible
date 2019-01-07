@@ -1,7 +1,8 @@
 module.exports = {
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+        "commonjs": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
@@ -26,6 +27,7 @@ module.exports = {
             "always"
         ],
         "no-useless-escape": "warn",
-        "no-trailing-spaces": "warn"
+        "no-trailing-spaces": "warn",
+        "no-console": "warn"
     }
 };

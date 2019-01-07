@@ -1,11 +1,33 @@
 'use strict';
 /* eslint-env browser */
-import Highcharts from 'highcharts';
-import sampleData from './sample-data.json';
+/* global Vue, Highcharts, dayjs, sampleData */
 
 var Flex = {};
 
-Flex.demoText = sampleData.data;
+var vm = new Vue({
+	el: '#flexible',
+	data: {
+		remainingBalance: 500,
+		startBalance: 500
+	},
+	computed: {
+		spentBalance: function () {
+			return (this.startBalance * 100 - this.remainingBalance * 100) / 100;
+		}
+	},
+	methods: {
+		formatDate: function (date) {
+			return dayjs(date).format('MMMM D, YYYY');
+		},
+		useDemo: function () {
+			this.startBalance = Flex.demoText[0][1];
+			this.remainingBalance = Flex.demoText[Flex.demoText.length - 1][1];
+			Flex.processData(Flex.demoText);
+		}
+	}
+});
+
+Flex.demoText = sampleData;
 
 /* Array of semester data (starting with LATEST semester)
  * Keys in object:
@@ -34,14 +56,19 @@ Flex.semesters = [
 		end: 1526169600000 // Date.parse('2018-05-13')
 	}
 ];
-// Flex.NOW = Date.parse('2018-04-01');//1523577600000;
-Flex.NOW = Date.now();
+Flex.now = Date.now();
+Flex.now = Date.parse('2018-04-01');
+
+// DEBUG
+Flex.demoText = Flex.demoText.filter(function (entry) {
+	return entry[0] < Flex.now;
+});
 
 Flex.semesters.forEach(function (semester) {
 	// If we're already past the start of the semester
-	if (Flex.NOW > semester.start) {
+	if (Flex.now > semester.start) {
 		Flex.semester = semester;
-		Flex.IN_SEMESTER = (Flex.NOW < semester.end);
+		Flex.inSemester = (Flex.now < semester.end);
 	}
 });
 
@@ -79,7 +106,7 @@ Flex.makeChart = function (data) {
 			lineWidth: 1,
 			enableMouseTracking: false,
 			data: [
-				[Flex.semester.start, Flex.START_AMOUNT],
+				[Flex.semester.start, vm.startBalance],
 				[Flex.semester.end, 0]
 			]
 		},
@@ -92,14 +119,14 @@ Flex.makeChart = function (data) {
 	];
 
 	// If we're in the middle of the semester, add a dashed line with projected usage
-	if (Flex.IN_SEMESTER) {
+	if (Flex.inSemester) {
 		series.push({
 			name: 'Projected balance',
 			color: 'steelblue',
 			dashStyle: 'shortdash',
 			enableMouseTracking: false,
 			data: [
-				[Flex.NOW, Flex.amountRemaining],
+				[Flex.now, vm.remainingBalance],
 				[Flex.semester.end, 0]
 			]
 		});
@@ -158,25 +185,6 @@ Flex.addRates = function (obj) {
 			$el.textContent = Flex.formatCurrency(amount);
 		}
 	}
-
-	var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-	var now = new Date(Flex.NOW);
-	var dateString = MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
-
-	document.getElementById('results-header').textContent = 'Results (as of ' + dateString + ')';
-};
-
-Flex.loadDemoData = function (evt) {
-	evt.preventDefault();
-
-	// DEBUG
-	// Flex.demoText = Flex.demoText.filter(function (entry) {
-	// 	return entry[0] < Flex.NOW;
-	// });
-
-	Flex.START_AMOUNT = Flex.demoText[0][1];
-	Flex.amountRemaining = Flex.demoText[Flex.demoText.length - 1][1];
-	Flex.processData(Flex.demoText);
 };
 
 Flex.calculateRates = function () {
@@ -184,22 +192,22 @@ Flex.calculateRates = function () {
 	var DAYS_PER_WEEK = 7;
 	var returnObj = {};
 
-	if (Flex.IN_SEMESTER) {
-		var msElapsed = Flex.NOW - Flex.semester.start;
+	if (Flex.inSemester) {
+		var msElapsed = Flex.now - Flex.semester.start;
 		var daysElapsed = msElapsed / MS_PER_DAY;
 		var weeksElapsed = daysElapsed / DAYS_PER_WEEK;
 
-		var msRemaining = Flex.semester.end - Flex.NOW;
+		var msRemaining = Flex.semester.end - Flex.now;
 		var daysRemaining = msRemaining / MS_PER_DAY;
 		var weeksRemaining = daysRemaining / DAYS_PER_WEEK;
 
 		returnObj = {
-			pastPerDay: Flex.amountSpent / daysElapsed,
-			pastPerWeek: Flex.amountSpent / weeksElapsed,
-			pastTotal: Flex.amountSpent,
-			futurePerDay: Flex.amountRemaining / daysRemaining,
-			futurePerWeek: Flex.amountRemaining / weeksRemaining,
-			futureTotal: Flex.amountRemaining
+			pastPerDay: vm.remainingBalance / daysElapsed,
+			pastPerWeek: vm.remainingBalance / weeksElapsed,
+			pastTotal: vm.remainingBalance,
+			futurePerDay: vm.remainingBalance / daysRemaining,
+			futurePerWeek: vm.remainingBalance / weeksRemaining,
+			futureTotal: vm.remainingBalance
 		};
 	} else {
 		var msSemester = Flex.semester.end - Flex.semester.start;
@@ -207,9 +215,9 @@ Flex.calculateRates = function () {
 		var weeksSemester = daysSemester / DAYS_PER_WEEK;
 
 		returnObj = {
-			pastPerDay: Flex.START_AMOUNT / daysSemester,
-			pastPerWeek: Flex.START_AMOUNT / weeksSemester,
-			pastTotal: Flex.START_AMOUNT
+			pastPerDay: vm.startBalance / daysSemester,
+			pastPerWeek: vm.startBalance / weeksSemester,
+			pastTotal: vm.startBalance
 		};
 	}
 
@@ -220,15 +228,13 @@ Flex.calculateRates = function () {
  * @param {number[][]} dataArr
  */
 Flex.processData = function (dataArr) {
-	Flex.amountSpent = Flex.START_AMOUNT - Flex.amountRemaining;
-
 	var latestDate = dataArr[dataArr.length - 1][0];
 
 	for(var i = 0; i < Flex.semesters.length; i++) {
 		var semester = Flex.semesters[i];
 		if (latestDate > semester.start) {
 			Flex.semester = semester;
-			Flex.IN_SEMESTER = (Flex.amountRemaining !== 0);
+			Flex.inSemester = (vm.remainingBalance !== 0);
 			break;
 		}
 	}
@@ -246,13 +252,13 @@ Flex.processData = function (dataArr) {
 // If this is never reached (i.e., some data is missing), ask them for their current balance and attempt to
 // display the data that way.
 Flex.parseRawData = function (rawData) {
-	Flex.NOW = Date.now(); // in case the page has been loaded for a long time
+	Flex.now = Date.now(); // in case the page has been loaded for a long time
 
 	var data = rawData.split('\n').map(function (row) {
 		return row.split('\t');
 	});
 
-	Flex.amountRemaining = Flex.START_AMOUNT;
+	vm.remainingBalance = vm.startBalance;
 	var flexData = [];
 	var previousChange = 0;
 	var reachedBeginning = false;
@@ -273,7 +279,7 @@ Flex.parseRawData = function (rawData) {
 			if (
 				!isNaN(date) &&
 				amountChange !== null
-				// && date < Flex.NOW // debug
+				// && date < Flex.now // debug
 			) {
 				// account for positive/negative changes
 				if (minusMatch && minusMatch.index < spentMatch.index) {
@@ -285,7 +291,7 @@ Flex.parseRawData = function (rawData) {
 
 				flexData.unshift([date, firstAmount]);
 
-				if (amountChange === Flex.START_AMOUNT) {
+				if (amountChange === vm.startBalance) {
 					reachedBeginning = true;
 					break;
 				}
@@ -293,8 +299,8 @@ Flex.parseRawData = function (rawData) {
 		}
 	}
 
-	if (reachedBeginning && flexData[0][1] !== Flex.START_AMOUNT) {
-		var adjustmentAmount = Flex.START_AMOUNT - flexData[0][1];
+	if (reachedBeginning && flexData[0][1] !== vm.startBalance) {
+		var adjustmentAmount = vm.startBalance - flexData[0][1];
 
 		flexData = flexData.map(function (original) {
 			original[1] = Flex.addCurrency(original[1], adjustmentAmount);
@@ -302,10 +308,10 @@ Flex.parseRawData = function (rawData) {
 		});
 	}
 
-	Flex.amountRemaining = flexData[flexData.length - 1][1];
+	vm.remainingBalance = flexData[flexData.length - 1][1];
 
-	if (Flex.amountRemaining !== 0) {
-		flexData.push([Flex.NOW, Flex.amountRemaining]);
+	if (vm.remainingBalance !== 0) {
+		flexData.push([Flex.now, vm.remainingBalance]);
 	}
 
 	Flex.processData(flexData);
@@ -313,9 +319,7 @@ Flex.parseRawData = function (rawData) {
 
 //// Event Listeners ////
 
-document.addEventListener('DOMContentLoaded', Flex.loadDemoData);
-
-document.getElementById('demo-link').addEventListener('click', Flex.loadDemoData);
+document.addEventListener('DOMContentLoaded', vm.useDemo);
 
 document.forms['raw-data-form'].addEventListener('submit', function (event) {
 	event.preventDefault();
@@ -326,6 +330,5 @@ document.forms['raw-data-form'].addEventListener('submit', function (event) {
 		Flex.formData[field.id] = field.value;
 	}
 
-	Flex.START_AMOUNT = +Flex.formData['starting-balance'];
 	Flex.parseRawData(Flex.formData['raw-data']);
 });
