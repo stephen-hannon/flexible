@@ -71,23 +71,21 @@
 
 			<div class="stats-container">
 				<div class="stats-box">
-					<h3>You've been spending</h3>
+					<h3>Before now</h3>
 					<ul class="stats-list">
 						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.total) }}</span> in total</li>
 						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.perDay) }}</span> per day</li>
 						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.perWeek) }}</span> per week</li>
 					</ul>
-					<p>so far this semester</p>
 				</div>
 
 				<div class="stats-box">
-					<h3>You need to spend</h3>
+					<h3>After now</h3>
 					<ul class="stats-list">
 						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.total) }}</span> in total</li>
 						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perDay) }}</span> per day</li>
 						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perWeek) }}</span> per week</li>
 					</ul>
-					<p>over the rest of the semester</p>
 				</div>
 			</div>
 

@@ -6,6 +6,8 @@ var Flex = {};
 
 Flex.softSemesterLimit = 1000 * 60 * 60 * 24 * 7; // 1 week
 
+Flex.demoText = sampleData;
+
 /* Array of semester data (starting with LATEST semester)
  * Keys in object:
  *   year: year plus 0.1 if spring, 0.2 if fall
@@ -64,11 +66,11 @@ var vm = new Vue({
 			var MS_PER_DAY = 1000 * 60 * 60 * 24;
 			var DAYS_PER_WEEK = 7;
 
-			var msPast = this.now - this.semester.start;
+			var msPast = Math.min(this.now, this.semester.end) - this.semester.start;
 			var daysPast = msPast / MS_PER_DAY;
 			var weeksPast = daysPast / DAYS_PER_WEEK;
 
-			var msFuture = this.semester.end - this.now;
+			var msFuture = this.semester.end - Math.max(this.now, this.semester.start);
 			var daysFuture = msFuture / MS_PER_DAY;
 			var weeksFuture = daysFuture / DAYS_PER_WEEK;
 
@@ -111,6 +113,11 @@ var vm = new Vue({
 		}
 	},
 
+	mounted: function () {
+		this.remainingBalance = this.startBalance;
+		this.makeChart();
+	},
+
 	methods: {
 		/**
 		 * Function to add two numbers that avoids floating-point errors like .1 + .2 !== .3
@@ -135,6 +142,7 @@ var vm = new Vue({
 		 * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
 		 */
 		formatCurrency: function (num) {
+			// TODO: handle negatives
 			return (typeof num === 'number') ? '$' + num.toFixed(2) : num;
 		},
 
@@ -147,7 +155,93 @@ var vm = new Vue({
 			return dayjs(date).format('MMMM D, YYYY');
 		},
 
+		/**
+		 * @param {[number, number][]} [data] - array of points of the format [timestamp, amount]
+		 * @returns {Highcharts.ChartObject}
+		 */
+		makeChart: function (data) {
+			var series = [
+				{
+					name: 'Ideal usage',
+					color: 'red',
+					lineWidth: 1,
+					enableMouseTracking: false,
+					data: [
+						[this.semester.start, this.startBalance],
+						[this.semester.end, 0]
+					]
+				}
+			];
+
+			if (data) {
+				series.push({
+					name: 'Actual balance',
+					color: 'steelblue',
+					step: 'left',
+					data: data
+				});
+
+				// If we're in the middle of the semester, add a dashed line with projected usage
+				if (this.inSemester && this.remainingBalance !== 0) {
+					series.push({
+						name: 'Projected balance',
+						color: 'steelblue',
+						dashStyle: 'shortdash',
+						enableMouseTracking: false,
+						data: [
+							[this.now, this.remainingBalance],
+							[this.semester.end, 0]
+						]
+					});
+				}
+			}
+
+			return Highcharts.chart('chart', {
+				chart: {
+					type: 'line'
+				},
+				title: {
+					text: this.semester.name + ' Flex Point Usage'
+				},
+				xAxis: {
+					crosshair: {
+						snap: false
+					},
+					type: 'datetime'
+				},
+				yAxis: {
+					crosshair: {
+						snap: false
+					},
+					title: {
+						text: 'Flex Points'
+					},
+					labels: {
+						format: '${value}'
+					}
+				},
+				plotOptions: {
+					line: {
+						marker: {
+							enabled: false
+						}
+					}
+				},
+				series: series,
+				tooltip: {
+					valueDecimals: 2,
+					valuePrefix: '$'
+				}
+			});
+		},
+
 		useDemo: function () {
+			// DEBUG
+			this.now = Date.parse('2018-04-01');
+			Flex.demoText = Flex.demoText.filter(function (entry) {
+				return entry[0] < this.now;
+			}, this);
+
 			this.startBalance = Flex.demoText[0][1];
 			this.remainingBalance = Flex.demoText[Flex.demoText.length - 1][1];
 			Flex.processData(Flex.demoText);
@@ -155,92 +249,6 @@ var vm = new Vue({
 	}
 });
 
-vm.remainingBalance = vm.startBalance;
-
-Flex.demoText = sampleData;
-
-// DEBUG
-vm.now = Date.parse('2018-04-01');
-Flex.demoText = Flex.demoText.filter(function (entry) {
-	return entry[0] < vm.now;
-});
-
-
-/**
- * @param {array} data - array of points of the format [timestamp, amount]
- */
-Flex.makeChart = function (data) {
-	var series = [
-		{
-			name: 'Ideal usage',
-			color: 'red',
-			lineWidth: 1,
-			enableMouseTracking: false,
-			data: [
-				[vm.semester.start, vm.startBalance],
-				[vm.semester.end, 0]
-			]
-		},
-		{
-			name: 'Actual balance',
-			color: 'steelblue',
-			step: 'left',
-			data: data
-		}
-	];
-
-	// If we're in the middle of the semester, add a dashed line with projected usage
-	if (vm.inSemester && vm.remainingBalance !== 0) {
-		series.push({
-			name: 'Projected balance',
-			color: 'steelblue',
-			dashStyle: 'shortdash',
-			enableMouseTracking: false,
-			data: [
-				[vm.now, vm.remainingBalance],
-				[vm.semester.end, 0]
-			]
-		});
-	}
-
-	return Highcharts.chart('chart', {
-		chart: {
-			type: 'line'
-		},
-		title: {
-			text: vm.semester.name + ' Flex Point Usage'
-		},
-		xAxis: {
-			crosshair: {
-				snap: false
-			},
-			type: 'datetime'
-		},
-		yAxis: {
-			crosshair: {
-				snap: false
-			},
-			title: {
-				text: 'Flex Points'
-			},
-			labels: {
-				format: '${value}'
-			}
-		},
-		plotOptions: {
-			line: {
-				marker: {
-					enabled: false
-				}
-			}
-		},
-		series: series,
-		tooltip: {
-			valueDecimals: 2,
-			valuePrefix: '$'
-		}
-	});
-};
 
 /**
  * @param {number[][]} dataArr
@@ -249,7 +257,7 @@ Flex.processData = function (dataArr) {
 	vm.processedView = true;
 	vm.now = dataArr[dataArr.length - 1][0];
 
-	Flex.makeChart(dataArr);
+	vm.makeChart(dataArr);
 };
 
 // How we parse:
@@ -324,7 +332,3 @@ Flex.parseRawData = function (rawData) {
 
 	Flex.processData(flexData);
 };
-
-//// Event Listeners ////
-
-document.addEventListener('DOMContentLoaded', vm.useDemo);
