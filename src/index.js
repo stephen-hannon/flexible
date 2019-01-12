@@ -42,21 +42,12 @@ var vm = new Vue({
 		processedView: false, // if we're displaying a semester other than the current one
 		rawData: '',
 		remainingBalance: null,
-		// semester: null,
 		startBalance: 500
 	},
 
 	computed: {
 		currentSemester: function () {
 			return this.findSemester(Date.now());
-			// for (var i = 0; i < Flex.semesters.length; i++) {
-			// 	var semester = Flex.semesters[i];
-			// 	// If we're already past the start of the semester
-			// 	if (this.now > semester.start) {
-			// 		this.inSemester = (vm.now < semester.end);
-			// 		return semester;
-			// 	}
-			// }
 		},
 		inSemester: function () {
 			return (this.now > this.semester.start - Flex.softSemesterLimit);
@@ -107,7 +98,7 @@ var vm = new Vue({
 			return this.findSemester(this.now);
 		},
 		spentBalance: function () {
-			return (this.startBalance * 100 - this.remainingBalance * 100) / 100;
+			return this.addCurrency(this.startBalance, -this.remainingBalance);
 		}
 	},
 
@@ -121,12 +112,24 @@ var vm = new Vue({
 	},
 
 	methods: {
+		/**
+		 * Function to add two numbers that avoids floating-point errors like .1 + .2 !== .3
+		 * @private
+		 * @param {number} x
+		 * @param {number} y
+		 * @returns {number} x + y, with two digits of precision
+		 */
+		addCurrency: function (x, y) {
+			return Math.round(x * 100 + y * 100) / 100;
+		},
+
 		findSemester: function (date) {
 			return Flex.semesters.reduce(function(prevSemester, curSemester) {
 				// Find the last semester where we haven't reached the end
 				return (date < curSemester.end + Flex.softSemesterLimit) ? curSemester : prevSemester;
 			});
 		},
+
 		/**
 		 * @param {number} num - the currency amount, as a float
 		 * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
@@ -134,13 +137,16 @@ var vm = new Vue({
 		formatCurrency: function (num) {
 			return (typeof num === 'number') ? '$' + num.toFixed(2) : num;
 		},
+
 		/** temporary */
 		formatCurrencyOutput: function (num) {
-			return (typeof num === 'number') ? this.formatCurrency(num) : '&mdash;';
+			return '$' + ((typeof num === 'number') ? num.toFixed(2) : '\u2014');
 		},
+
 		formatDate: function (date) {
 			return dayjs(date).format('MMMM D, YYYY');
 		},
+
 		useDemo: function () {
 			this.startBalance = Flex.demoText[0][1];
 			this.remainingBalance = Flex.demoText[Flex.demoText.length - 1][1];
@@ -149,6 +155,8 @@ var vm = new Vue({
 	}
 });
 
+vm.remainingBalance = vm.startBalance;
+
 Flex.demoText = sampleData;
 
 // DEBUG
@@ -156,17 +164,6 @@ vm.now = Date.parse('2018-04-01');
 Flex.demoText = Flex.demoText.filter(function (entry) {
 	return entry[0] < vm.now;
 });
-
-/**
- * Function to add two numbers that avoids floating-point errors like .1 + .2 !== .3
- * @private
- * @param {number} x
- * @param {number} y
- * @returns {number} x + y, with two digits of precision
- */
-Flex.addCurrency = function (x, y) {
-	return Math.round((x + y) * 100) / 100;
-};
 
 
 /**
@@ -297,7 +294,7 @@ Flex.parseRawData = function (rawData) {
 					amountChange = -amountChange;
 				}
 
-				var firstAmount = flexData[0] ? Flex.addCurrency(flexData[0][1], -previousChange) : 0;
+				var firstAmount = flexData[0] ? vm.addCurrency(flexData[0][1], -previousChange) : 0;
 				previousChange = amountChange;
 
 				flexData.unshift([date, firstAmount]);
@@ -314,7 +311,7 @@ Flex.parseRawData = function (rawData) {
 		var adjustmentAmount = vm.startBalance - flexData[0][1];
 
 		flexData = flexData.map(function (original) {
-			original[1] = Flex.addCurrency(original[1], adjustmentAmount);
+			original[1] = vm.addCurrency(original[1], adjustmentAmount);
 			return original;
 		});
 	}
