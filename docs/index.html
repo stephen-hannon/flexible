@@ -46,19 +46,15 @@
 				<li>Making sure "ALL in the past 6 Months" is selected in the Month/Year dropdown, copy the entire table and paste it into the text box below.</li>
 			</ol>
 
-			<form id="raw-data-form" name="raw-data-form">
-				<div class="form-field">
-					<label for="start-balance">Select your starting Flex Point balance: {{ startBalance }}</label>
-					$<input type="number" id="start-balance" name="start-balance" v-model.lazy.number="startBalance" />
-				</div>
+			<div class="form-field">
+				<label for="start-balance">Enter your starting Flex Point balance: {{ startBalance }}</label>
+				$<input type="number" id="start-balance" name="start-balance" v-model.lazy.number="startBalance" />
+			</div>
 
-				<div class="form-field">
-					<label for="raw-data">Table data (Don't worry, everything stays in your browser.)</label>
-					<textarea id="raw-data" autocomplete="off" required cols="50" rows="2"></textarea>
-				</div>
-				
-				<button type="submit" id="submit">Submit</button>
-			</form>
+			<div class="form-field">
+				<label for="raw-data">Table data (Don't worry, everything stays in your browser.)</label>
+				<textarea id="raw-data" autocomplete="off" cols="50" rows="2" v-model.lazy="rawData"></textarea>
+			</div>
 
 			<footer role="contentinfo">
 				<p>
@@ -68,18 +64,18 @@
 				</p>
 				<p style="font-size: .8em;">This app is not affiliated with the University of Notre Dame or CBORD.</p>
 			</footer>
-		</section>
+ 		</section>
 
 		<section id="results">
-			<h2 id="results-header">Results (as of {{ formatDate(new Date()) }})</h2>
+			<h2 id="results-header">Results (as of {{ formatDate(Date.now()) }})</h2>
 
 			<div class="stats-container">
 				<div class="stats-box">
 					<h3>You've been spending</h3>
 					<ul class="stats-list">
-						<li><span class="stat">${{ spentBalance || '&mdash;' }}</span> in total</li>
-						<li><span class="stat" id="pastPerDay">$&mdash;</span> per day</li>
-						<li><span class="stat" id="pastPerWeek">$&mdash;</span> per week</li>
+						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.total) }}</span> in total</li>
+						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.perDay) }}</span> per day</li>
+						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.perWeek) }}</span> per week</li>
 					</ul>
 					<p>so far this semester</p>
 				</div>
@@ -87,9 +83,9 @@
 				<div class="stats-box">
 					<h3>You need to spend</h3>
 					<ul class="stats-list">
-						<li><span class="stat">${{ remainingBalance || '&mdash;' }}</span> in total</li>
-						<li><span class="stat" id="futurePerDay">$&mdash;</span> per day</li>
-						<li><span class="stat" id="futurePerWeek">$&mdash;</span> per week</li>
+						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.total) }}</span> in total</li>
+						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perDay) }}</span> per day</li>
+						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perWeek) }}</span> per week</li>
 					</ul>
 					<p>over the rest of the semester</p>
 				</div>
