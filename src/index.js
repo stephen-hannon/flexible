@@ -96,6 +96,9 @@ var vm = new Vue({
 				}
 			};
 		},
+		remainingBalanceIdeal: function () {
+			return this.getIdealBalanceAtDate(this.now);
+		},
 		semester: function () {
 			return this.findSemester(this.now);
 		},
@@ -114,7 +117,9 @@ var vm = new Vue({
 	},
 
 	mounted: function () {
-		this.remainingBalance = this.startBalance;
+		// this.now = new Date().setMonth(1); // DEBUG
+
+		this.remainingBalance = this.remainingBalanceIdeal;
 		this.makeChart();
 	},
 
@@ -155,21 +160,34 @@ var vm = new Vue({
 			return dayjs(date).format('MMMM D, YYYY');
 		},
 
+		getIdealBalanceAtDate: function (date) {
+			date = Math.max(this.semester.start, Math.min(date, this.semester.end));
+			var msOverall = this.semester.end - this.semester.start;
+			var msFuture = this.semester.end - date;
+
+			return (msFuture / msOverall) * this.startBalance;
+		},
+
 		/**
 		 * @param {[number, number][]} [data] - array of points of the format [timestamp, amount]
 		 * @returns {Highcharts.ChartObject}
 		 */
 		makeChart: function (data) {
+			var idealBalanceData = [
+				[this.semester.start, this.startBalance],
+				[this.semester.end, 0]
+			];
+			if (this.inSemester) {
+				idealBalanceData.splice(1, 0, [this.now, this.remainingBalanceIdeal]);
+			}
+
 			var series = [
 				{
-					name: 'Ideal usage',
+					name: 'Ideal balance',
 					color: 'red',
 					lineWidth: 1,
-					enableMouseTracking: false,
-					data: [
-						[this.semester.start, this.startBalance],
-						[this.semester.end, 0]
-					]
+					// enableMouseTracking: false,
+					data: idealBalanceData
 				}
 			];
 
