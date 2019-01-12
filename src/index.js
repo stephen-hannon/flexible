@@ -4,18 +4,140 @@
 
 var Flex = {};
 
+Flex.softSemesterLimit = 1000 * 60 * 60 * 24 * 7; // 1 week
+
+/* Array of semester data (starting with LATEST semester)
+ * Keys in object:
+ *   year: year plus 0.1 if spring, 0.2 if fall
+ *   name: human-readable name: [Spring|Fall] <year>
+ *   start: unix time of the start of the semester (when using new Date, subtract 1 from the month first)
+ *   end: unix time of the end of the semester (when using new Date, subtract 1 from the month first)
+ */
+Flex.semesters = [
+	{
+		year: 2019.1,
+		name: 'Spring 2019',
+		start: new Date(2019, 0, 13).getTime(),
+		end: new Date(2019, 4, 11).getTime()
+	},
+	{
+		year: 2018.2,
+		name: 'Fall 2018',
+		start: new Date(2018, 7, 17).getTime(),
+		end: new Date(2018, 11, 16).getTime()
+	},
+	{
+		year: 2018.1,
+		name: 'Spring 2018',
+		start: new Date(2018, 0, 14).getTime(),
+		end: new Date(2018, 4, 13).getTime()
+	}
+];
+
 var vm = new Vue({
 	el: '#flexible',
+
 	data: {
-		remainingBalance: 500,
+		now: Date.now(),
+		processedView: false, // if we're displaying a semester other than the current one
+		rawData: '',
+		remainingBalance: null,
+		// semester: null,
 		startBalance: 500
 	},
+
 	computed: {
+		currentSemester: function () {
+			return this.findSemester(Date.now());
+			// for (var i = 0; i < Flex.semesters.length; i++) {
+			// 	var semester = Flex.semesters[i];
+			// 	// If we're already past the start of the semester
+			// 	if (this.now > semester.start) {
+			// 		this.inSemester = (vm.now < semester.end);
+			// 		return semester;
+			// 	}
+			// }
+		},
+		inSemester: function () {
+			return (this.now > this.semester.start - Flex.softSemesterLimit);
+		},
+		rates: function () {
+			if (!this.semester) {
+				return {
+					past: null,
+					future: null,
+					overall: null
+				};
+			}
+
+			var MS_PER_DAY = 1000 * 60 * 60 * 24;
+			var DAYS_PER_WEEK = 7;
+
+			var msPast = this.now - this.semester.start;
+			var daysPast = msPast / MS_PER_DAY;
+			var weeksPast = daysPast / DAYS_PER_WEEK;
+
+			var msFuture = this.semester.end - this.now;
+			var daysFuture = msFuture / MS_PER_DAY;
+			var weeksFuture = daysFuture / DAYS_PER_WEEK;
+
+			var msOverall = this.semester.end - this.semester.start;
+			var daysOverall = msOverall / MS_PER_DAY;
+			var weeksOverall = daysOverall / DAYS_PER_WEEK;
+
+			return {
+				past: {
+					total: this.spentBalance,
+					perDay: this.spentBalance / daysPast,
+					perWeek: this.spentBalance / weeksPast
+				},
+				future: {
+					total: this.remainingBalance,
+					perDay: this.remainingBalance / daysFuture,
+					perWeek: this.remainingBalance / weeksFuture
+				},
+				overall: {
+					total: this.startBalance,
+					perDay: this.startBalance / daysOverall,
+					perWeek: this.startBalance / weeksOverall
+				}
+			};
+		},
+		semester: function () {
+			return this.findSemester(this.now);
+		},
 		spentBalance: function () {
 			return (this.startBalance * 100 - this.remainingBalance * 100) / 100;
 		}
 	},
+
+	watch: {
+		rawData: function (rawData) {
+			if (rawData) {
+				// TODO: do a basic validity check, and clear the input if it passes
+				Flex.parseRawData(rawData);
+			}
+		}
+	},
+
 	methods: {
+		findSemester: function (date) {
+			return Flex.semesters.reduce(function(prevSemester, curSemester) {
+				// Find the last semester where we haven't reached the end
+				return (date < curSemester.end + Flex.softSemesterLimit) ? curSemester : prevSemester;
+			});
+		},
+		/**
+		 * @param {number} num - the currency amount, as a float
+		 * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
+		 */
+		formatCurrency: function (num) {
+			return (typeof num === 'number') ? '$' + num.toFixed(2) : num;
+		},
+		/** temporary */
+		formatCurrencyOutput: function (num) {
+			return (typeof num === 'number') ? this.formatCurrency(num) : '&mdash;';
+		},
 		formatDate: function (date) {
 			return dayjs(date).format('MMMM D, YYYY');
 		},
@@ -29,59 +151,11 @@ var vm = new Vue({
 
 Flex.demoText = sampleData;
 
-/* Array of semester data (starting with LATEST semester)
- * Keys in object:
- *   year: year plus 0.1 if spring, 0.2 if fall
- *   name: human-readable name: [Spring|Fall] <year>
- *   start: unix time of the start of the semester
- *   end: unix time of the end of the semester
- */
-Flex.semesters = [
-	{
-		year: 2019.1,
-		name: 'Spring 2019',
-		start: 1547337600000, // Date.parse('2019-01-13')
-		end: 1557532800000 // Date.parse('2019-05-11')
-	},
-	{
-		year: 2018.2,
-		name: 'Fall 2018',
-		start: 1534482000000, // Date.parse('2018-8-17')
-		end: 1544918400000 // Date.parse('2018-12-16')
-	},
-	{
-		year: 2018.1,
-		name: 'Spring 2018',
-		start: 1515888000000, // Date.parse('2018-01-14')
-		end: 1526169600000 // Date.parse('2018-05-13')
-	}
-];
-Flex.now = Date.now();
-Flex.now = Date.parse('2018-04-01');
-
 // DEBUG
+vm.now = Date.parse('2018-04-01');
 Flex.demoText = Flex.demoText.filter(function (entry) {
-	return entry[0] < Flex.now;
+	return entry[0] < vm.now;
 });
-
-Flex.semesters.forEach(function (semester) {
-	// If we're already past the start of the semester
-	if (Flex.now > semester.start) {
-		Flex.semester = semester;
-		Flex.inSemester = (Flex.now < semester.end);
-	}
-});
-
-/**
- * @private
- * @param {number} amount - the currency amount, as a float
- * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
- */
-Flex.formatCurrency = function (amount) {
-	if (typeof amount !== 'number') return '';
-
-	return '$' + amount.toFixed(2);
-};
 
 /**
  * Function to add two numbers that avoids floating-point errors like .1 + .2 !== .3
@@ -106,8 +180,8 @@ Flex.makeChart = function (data) {
 			lineWidth: 1,
 			enableMouseTracking: false,
 			data: [
-				[Flex.semester.start, vm.startBalance],
-				[Flex.semester.end, 0]
+				[vm.semester.start, vm.startBalance],
+				[vm.semester.end, 0]
 			]
 		},
 		{
@@ -119,15 +193,15 @@ Flex.makeChart = function (data) {
 	];
 
 	// If we're in the middle of the semester, add a dashed line with projected usage
-	if (Flex.inSemester) {
+	if (vm.inSemester && vm.remainingBalance !== 0) {
 		series.push({
 			name: 'Projected balance',
 			color: 'steelblue',
 			dashStyle: 'shortdash',
 			enableMouseTracking: false,
 			data: [
-				[Flex.now, vm.remainingBalance],
-				[Flex.semester.end, 0]
+				[vm.now, vm.remainingBalance],
+				[vm.semester.end, 0]
 			]
 		});
 	}
@@ -137,7 +211,7 @@ Flex.makeChart = function (data) {
 			type: 'line'
 		},
 		title: {
-			text: Flex.semester.name + ' Flex Point Usage'
+			text: vm.semester.name + ' Flex Point Usage'
 		},
 		xAxis: {
 			crosshair: {
@@ -172,75 +246,11 @@ Flex.makeChart = function (data) {
 };
 
 /**
- * @param {object} obj - object containing the following floats:
- * pastPerDay, pastPerWeek, futurePerDay, futurePerWeek
- */
-Flex.addRates = function (obj) {
-	for (var id in obj) {
-		var $el = document.getElementById(id);
-		var amount = obj[id];
-
-		// sanity check: make sure element exists and amount is a number
-		if ($el && typeof amount === 'number') {
-			$el.textContent = Flex.formatCurrency(amount);
-		}
-	}
-};
-
-Flex.calculateRates = function () {
-	var MS_PER_DAY = 1000 * 60 * 60 * 24;
-	var DAYS_PER_WEEK = 7;
-	var returnObj = {};
-
-	if (Flex.inSemester) {
-		var msElapsed = Flex.now - Flex.semester.start;
-		var daysElapsed = msElapsed / MS_PER_DAY;
-		var weeksElapsed = daysElapsed / DAYS_PER_WEEK;
-
-		var msRemaining = Flex.semester.end - Flex.now;
-		var daysRemaining = msRemaining / MS_PER_DAY;
-		var weeksRemaining = daysRemaining / DAYS_PER_WEEK;
-
-		returnObj = {
-			pastPerDay: vm.remainingBalance / daysElapsed,
-			pastPerWeek: vm.remainingBalance / weeksElapsed,
-			pastTotal: vm.remainingBalance,
-			futurePerDay: vm.remainingBalance / daysRemaining,
-			futurePerWeek: vm.remainingBalance / weeksRemaining,
-			futureTotal: vm.remainingBalance
-		};
-	} else {
-		var msSemester = Flex.semester.end - Flex.semester.start;
-		var daysSemester = msSemester / MS_PER_DAY;
-		var weeksSemester = daysSemester / DAYS_PER_WEEK;
-
-		returnObj = {
-			pastPerDay: vm.startBalance / daysSemester,
-			pastPerWeek: vm.startBalance / weeksSemester,
-			pastTotal: vm.startBalance
-		};
-	}
-
-	return returnObj;
-};
-
-/**
  * @param {number[][]} dataArr
  */
 Flex.processData = function (dataArr) {
-	var latestDate = dataArr[dataArr.length - 1][0];
-
-	for(var i = 0; i < Flex.semesters.length; i++) {
-		var semester = Flex.semesters[i];
-		if (latestDate > semester.start) {
-			Flex.semester = semester;
-			Flex.inSemester = (vm.remainingBalance !== 0);
-			break;
-		}
-	}
-
-	var ratesObj = Flex.calculateRates();
-	Flex.addRates(ratesObj);
+	vm.processedView = true;
+	vm.now = dataArr[dataArr.length - 1][0];
 
 	Flex.makeChart(dataArr);
 };
@@ -252,7 +262,7 @@ Flex.processData = function (dataArr) {
 // If this is never reached (i.e., some data is missing), ask them for their current balance and attempt to
 // display the data that way.
 Flex.parseRawData = function (rawData) {
-	Flex.now = Date.now(); // in case the page has been loaded for a long time
+	vm.now = Date.now(); // in case the page has been loaded for a long time
 
 	var data = rawData.split('\n').map(function (row) {
 		return row.split('\t');
@@ -267,6 +277,7 @@ Flex.parseRawData = function (rawData) {
 		var row = data[i];
 
 		if (row.length >= 4 && row[0] === 'Flex Points') {
+			// TODO: use a library to parse the date dependably
 			var dateString = row[1]
 				.replace(/\s/g, ' ')
 				.replace(/\B[AP]M/, ' $&'); // Add space before AM or PM so Date.parse understands it.
@@ -279,7 +290,7 @@ Flex.parseRawData = function (rawData) {
 			if (
 				!isNaN(date) &&
 				amountChange !== null
-				// && date < Flex.now // debug
+				// && date < vm.now // debug
 			) {
 				// account for positive/negative changes
 				if (minusMatch && minusMatch.index < spentMatch.index) {
@@ -311,7 +322,7 @@ Flex.parseRawData = function (rawData) {
 	vm.remainingBalance = flexData[flexData.length - 1][1];
 
 	if (vm.remainingBalance !== 0) {
-		flexData.push([Flex.now, vm.remainingBalance]);
+		flexData.push([vm.now, vm.remainingBalance]);
 	}
 
 	Flex.processData(flexData);
@@ -320,15 +331,3 @@ Flex.parseRawData = function (rawData) {
 //// Event Listeners ////
 
 document.addEventListener('DOMContentLoaded', vm.useDemo);
-
-document.forms['raw-data-form'].addEventListener('submit', function (event) {
-	event.preventDefault();
-
-	Flex.formData = {};
-
-	for(var field of document.forms['raw-data-form'].elements) {
-		Flex.formData[field.id] = field.value;
-	}
-
-	Flex.parseRawData(Flex.formData['raw-data']);
-});
