@@ -113,6 +113,15 @@ var vm = new Vue({
 				// TODO: do a basic validity check, and clear the input if it passes
 				Flex.parseRawData(rawData);
 			}
+		},
+
+		startBalance: function (startBalance, oldStartBalance) {
+			if (startBalance !== oldStartBalance) {
+				if (!this.processedView) {
+					this.remainingBalance = this.remainingBalanceIdeal;
+				}
+				this.makeChart();
+			}
 		}
 	},
 
@@ -168,6 +177,24 @@ var vm = new Vue({
 			return (msFuture / msOverall) * this.startBalance;
 		},
 
+		getIdealBalanceData: function () {
+			var msPerDay = 1000 * 60 * 60 * 24;
+			// var msOverall = this.semester.end - this.semester.start;
+			var idealBalanceData = [];
+
+			for (var date = this.semester.start; date <= this.semester.end; date += msPerDay) {
+				// var msFuture = this.semester.end - date;
+				// idealBalanceData.push([date, (msFuture / msOverall) * this.startBalance]);
+				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
+
+				if (this.now >= date && this.now < date + msPerDay) {
+					idealBalanceData.push([this.now, this.remainingBalanceIdeal]);
+				}
+			}
+
+			return idealBalanceData;
+		},
+
 		/**
 		 * @param {[number, number][]} [data] - array of points of the format [timestamp, amount]
 		 * @returns {Highcharts.ChartObject}
@@ -186,8 +213,8 @@ var vm = new Vue({
 					name: 'Ideal balance',
 					color: 'red',
 					lineWidth: 1,
-					// enableMouseTracking: false,
-					data: idealBalanceData
+					enableMouseTracking: !data,
+					data: this.getIdealBalanceData()
 				}
 			];
 
@@ -196,7 +223,14 @@ var vm = new Vue({
 					name: 'Actual balance',
 					color: 'steelblue',
 					step: 'left',
-					data: data
+					data: data,
+					tooltip: {
+						pointFormatter: function () {
+							// console.log(this.series.chart);
+							return '<span style="color:' + this.color + '">\u25CF</span> ' + this.series.name + ': <b>$' + this.y.toFixed(2) + '</b><br/>' +
+								'<span style="color:red">\u25CF</span> Ideal balance: <b>$' + vm.getIdealBalanceAtDate(this.x).toFixed(2) + '</b><br/>';
+						}
+					}
 				});
 
 				// If we're in the middle of the semester, add a dashed line with projected usage
@@ -225,6 +259,9 @@ var vm = new Vue({
 					crosshair: {
 						snap: false
 					},
+					labels: {
+						format: '{value:%b %e}'
+					},
 					type: 'datetime'
 				},
 				yAxis: {
@@ -247,8 +284,16 @@ var vm = new Vue({
 				},
 				series: series,
 				tooltip: {
+					// split: true,
+					dateTimeLabelFormats: {
+						day: '%a, %B %e',
+						minute: '%a, %B %e, %l:%M %p'
+					},
 					valueDecimals: 2,
 					valuePrefix: '$'
+				},
+				time: {
+					useUTC: false
 				}
 			});
 		},
