@@ -130,8 +130,8 @@ button {
 }
 
 footer {
-	background-color: #4C6E8D;
-	color: white;
+	/* background-color: #4C6E8D;
+	color: white; */
 	padding: .8rem 1rem;
 }
 footer p {
