@@ -40,6 +40,7 @@ var vm = new Vue({
 	el: '#flexible',
 
 	data: {
+		currentIdealBalanceIndex: null,
 		now: Date.now(),
 		processedView: false, // if we're displaying a semester other than the current one
 		rawData: '',
@@ -188,7 +189,16 @@ var vm = new Vue({
 				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
 
 				if (this.now >= date && this.now < date + msPerDay) {
-					idealBalanceData.push([this.now, this.remainingBalanceIdeal]);
+					var MS_PER_MINUTE = 1000 * 60;
+					var nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
+					idealBalanceData.push({
+						x: nowNearestMinute,
+						y: this.remainingBalanceIdeal,
+						marker: {
+							enabled: true
+						}
+					});
+					this.currentIdealBalanceIndex = idealBalanceData.length - 1;
 				}
 			}
 
@@ -226,7 +236,6 @@ var vm = new Vue({
 					data: data,
 					tooltip: {
 						pointFormatter: function () {
-							// console.log(this.series.chart);
 							return '<span style="color:' + this.color + '">\u25CF</span> ' + this.series.name + ': <b>$' + this.y.toFixed(2) + '</b><br/>' +
 								'<span style="color:red">\u25CF</span> Ideal balance: <b>$' + vm.getIdealBalanceAtDate(this.x).toFixed(2) + '</b><br/>';
 						}
@@ -248,9 +257,17 @@ var vm = new Vue({
 				}
 			}
 
+			var _this = this;
+
 			return Highcharts.chart('chart', {
 				chart: {
-					type: 'line'
+					type: 'line',
+					events: {
+						load: function () {
+							var point = this.series[0].data[_this.currentIdealBalanceIndex];
+							this.tooltip.refresh(point);
+						}
+					}
 				},
 				title: {
 					text: this.semester.name + ' Flex Point Usage'
