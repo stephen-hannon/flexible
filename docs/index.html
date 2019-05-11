@@ -79,7 +79,11 @@
 		</section>
 
 		<section id="results">
-			<h2 id="results-header">Results (as of {{ formatDate(now) }})</h2>
+			<h2 id="results-header">
+				<template v-if="processedView">Balance: {{ formatCurrency(remainingBalance) }} on {{ formatDate(now) }}
+					({{ formatCurrency(Math.abs(remainingBalanceRelative)) }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
+				<template v-else>Ideal balance: {{ formatCurrency(remainingBalanceIdeal) }}</template>
+			</h2>
 
 			<div class="stats-container">
 				<div class="stats-box">
