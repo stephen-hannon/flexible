@@ -181,12 +181,9 @@ var vm = new Vue({
 
 		getIdealBalanceData: function () {
 			var msPerDay = 1000 * 60 * 60 * 24;
-			// var msOverall = this.semester.end - this.semester.start;
 			var idealBalanceData = [];
 
-			for (var date = this.semester.start; date <= this.semester.end; date += msPerDay) {
-				// var msFuture = this.semester.end - date;
-				// idealBalanceData.push([date, (msFuture / msOverall) * this.startBalance]);
+			for (var date = this.semester.start; date < this.semester.end; date += msPerDay) {
 				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
 
 				if (this.now >= date && this.now < date + msPerDay) {
@@ -201,6 +198,19 @@ var vm = new Vue({
 					});
 					this.currentIdealBalanceIndex = idealBalanceData.length - 1;
 				}
+			}
+
+			// always include the last data point ($0)
+			idealBalanceData.push({
+				x: this.semester.end,
+				y: 0,
+				marker: {
+					enabled: (this.currentIdealBalanceIndex === null)
+				}
+			});
+
+			if (this.currentIdealBalanceIndex === null) {
+				this.currentIdealBalanceIndex = idealBalanceData.length - 1;
 			}
 
 			return idealBalanceData;
