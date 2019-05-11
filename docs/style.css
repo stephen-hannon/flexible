@@ -139,3 +139,11 @@ footer p {
 footer a {
 	color: inherit;
 }
+
+.hide-steppers::-webkit-inner-spin-button,
+.hide-steppers::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
