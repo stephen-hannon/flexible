@@ -101,6 +101,9 @@ var vm = new Vue({
 		remainingBalanceIdeal: function () {
 			return this.getIdealBalanceAtDate(this.now);
 		},
+		remainingBalanceRelative: function () {
+			return this.remainingBalance - this.remainingBalanceIdeal;
+		},
 		semester: function () {
 			return this.findSemester(this.now);
 		},
