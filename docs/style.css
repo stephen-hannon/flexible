@@ -66,13 +66,13 @@ h2 {
 #raw-data {
 	width: 100%;
 	background-color: transparent;
-	border: 1px solid #014610;
+	border: 1px solid #4C6E8D;
 	resize: none;
 }
 
 #submit {
-	background-color: #136726;
-	border-color: #136726;
+	background-color: #4C6E8D;
+	border: none;
 	color: white;
 }
 button {
