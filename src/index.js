@@ -41,6 +41,7 @@ var vm = new Vue({
 
 	data: {
 		currentIdealBalanceIndex: null,
+		quickBalance: null,
 		now: Date.now(),
 		processedView: false, // if we're displaying a semester other than the current one
 		rawData: '',
@@ -232,7 +233,7 @@ var vm = new Vue({
 				series.push({
 					name: 'Actual balance',
 					color: 'steelblue',
-					step: 'left',
+					step: (this.quickBalance == null) ? 'left' : null,
 					data: data,
 					tooltip: {
 						pointFormatter: function () {
@@ -317,28 +318,35 @@ var vm = new Vue({
 
 		useDemo: function () {
 			// DEBUG
-			this.now = Date.parse('2018-04-01');
+			var now = Date.parse('2018-04-01');
 			Flex.demoText = Flex.demoText.filter(function (entry) {
-				return entry[0] < this.now;
+				return entry[0] < now;
 			}, this);
 
 			this.startBalance = Flex.demoText[0][1];
 			this.remainingBalance = Flex.demoText[Flex.demoText.length - 1][1];
-			Flex.processData(Flex.demoText);
+			this.now = Flex.demoText[Flex.demoText.length - 1][0];
+
+			this.processedView = true;
+			this.makeChart(Flex.demoText);
+		},
+
+		useQuickBalance: function () {
+			this.now = Date.now();
+
+			this.remainingBalance = this.quickBalance;
+			var balanceData = [
+				[this.semester.start, this.startBalance],
+				[this.now, this.remainingBalance]
+			];
+
+			this.processedView = true;
+			this.makeChart(balanceData);
+			this.quickBalance = null;
 		}
 	}
 });
 
-
-/**
- * @param {number[][]} dataArr
- */
-Flex.processData = function (dataArr) {
-	vm.processedView = true;
-	vm.now = dataArr[dataArr.length - 1][0];
-
-	vm.makeChart(dataArr);
-};
 
 // How we parse:
 // Iterate through the table data (which is in reverse chronological order)
@@ -410,5 +418,6 @@ Flex.parseRawData = function (rawData) {
 		flexData.push([vm.now, vm.remainingBalance]);
 	}
 
-	Flex.processData(flexData);
+	vm.processedView = true;
+	vm.makeChart(flexData);
 };
