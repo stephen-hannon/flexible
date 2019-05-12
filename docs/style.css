@@ -63,6 +63,17 @@ h2 {
 .form-field {
 	margin: .8rem 0;
 }
+.form-error {
+	padding: 0.2rem 2rem;
+	margin-bottom: 1rem;
+	border-top: 2px solid #FF0000;
+	background-color: #FCC;
+}
+.form-error p,
+.form-error pre {
+	margin: 0.5rem 0;
+}
+
 #raw-data {
 	width: 100%;
 	background-color: transparent;
@@ -70,15 +81,14 @@ h2 {
 	resize: none;
 }
 
-#submit {
+button {
+	padding: .8rem 1.6rem;
 	background-color: #4C6E8D;
 	border: none;
 	color: white;
-}
-button {
-	padding: .8rem 1.6rem;
 	font-size: 1.8rem;
 	font-family: inherit;
+	cursor: pointer;
 }
 
 .stats-container {
