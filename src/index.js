@@ -20,7 +20,7 @@ Flex.semesters = [
 		year: 2019.1,
 		name: 'Spring 2019',
 		start: new Date(2019, 0, 13).getTime(),
-		end: new Date(2019, 4, 11).getTime()
+		end: new Date(2019, 4, 18).getTime()
 	},
 	{
 		year: 2018.2,
@@ -38,6 +38,7 @@ Flex.semesters = [
 
 var vm = new Vue({
 	el: '#flexible',
+	dayjs: dayjs,
 
 	data: {
 		currentIdealBalanceIndex: null,
@@ -45,6 +46,7 @@ var vm = new Vue({
 		now: Date.now(),
 		processedView: false, // if we're displaying a semester other than the current one
 		rawData: '',
+		rawDataError: false,
 		remainingBalance: null,
 		startBalance: 500
 	},
@@ -132,6 +134,7 @@ var vm = new Vue({
 
 	mounted: function () {
 		// this.now = new Date().setMonth(1); // DEBUG
+		console.log('Mounted');
 
 		this.remainingBalance = this.remainingBalanceIdeal;
 		this.makeChart();
@@ -374,7 +377,6 @@ Flex.parseRawData = function (rawData) {
 		return row.split('\t');
 	});
 
-	vm.remainingBalance = vm.startBalance;
 	var flexData = [];
 	var previousChange = 0;
 	var reachedBeginning = false;
@@ -415,6 +417,14 @@ Flex.parseRawData = function (rawData) {
 			}
 		}
 	}
+
+	// Check for bad data supplied
+	if (flexData.length === 0) {
+		vm.rawDataError = true;
+		return;
+	}
+
+	vm.rawDataError = false;
 
 	if (reachedBeginning && flexData[0][1] !== vm.startBalance) {
 		var adjustmentAmount = vm.startBalance - flexData[0][1];

@@ -55,6 +55,10 @@
 				<div class="col">
 					<label for="raw-data">Paste your table data</label>
 					<textarea id="raw-data" autocomplete="off" cols="50" rows="2" v-model.lazy="rawData"></textarea>
+					<div class="form-error" v-if="rawDataError">
+						<p>Error parsing data. Make sure there are lines of the form:</p>
+						<pre>Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
+					</div>
 				</div>
 
 				<div class="col">
