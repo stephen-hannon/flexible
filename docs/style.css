@@ -157,3 +157,7 @@ footer a {
     appearance: none;
     margin: 0;
 }
+
+[v-cloak] {
+	display: none;
+}

@@ -55,10 +55,13 @@
 				<div class="col">
 					<label for="raw-data">Paste your table data</label>
 					<textarea id="raw-data" autocomplete="off" cols="50" rows="2" v-model.lazy="rawData"></textarea>
-					<div class="form-error" v-if="rawDataError">
+					<div class="form-error" v-if="rawDataError" v-cloak>
 						<p>Error parsing data. Make sure there are lines of the form:</p>
 						<pre>Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
 					</div>
+					<!-- <div class="form-message" v-if="rawDataBalanceNeeded" v-cloak>
+						<p>That data doesn't go back to the beginning of the semester.</p>
+					</div> -->
 				</div>
 
 				<div class="col">
@@ -78,7 +81,7 @@
 					See the code on <a href="https://github.com/stephen-hannon/flexible" target="_blank">GitHub</a>.
 					Have a bug report, suggestion, or comment? <a href="https://goo.gl/forms/Sw20wbBGAIeyeTt02" target="_blank">Leave feedback.</a>
 				</p>
-				<p style="font-size: .8em;">This app is not affiliated with the University of Notre Dame or CBORD.</p>
+				<p style="font-size: 0.8em;">This app is not affiliated with the University of Notre Dame or CBORD.</p>
 			</footer>
 		</section>
 

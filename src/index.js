@@ -44,6 +44,7 @@ var vm = new Vue({
 		currentIdealBalanceIndex: null,
 		quickBalance: null,
 		now: Date.now(),
+		parsedRawData: null,
 		processedView: false, // if we're displaying a semester other than the current one
 		rawData: '',
 		rawDataError: false,
@@ -134,7 +135,6 @@ var vm = new Vue({
 
 	mounted: function () {
 		// this.now = new Date().setMonth(1); // DEBUG
-		console.log('Mounted');
 
 		this.remainingBalance = this.remainingBalanceIdeal;
 		this.makeChart();
@@ -377,11 +377,11 @@ Flex.parseRawData = function (rawData) {
 		return row.split('\t');
 	});
 
-	var flexData = [];
+	vm.parsedRawData = [];
 	var previousChange = 0;
 	var reachedBeginning = false;
 
-	for(var i = 0; i < data.length; i++) {
+	for(var i = 0; i < data.length && !reachedBeginning; i++) {
 		var row = data[i];
 
 		if (row.length >= 4 && row[0] === 'Flex Points') {
@@ -405,42 +405,41 @@ Flex.parseRawData = function (rawData) {
 					amountChange = -amountChange;
 				}
 
-				var firstAmount = flexData[0] ? vm.addCurrency(flexData[0][1], -previousChange) : 0;
+				var firstAmount = vm.parsedRawData[0] ? vm.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
 				previousChange = amountChange;
 
-				flexData.unshift([date, firstAmount]);
+				vm.parsedRawData.unshift([date, firstAmount]);
 
 				if (amountChange === vm.startBalance) {
 					reachedBeginning = true;
-					break;
 				}
 			}
 		}
 	}
 
-	// Check for bad data supplied
-	if (flexData.length === 0) {
+	// Check for invalid data supplied
+	if (vm.parsedRawData.length === 0) {
 		vm.rawDataError = true;
 		return;
 	}
 
 	vm.rawDataError = false;
 
-	if (reachedBeginning && flexData[0][1] !== vm.startBalance) {
-		var adjustmentAmount = vm.startBalance - flexData[0][1];
+	if (reachedBeginning && vm.parsedRawData[0][1] !== vm.startBalance) {
+		var adjustmentAmount = vm.startBalance - vm.parsedRawData[0][1];
 
-		flexData = flexData.map(function (original) {
+		vm.parsedRawData = vm.parsedRawData.map(function (original) {
 			original[1] = vm.addCurrency(original[1], adjustmentAmount);
 			return original;
 		});
 	}
 
-	vm.remainingBalance = flexData[flexData.length - 1][1];
+	vm.remainingBalance = vm.parsedRawData[vm.parsedRawData.length - 1][1];
 
 	if (vm.remainingBalance !== 0) {
-		flexData.push([vm.now, vm.remainingBalance]);
+		vm.parsedRawData.push([vm.now, vm.remainingBalance]);
 	}
 
 	vm.processedView = true;
-	vm.makeChart(flexData);
+	vm.makeChart(vm.parsedRawData);
 };
