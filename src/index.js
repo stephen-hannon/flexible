@@ -140,8 +140,6 @@ var vm = new Vue({
 	},
 
 	mounted: function () {
-		// this.now = new Date().setMonth(1); // DEBUG
-
 		this.remainingBalance = this.remainingBalanceIdeal;
 		this.makeChart();
 	},
@@ -194,6 +192,8 @@ var vm = new Vue({
 		getIdealBalanceData: function () {
 			var msPerDay = 1000 * 60 * 60 * 24;
 			var idealBalanceData = [];
+
+			this.currentIdealBalanceIndex = null;
 
 			for (var date = this.semester.start; date < this.semester.end; date += msPerDay) {
 				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
@@ -441,6 +441,7 @@ Flex.parseRawData = function (rawData) {
 	}
 
 	vm.remainingBalance = vm.parsedRawData[vm.parsedRawData.length - 1][1];
+	vm.now = vm.parsedRawData[vm.parsedRawData.length - 1][0];
 
 	if (vm.remainingBalance !== 0) {
 		vm.parsedRawData.push([vm.now, vm.remainingBalance]);
