@@ -34,7 +34,8 @@
 
 	<div id="flexible" class="content-container">
 		<section id="instructions">
-			<h2>Analyze your Flex Point usage &amp; start spending smarter.</h2>
+			<h2>Instructions</h2>
+			<h3>Analyze your Flex Point usage &amp; start spending smarter.</h3>
 			<p>This is a tool to help  you keep track of how quickly you're spending your Flex Points. Follow these quick instructions to see your own personalized results.</p>
 			<ol>
 				<li>Click the link to log in to <a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)">Irish1Card&nbsp;GET</a> with your Notre Dame credentials.</li>
@@ -44,30 +45,39 @@
 
 			<div class="form-field">
 				<label for="start-balance">Enter your starting Flex Point balance:</label>
-				$<input type="number" id="start-balance" name="start-balance" v-model.lazy.number="startBalance" />
+				$<input type="number" class="appearance-textfield" id="start-balance" v-model.lazy.number="startBalance" />
 			</div>
 
-			<div class="row">
-				<div class="col">
-					<label for="raw-data">Paste your table data</label>
-					<textarea id="raw-data" autocomplete="off" cols="50" rows="2" v-model.lazy="rawData"></textarea>
-					<div class="form-error" v-if="rawDataError" v-cloak>
-						<p>Error parsing data. Make sure there are lines of the form:</p>
-						<pre>Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
+			<div class="rowbox-container">
+				<div class="rowbox-box">
+					<h4>Quick</h4>
+					<div class="rowbox-content">
+						<p>Enter current balance &amp; press Enter</p>
+						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
+							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" @change="useQuickBalance" />
 					</div>
-					<!-- <div class="form-message" v-if="rawDataBalanceNeeded" v-cloak>
-						<p>That data doesn't go back to the beginning of the semester.</p>
-					</div> -->
 				</div>
 
-				<div class="col">
-					<label for="quick-balance">Enter your current balance</label>
-					$<input type="number" class="hide-steppers" id="quick-balance" min="0" :max="startBalance" step="0.01" :placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" @change="useQuickBalance" />
+				<div class="rowbox-box">
+					<h4>In-depth</h4>
+					<div class="rowbox-content">
+						<p>Paste usage data (see above)</p>
+						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model.lazy="rawData"></textarea>
+						<div class="form-error" v-if="rawDataError" v-cloak>
+							<p>Error parsing data. Make sure there are lines of the form:</p>
+							<pre>Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
+						</div>
+						<!-- <div class="form-message" v-if="rawDataBalanceNeeded" v-cloak>
+							<p>That data doesn't go back to the beginning of the semester.</p>
+						</div> -->
+					</div>
 				</div>
 
-				<div class="col">
-					<p>Just looking?</p>
-					<button @click="useDemo">View demo</button>
+				<div class="rowbox-box">
+					<h4>Just looking</h4>
+					<div class="rowbox-content">
+						<button class="full-width" @click="useDemo">View demo</button>
+					</div>
 				</div>
 			</div>
 
@@ -82,15 +92,16 @@
 		</section>
 
 		<section id="results">
-			<h2 id="results-header">
+			<h2>Results</h2>
+			<h3 id="results-header">
 				<template v-if="processedView">Balance: {{ formatCurrency(remainingBalance) }} on {{ formatDate(now) }}
 					({{ formatCurrency(Math.abs(remainingBalanceRelative)) }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
 				<template v-else>Ideal balance: {{ formatCurrency(remainingBalanceIdeal) }}</template>
-			</h2>
+			</h3>
 
-			<div class="stats-container">
-				<div class="stats-box">
-					<h3>Before now</h3>
+			<div class="rowbox-container" v-cloak>
+				<div class="rowbox-box rowbox-wide">
+					<h4>Before now</h4>
 					<ul class="stats-list">
 						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.total) }}</span> in total</li>
 						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.perDay) }}</span> per day</li>
@@ -98,9 +109,9 @@
 					</ul>
 				</div>
 
-				<div class="stats-box">
-					<h3>After now</h3>
-					<ul class="stats-list">
+				<div class="rowbox-box rowbox-wide">
+					<h4>After now</h4>
+					<ul class="stats-list stats-list-dashed">
 						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.total) }}</span> in total</li>
 						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perDay) }}</span> per day</li>
 						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perWeek) }}</span> per week</li>
