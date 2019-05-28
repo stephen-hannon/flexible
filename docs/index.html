@@ -62,7 +62,7 @@
 					<h4>In-depth</h4>
 					<div class="rowbox-content">
 						<p>Paste usage data (see above)</p>
-						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model.lazy="rawData"></textarea>
+						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData"></textarea>
 						<div class="form-error" v-if="rawDataError" v-cloak>
 							<p>Error parsing data. Make sure there are lines of the form:</p>
 							<pre>Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
