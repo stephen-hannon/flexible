@@ -15,7 +15,8 @@
 <body>
 	<header role="banner">
 		<h1>
-			<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.86 17.12" height="32">
+			<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.86 17.12" height="32" role="img" aria-labelledby="logo-title">
+				<title id="logo-title">Flexible</title>
 				<polygon fill="#fff" points="13 10.85 12 10.85 12 7.85 10 7.85 10 6.85 7 6.85 7 4.85 3 4.85 3 3.85 0 3.85 0 2.85 4 2.85 4 3.85 8 3.85 8 5.85 11 5.85 11 6.85 13 6.85 13 10.85"/>
 				<g fill="#fff">
 					<polygon points="4.5 2.35 4.5 3.35 8.5 3.35 8.5 3.85 13 3.85 13 0.85 0 0.85 0 2.35 4.5 2.35"/>
@@ -63,13 +64,16 @@
 					<div class="rowbox-content">
 						<p>Paste usage data (see above)</p>
 						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData"></textarea>
-						<div class="form-error" v-if="rawDataError" v-cloak>
-							<p>Error parsing data. Make sure there are lines of the form:</p>
-							<pre>Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
+						<div class="errors">
+							<div class="form-error" v-if="rawDataError" v-cloak>
+								<button class="icon-button" title="Close message" @click="rawDataError = false">&times;</button>
+								<p>Error parsing data. Make sure there are lines of the form:</p>
+								<pre class="pre-wrap">Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
+							</div>
+							<!-- <div class="form-message" v-if="rawDataBalanceNeeded" v-cloak>
+								<p>That data doesn't go back to the beginning of the semester.</p>
+							</div> -->
 						</div>
-						<!-- <div class="form-message" v-if="rawDataBalanceNeeded" v-cloak>
-							<p>That data doesn't go back to the beginning of the semester.</p>
-						</div> -->
 					</div>
 				</div>
 
