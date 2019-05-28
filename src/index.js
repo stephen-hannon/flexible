@@ -118,8 +118,14 @@ var vm = new Vue({
 	watch: {
 		rawData: function (rawData) {
 			if (rawData) {
-				// TODO: do a basic validity check, and clear the input if it passes
-				Flex.parseRawData(rawData);
+				// sanity check
+				if (rawData.indexOf('\nFlex Points') === -1) {
+					this.rawDataError = true;
+				} else {
+					Flex.parseRawData(rawData);
+				}
+
+				this.rawData = null;
 			}
 		},
 
