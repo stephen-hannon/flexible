@@ -118,14 +118,30 @@ var vm = new Vue({
 	watch: {
 		rawData: function (rawData) {
 			if (rawData) {
-				// sanity check
-				if (rawData.indexOf('\nFlex Points') === -1) {
+				// quick sanity check
+				if (rawData.indexOf('Flex Points') === -1) {
 					this.rawDataError = true;
 				} else {
 					Flex.parseRawData(rawData);
 				}
 
 				this.rawData = null;
+			}
+		},
+
+		quickBalance: function () {
+			if (this.quickBalance !== null) {
+				this.now = Date.now();
+
+				this.remainingBalance = this.quickBalance;
+				var balanceData = [
+					[this.semester.start, this.startBalance],
+					[this.now, this.remainingBalance]
+				];
+
+				this.processedView = true;
+				this.makeChart(balanceData);
+				this.quickBalance = null;
 			}
 		},
 
@@ -168,13 +184,15 @@ var vm = new Vue({
 		 * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
 		 */
 		formatCurrency: function (num) {
-			// TODO: handle negatives
-			return (typeof num === 'number') ? '$' + num.toFixed(2) : num;
+			if (typeof num !== 'number')
+				return num;
+
+			return (num < 0 ? '\u2212' : '') + '$' + Math.abs(num).toFixed(2);
 		},
 
 		/** temporary */
 		formatCurrencyOutput: function (num) {
-			return '$' + ((typeof num === 'number') ? num.toFixed(2) : '\u2014');
+			return (typeof num === 'number') ? this.formatCurrency(num) : '$\u2014';
 		},
 
 		formatDate: function (date) {
@@ -255,7 +273,7 @@ var vm = new Vue({
 				series.push({
 					name: 'Actual balance',
 					color: 'steelblue',
-					step: (this.quickBalance == null) ? 'left' : null,
+					step: (this.quickBalance === null) ? 'left' : null,
 					data: data,
 					tooltip: {
 						pointFormatter: function () {
@@ -351,20 +369,6 @@ var vm = new Vue({
 
 			this.processedView = true;
 			this.makeChart(Flex.demoText);
-		},
-
-		useQuickBalance: function () {
-			this.now = Date.now();
-
-			this.remainingBalance = this.quickBalance;
-			var balanceData = [
-				[this.semester.start, this.startBalance],
-				[this.now, this.remainingBalance]
-			];
-
-			this.processedView = true;
-			this.makeChart(balanceData);
-			this.quickBalance = null;
 		}
 	}
 });
