@@ -311,7 +311,7 @@ var vm = new Vue({
 					}
 				},
 				title: {
-					text: this.semester.name + ' Flex Point Usage'
+					text: undefined
 				},
 				xAxis: {
 					crosshair: {
@@ -326,6 +326,7 @@ var vm = new Vue({
 					crosshair: {
 						snap: false
 					},
+					max: this.startBalance,
 					title: {
 						text: 'Flex Points'
 					},

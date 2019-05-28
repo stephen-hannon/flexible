@@ -44,16 +44,12 @@
 				<li>Making sure "ALL in the past 6 Months" is selected in the Month/Year dropdown, copy the entire table and paste it into the text box below. (Don't worry, everything stays in your browser.)</li>
 			</ol>
 
-			<div class="form-field">
-				<label for="start-balance">Enter your starting Flex Point balance:</label>
-				$<input type="number" class="appearance-textfield" id="start-balance" v-model.lazy.number="startBalance" />
-			</div>
-
 			<div class="rowbox-container">
 				<div class="rowbox-box">
 					<h4>Quick</h4>
 					<div class="rowbox-content">
 						<p>Enter current balance &amp; press Enter</p>
+						<!-- TODO: placeholder should always be ideal balance for current semester -->
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" />
 					</div>
@@ -97,11 +93,36 @@
 
 		<section id="results">
 			<h2>Results</h2>
-			<h3 id="results-header">
-				<template v-if="processedView">Balance: {{ formatCurrency(remainingBalance) }} on {{ formatDate(now) }}
+			<h3 id="results-header" v-cloak>
+				{{ semester.name }}
+				<template v-if="processedView">balance: {{ formatCurrency(remainingBalance) }}
 					({{ formatCurrency(Math.abs(remainingBalanceRelative)) }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
-				<template v-else>Ideal balance: {{ formatCurrency(remainingBalanceIdeal) }}</template>
+				<template v-else>ideal balance: {{ formatCurrency(remainingBalanceIdeal) }}</template>
 			</h3>
+
+			<div class="rowbox-container" v-cloak>
+				<div class="rowbox-box">
+					<h4>Start: {{ formatDate(semester.start) }}</h4>
+					<div class="rowbox-content">
+						$<input type="number" class="appearance-textfield hide-steppers" min="0" v-model.lazy.number="startBalance" />
+					</div>
+				</div>
+
+				<div class="rowbox-box">
+					<h4>Now: {{ formatDate(now) }}</h4>
+					<div class="rowbox-content">
+						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
+							v-model.lazy.number="remainingBalance" disabled />
+					</div>
+				</div>
+
+				<div class="rowbox-box">
+					<h4>End: {{ formatDate(semester.end) }}</h4>
+					<div class="rowbox-content">
+						$<input type="number" class="appearance-textfield hide-steppers" value="0" disabled />
+					</div>
+				</div>
+			</div>
 
 			<div class="rowbox-container" v-cloak>
 				<div class="rowbox-box rowbox-wide">
