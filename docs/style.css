@@ -71,9 +71,6 @@ h4 {
 	margin: 0.8rem 0;
 }
 
-.form-field {
-	margin: .8rem 0;
-}
 .errors {
 	position: absolute;
 }
@@ -95,9 +92,13 @@ h4 {
 
 .appearance-textfield {
 	background-color: #FFF;
+	width: 8rem;
 	border: 1px solid #4C6E8D;
 	font: inherit;
 	resize: none;
+}
+.appearance-textfield:disabled {
+	background-color: #EEE;
 }
 
 button {
@@ -110,6 +111,7 @@ button {
 	cursor: pointer;
 }
 .full-width {
+	box-sizing: border-box;
 	display: block;
 	width: 100%;
 }
@@ -159,7 +161,7 @@ button {
 	border-bottom-style: dashed;
 }
 .stat {
-	font-size: 2.4rem;
+	font-size: 2rem;
 }
 
 #results {
@@ -168,7 +170,7 @@ button {
 }
 #chart {
 	width: 100%;
-	min-height: 350px;
+	min-height: 330px;
 	background-color: #FFFFFF;
 	flex: 1;
 }
