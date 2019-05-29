@@ -112,7 +112,7 @@
 					<h4>Now: {{ formatDate(now) }}</h4>
 					<div class="rowbox-content">
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							v-model.lazy.number="remainingBalance" :disabled="rawDataComplete" />
+							:value="(remainingBalance || 0).toFixed(2)" :disabled="rawDataComplete" @change="adjustIncompleteData($event.target.value)" />
 					</div>
 				</div>
 
