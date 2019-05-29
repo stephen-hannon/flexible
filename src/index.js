@@ -47,6 +47,7 @@ var vm = new Vue({
 		parsedRawData: null,
 		processedView: false, // if we're displaying a semester other than the current one
 		rawData: '',
+		rawDataComplete: true,
 		rawDataError: false,
 		remainingBalance: null,
 		startBalance: 500
@@ -131,6 +132,7 @@ var vm = new Vue({
 
 		quickBalance: function () {
 			if (this.quickBalance !== null) {
+				this.rawDataComplete = true;
 				this.now = Date.now();
 
 				this.remainingBalance = this.quickBalance;
@@ -142,6 +144,13 @@ var vm = new Vue({
 				this.processedView = true;
 				this.makeChart(balanceData);
 				this.quickBalance = null;
+			}
+		},
+
+		remainingBalance: function (newValue, oldValue) {
+			if (!this.rawDataComplete && newValue !== oldValue) {
+				this.adjustParsedRawData(this.remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]);
+				this.makeChart(this.parsedRawData);
 			}
 		},
 
@@ -170,6 +179,13 @@ var vm = new Vue({
 		 */
 		addCurrency: function (x, y) {
 			return Math.round(x * 100 + y * 100) / 100;
+		},
+
+		adjustParsedRawData: function (adjustmentAmount) {
+			this.parsedRawData = this.parsedRawData.map(function (original) {
+				original[1] = this.addCurrency(original[1], adjustmentAmount);
+				return original;
+			}, this);
 		},
 
 		findSemester: function (date) {
@@ -364,6 +380,7 @@ var vm = new Vue({
 				return entry[0] < now;
 			}, this);
 
+			this.rawDataComplete = true;
 			this.startBalance = Flex.demoText[0][1];
 			this.remainingBalance = Flex.demoText[Flex.demoText.length - 1][1];
 			this.now = Flex.demoText[Flex.demoText.length - 1][0];
@@ -390,9 +407,9 @@ Flex.parseRawData = function (rawData) {
 
 	vm.parsedRawData = [];
 	var previousChange = 0;
-	var reachedBeginning = false;
+	vm.rawDataComplete = false;
 
-	for(var i = 0; i < data.length && !reachedBeginning; i++) {
+	for(var i = 0; i < data.length && !vm.rawDataComplete; i++) {
 		var row = data[i];
 
 		if (row.length >= 4 && row[0] === 'Flex Points') {
@@ -422,7 +439,7 @@ Flex.parseRawData = function (rawData) {
 				vm.parsedRawData.unshift([date, firstAmount]);
 
 				if (amountChange === vm.startBalance) {
-					reachedBeginning = true;
+					vm.rawDataComplete = true;
 				}
 			}
 		}
@@ -436,13 +453,10 @@ Flex.parseRawData = function (rawData) {
 
 	vm.rawDataError = false;
 
-	if (reachedBeginning && vm.parsedRawData[0][1] !== vm.startBalance) {
-		var adjustmentAmount = vm.startBalance - vm.parsedRawData[0][1];
-
-		vm.parsedRawData = vm.parsedRawData.map(function (original) {
-			original[1] = vm.addCurrency(original[1], adjustmentAmount);
-			return original;
-		});
+	// If the data goes all the way back to the beginning, we know the current
+	// balance, so we adjust the remaining balance from 0
+	if (vm.rawDataComplete && vm.parsedRawData[0][1] !== vm.startBalance) {
+		vm.adjustParsedRawData(vm.startBalance - vm.parsedRawData[0][1]);
 	}
 
 	vm.remainingBalance = vm.parsedRawData[vm.parsedRawData.length - 1][1];
