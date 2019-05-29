@@ -147,13 +147,6 @@ var vm = new Vue({
 			}
 		},
 
-		remainingBalance: function (newValue, oldValue) {
-			if (!this.rawDataComplete && newValue !== oldValue) {
-				this.adjustParsedRawData(this.remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]);
-				this.makeChart(this.parsedRawData);
-			}
-		},
-
 		startBalance: function (startBalance, oldStartBalance) {
 			if (startBalance !== oldStartBalance) {
 				if (!this.processedView) {
@@ -179,6 +172,15 @@ var vm = new Vue({
 		 */
 		addCurrency: function (x, y) {
 			return Math.round(x * 100 + y * 100) / 100;
+		},
+
+		adjustIncompleteData: function (remainingBalance) {
+			remainingBalance = Number(remainingBalance);
+			if (!this.rawDataComplete && !isNaN(remainingBalance)) {
+				this.remainingBalance = remainingBalance;
+				this.adjustParsedRawData(remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]);
+				this.makeChart(this.parsedRawData);
+			}
 		},
 
 		adjustParsedRawData: function (adjustmentAmount) {
