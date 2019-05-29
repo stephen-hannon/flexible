@@ -74,15 +74,20 @@ h4 {
 .errors {
 	position: absolute;
 }
-.form-error {
+.form-message {
+	max-width: 30rem;
 	padding: 0.2rem 2rem;
 	margin-top: 1rem;
-	border-top: 2px solid #FF0000;
-	background-color: #FCC;
+	border-top: 2px solid #282;
+	background-color: #AEA;
 }
-.form-error p,
-.form-error pre {
+.form-message p,
+.form-message pre {
 	margin: 0.5rem 0;
+}
+.form-error {
+	border-top-color: #F00;
+	background-color: #FCC;
 }
 .pre-wrap {
 	white-space: pre-wrap;

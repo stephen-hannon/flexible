@@ -51,7 +51,8 @@
 						<p>Enter current balance &amp; press Enter</p>
 						<!-- TODO: placeholder should always be ideal balance for current semester -->
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" />
+							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemester"
+							:title="inSemester ? '' : 'Cannot use quick balance outside of semester'" />
 					</div>
 				</div>
 
@@ -60,15 +61,12 @@
 					<div class="rowbox-content">
 						<p>Paste usage data (see above)</p>
 						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData"></textarea>
-						<div class="errors">
-							<div class="form-error" v-if="rawDataError" v-cloak>
+						<div class="errors" v-cloak>
+							<div class="form-message form-error" v-if="rawDataError">
 								<button class="icon-button" title="Close message" @click="rawDataError = false">&times;</button>
 								<p>Error parsing data. Make sure there are lines of the form:</p>
 								<pre class="pre-wrap">Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
 							</div>
-							<!-- <div class="form-message" v-if="rawDataBalanceNeeded" v-cloak>
-								<p>That data doesn't go back to the beginning of the semester.</p>
-							</div> -->
 						</div>
 					</div>
 				</div>
@@ -112,7 +110,13 @@
 					<h4>Now: {{ formatDate(now) }}</h4>
 					<div class="rowbox-content">
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							:value="(remainingBalance || 0).toFixed(2)" :disabled="rawDataComplete" @change="adjustIncompleteData($event.target.value)" />
+							:value="(remainingBalance || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value)" />
+							<div class="errors" v-cloak>
+								<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
+									<button class="icon-button" title="Close message" @click="showMessages.rawDataComplete = false;">&times;</button>
+									<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press Enter to get accurate results (a guess is fine).</p>
+								</div>
+							</div>
 					</div>
 				</div>
 
