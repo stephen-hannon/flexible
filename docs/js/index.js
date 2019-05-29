@@ -391,10 +391,10 @@ var vm = new Vue({
 
 		useDemo: function () {
 			// DEBUG
-			var now = Date.parse('2018-04-01');
-			Flex.demoText = Flex.demoText.filter(function (entry) {
-				return entry[0] < now;
-			}, this);
+			// var now = Date.parse('2018-04-01');
+			// Flex.demoText = Flex.demoText.filter(function (entry) {
+			// 	return entry[0] < now;
+			// }, this);
 
 			this.rawDataComplete = true;
 			this.startBalance = Flex.demoText[0][1];
