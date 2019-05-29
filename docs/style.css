@@ -23,7 +23,7 @@ body {
 	}
 }
 
-h1, h3, h4 {
+h3, h4 {
 	font-family: 'PT Serif', Baskerville, Georgia, serif;
 	font-weight: 700;
 }
@@ -33,9 +33,14 @@ header {
 }
 h1 {
 	margin: 0;
+	font-size: 2rem;
+	line-height: 2rem;
 }
 .logo {
-	display: block;
+	vertical-align: top;
+}
+.logo-beta {
+	font-weight: normal;
 }
 header,
 section {
