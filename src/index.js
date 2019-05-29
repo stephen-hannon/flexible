@@ -17,6 +17,12 @@ Flex.demoText = sampleData;
  */
 Flex.semesters = [
 	{
+		year: 2019.2,
+		name: 'Fall 2019',
+		start: new Date(2019, 7, 23).getTime(),
+		end: new Date(2019, 11, 21).getTime()
+	},
+	{
 		year: 2019.1,
 		name: 'Spring 2019',
 		start: new Date(2019, 0, 13).getTime(),
@@ -50,6 +56,9 @@ var vm = new Vue({
 		rawDataComplete: true,
 		rawDataError: false,
 		remainingBalance: null,
+		showMessages: {
+			rawDataComplete: false
+		},
 		startBalance: 500
 	},
 
@@ -176,7 +185,9 @@ var vm = new Vue({
 
 		adjustIncompleteData: function (remainingBalance) {
 			remainingBalance = Number(remainingBalance);
+
 			if (!this.rawDataComplete && !isNaN(remainingBalance)) {
+				this.showMessages.rawDataComplete = false;
 				this.remainingBalance = remainingBalance;
 				this.adjustParsedRawData(remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]);
 				this.makeChart(this.parsedRawData);
@@ -184,6 +195,9 @@ var vm = new Vue({
 		},
 
 		adjustParsedRawData: function (adjustmentAmount) {
+			if (!adjustmentAmount)
+				return;
+
 			this.parsedRawData = this.parsedRawData.map(function (original) {
 				original[1] = this.addCurrency(original[1], adjustmentAmount);
 				return original;
@@ -457,8 +471,10 @@ Flex.parseRawData = function (rawData) {
 
 	// If the data goes all the way back to the beginning, we know the current
 	// balance, so we adjust the remaining balance from 0
-	if (vm.rawDataComplete && vm.parsedRawData[0][1] !== vm.startBalance) {
+	if (vm.rawDataComplete) {
 		vm.adjustParsedRawData(vm.startBalance - vm.parsedRawData[0][1]);
+	} else {
+		vm.showMessages.rawDataComplete = true;
 	}
 
 	vm.remainingBalance = vm.parsedRawData[vm.parsedRawData.length - 1][1];
