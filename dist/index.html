@@ -62,6 +62,7 @@
 					<div class="rowbox-content">
 						<p>Paste usage data (see above)</p>
 						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData"></textarea>
+
 						<div class="errors" v-cloak>
 							<div class="form-message form-error" v-if="rawDataError">
 								<button class="icon-button" title="Close message" @click="rawDataError = false">&times;</button>
@@ -112,6 +113,7 @@
 					<div class="rowbox-content">
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:value="(remainingBalance || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value)" />
+
 							<div class="errors" v-cloak>
 								<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
 									<button class="icon-button" title="Close message" @click="showMessages.rawDataComplete = false;">&times;</button>
