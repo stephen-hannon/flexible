@@ -1,6 +1,2 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-
-# docs folder actually used for GH pages support
-docs/* linguist-documentation=false
-docs/main.js linguist-generated=true
