@@ -1,0 +1,33 @@
+{
+  "name": "flexible",
+  "version": "1.0.0",
+  "description": "Flex Point usage analyzer",
+  "private": true,
+  "scripts": {
+    "build": "webpack --config ./build/webpack.prod.js",
+    "start": "webpack-dev-server --open --config ./build/webpack.dev.js",
+    "test": "eslint ./src/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+github.com/stephen-hannon/flexible.git"
+  },
+  "author": "Stephen Hannon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stephen-hannon/flexible/issues"
+  },
+  "homepage": "https://github.com/stephen-hannon/flexible#readme",
+  "dependencies": {
+    "dayjs": "^1.8.14",
+    "highcharts": "^6.2.0",
+    "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.4.1",
+    "webpack-merge": "^4.2.1"
+  }
+}
