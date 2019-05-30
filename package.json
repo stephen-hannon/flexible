@@ -1,10 +1,11 @@
 {
   "name": "flexible",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Flex Point usage analyzer",
   "private": true,
   "scripts": {
     "build": "webpack --config ./build/webpack.prod.js",
+    "build-dev": "webpack --config ./build/webpack.dev.js",
     "start": "webpack-dev-server --open --config ./build/webpack.dev.js",
     "test": "eslint ./src/*.js"
   },

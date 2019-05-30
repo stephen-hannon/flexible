@@ -101,14 +101,20 @@ h4 {
 }
 
 .appearance-textfield {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 	background-color: #FFF;
 	width: 8rem;
-	border: 1px solid #4C6E8D;
+	border: 2px solid #4C6E8D;
 	font: inherit;
 	resize: none;
+	border-radius: 0;
 }
 .appearance-textfield:disabled {
+	border-color: #89A;
 	background-color: #EEE;
+	color: #555;
 }
 
 button {
