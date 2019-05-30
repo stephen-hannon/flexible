@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Flex Point usage analyzer",
   "private": true,
-  "main": "format-data.js",
   "scripts": {
-    "test": "eslint ./docs/js/*.js"
+    "build": "webpack --config ./build/webpack.prod.js",
+    "start": "webpack-dev-server --open --config ./build/webpack.dev.js",
+    "test": "eslint ./dist/js/*.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,10 @@
     "vue": "^2.6.10"
   },
   "devDependencies": {
-    "eslint": "^5.16.0"
+    "eslint": "^5.16.0",
+    "webpack": "^4.32.2",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.4.1",
+    "webpack-merge": "^4.2.1"
   }
 }

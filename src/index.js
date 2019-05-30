@@ -1,12 +1,15 @@
 'use strict';
 /* eslint-env browser */
-/* global Vue, Highcharts, dayjs, sampleData */
+import Vue from 'vue';
+import Highcharts from 'highcharts';
+import dayjs from 'dayjs';
+import sampleData from './sample-data.json';
 
 var Flex = {};
 
 Flex.softSemesterLimit = 1000 * 60 * 60 * 24 * 7; // 1 week
 
-Flex.demoText = sampleData;
+Flex.demoText = sampleData.data;
 
 /* Array of semester data (starting with LATEST semester)
  * Keys in object:
