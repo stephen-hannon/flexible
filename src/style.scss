@@ -108,15 +108,17 @@ h4 {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+	padding: 1px;
 	background-color: $color-white;
 	width: 8rem;
-	border: 2px solid $color-primary;
+	border: 1.5px solid $color-primary;
 	font: inherit;
 	resize: none;
 	border-radius: 0;
+	overflow-x: hidden; // Firefox adds extra space for a scrollbar
 
 	&:disabled {
-		border-color: #89A;
+		border-color: scale-color($color-primary, $saturation: -50%, $lightness: 30%);
 		background-color: #EEE;
 		color: #555;
 	}
@@ -160,9 +162,9 @@ button {
 	min-width: 20rem;
 }
 .rowbox-content {
-	margin: 0.8rem 0;
-	
-	p {
+	&,
+	p,
+	pre {
 		margin: 0.8rem 0;
 	}
 }
@@ -211,6 +213,8 @@ footer {
 }
 
 .hide-steppers {
+	-moz-appearance: textfield;
+
 	&::-webkit-inner-spin-button,
 	&::-webkit-outer-spin-button {
 		-webkit-appearance: none;
