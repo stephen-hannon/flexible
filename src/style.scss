@@ -32,7 +32,7 @@ h4 {
 }
 header {
 	background-color: $color-primary;
-	color: white;
+	color: $color-white;
 }
 h1 {
 	margin: 0;
@@ -63,7 +63,7 @@ section {
 }
 #results {
 	min-width: 320px;
-	background-color: #FFF;
+	background-color: $color-white;
 }
 
 h2 {
@@ -108,7 +108,7 @@ h4 {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
-	background-color: #FFF;
+	background-color: $color-white;
 	width: 8rem;
 	border: 2px solid $color-primary;
 	font: inherit;
@@ -126,7 +126,7 @@ button {
 	padding: 0.8rem 1.6rem;
 	background-color: $color-primary;
 	border: none;
-	color: white;
+	color: $color-white;
 	font-size: 1.8rem;
 	font-family: inherit;
 	cursor: pointer;
@@ -177,7 +177,7 @@ button {
 		padding: 0.4rem 0.8rem;
 		margin: 0.8rem 0;
 		box-sizing: border-box;
-		border-bottom: 2px solid steelblue;
+		border-bottom: 2px solid $color-primary;
 	}
 }
 .stats-list-dashed li {
@@ -194,7 +194,7 @@ button {
 #chart {
 	width: 100%;
 	min-height: 330px;
-	background-color: #FFFFFF;
+	background-color: $color-white;
 	flex: 1;
 }
 
