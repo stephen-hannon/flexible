@@ -1,9 +1,11 @@
 /* color scheme: http://paletton.com/#uid=52T0G0kl7m0aAx-fXrhq5h8vubF */
 
+@import 'variables';
+
 html {
-	font-family: 'PT Sans', 'Segoe UI', Optima, Tahoma, Geneva, sans-serif;
-	font-size: 62.5%;
-	color: #333;
+	font-family: $font-sans-serif;
+	font-size: 10/16 * 100%; // Make 1rem == 10px on typical browsers
+	color: $color-ink;
 	background-color: #CCC;
 	height: 100%;
 }
@@ -23,12 +25,13 @@ body {
 	}
 }
 
-h3, h4 {
-	font-family: 'PT Serif', Baskerville, Georgia, serif;
+h3,
+h4 {
+	font-family: $font-serif;
 	font-weight: 700;
 }
 header {
-	background-color: #4C6E8D;
+	background-color: $color-primary;
 	color: white;
 }
 h1 {
@@ -85,10 +88,11 @@ h4 {
 	margin-top: 1rem;
 	border-top: 2px solid #282;
 	background-color: #AEA;
-}
-.form-message p,
-.form-message pre {
-	margin: 0.5rem 0;
+
+	p,
+	pre {
+		margin: 0.5rem 0;
+	}
 }
 .form-error {
 	border-top-color: #F00;
@@ -106,20 +110,21 @@ h4 {
 	appearance: none;
 	background-color: #FFF;
 	width: 8rem;
-	border: 2px solid #4C6E8D;
+	border: 2px solid $color-primary;
 	font: inherit;
 	resize: none;
 	border-radius: 0;
-}
-.appearance-textfield:disabled {
-	border-color: #89A;
-	background-color: #EEE;
-	color: #555;
+
+	&:disabled {
+		border-color: #89A;
+		background-color: #EEE;
+		color: #555;
+	}
 }
 
 button {
-	padding: .8rem 1.6rem;
-	background-color: #4C6E8D;
+	padding: 0.8rem 1.6rem;
+	background-color: $color-primary;
 	border: none;
 	color: white;
 	font-size: 1.8rem;
@@ -135,7 +140,7 @@ button {
 	float: right;
 	padding: 0 0.8rem;
 	background: none;
-	color: #333;
+	color: $color-ink;
 }
 
 .rowbox-container {
@@ -156,22 +161,24 @@ button {
 }
 .rowbox-content {
 	margin: 0.8rem 0;
-}
-.rowbox-content p {
-	margin: 0.8rem 0;
+	
+	p {
+		margin: 0.8rem 0;
+	}
 }
 
 .stats-list {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-}
-.stats-list li {
-	background-color: lightblue;
-	padding: 0.4rem 0.8rem;
-	margin: .8rem 0;
-	box-sizing: border-box;
-	border-bottom: 2px solid steelblue;
+
+	li {
+		background-color: lightblue;
+		padding: 0.4rem 0.8rem;
+		margin: 0.8rem 0;
+		box-sizing: border-box;
+		border-bottom: 2px solid steelblue;
+	}
 }
 .stats-list-dashed li {
 	border-bottom-style: dashed;
@@ -192,22 +199,25 @@ button {
 }
 
 footer {
-	padding: .8rem 1rem;
-}
-footer p {
-	margin: .8rem 0;
-	text-align: center;
-}
-footer a {
-	color: inherit;
+	padding: 0.8rem 1rem;
+
+	p {
+		margin: 0.8rem 0;
+		text-align: center;
+	}
+	a {
+		color: inherit;
+	}
 }
 
-.hide-steppers::-webkit-inner-spin-button,
-.hide-steppers::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0;
+.hide-steppers {
+	&::-webkit-inner-spin-button,
+	&::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		margin: 0;
+	}
 }
 
 [v-cloak] {
