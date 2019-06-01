@@ -145,6 +145,16 @@ button {
 	color: $color-ink;
 }
 
+kbd {
+	padding: 0.1rem 0.4rem;
+	background-color: #EEE;
+	border: 1px solid #AAA;
+	border-radius: 0.4rem;
+	white-space: nowrap;
+	font: inherit;
+	font-size: 0.8em;
+}
+
 .rowbox-container {
 	display: flex;
 	justify-content: space-evenly;
