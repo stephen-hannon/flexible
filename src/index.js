@@ -62,7 +62,8 @@ var vm = new Vue({
 		showMessages: {
 			rawDataComplete: false
 		},
-		startBalance: 500
+		startBalance: 500,
+		tabOption: 'windows'
 	},
 
 	computed: {
@@ -170,6 +171,16 @@ var vm = new Vue({
 	},
 
 	mounted: function () {
+		// Basic user agent sniffing to determine which tab to show initially.
+		// It's not perfect, but it's just a convenience.
+		var userAgent = window.navigator.userAgent;
+		if (/iPhone|iPad|iPod|Android/.test(userAgent)) {
+			this.tabOption = 'mobile';
+		} else if (userAgent.indexOf('Mac') !== -1) {
+			this.tabOption = 'macos';
+		}
+		// else stays as 'windows'
+
 		this.remainingBalance = this.remainingBalanceIdeal;
 		this.makeChart();
 	},
@@ -205,6 +216,10 @@ var vm = new Vue({
 				original[1] = this.addCurrency(original[1], adjustmentAmount);
 				return original;
 			}, this);
+		},
+
+		ctrlOrCmd: function () {
+			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
 		},
 
 		findSemester: function (date) {

@@ -72,19 +72,33 @@
 				<div class="rowbox-box">
 					<h4>Just looking</h4>
 					<div class="rowbox-content">
-						<button class="full-width" @click="useDemo">View demo</button>
+						<button class="button full-width" @click="useDemo">View demo</button>
 					</div>
 				</div>
 			</div>
 
 			<p>Follow these quick instructions to see your own full personalized results.</p>
-			<ol>
-				<li>Click the link to log in to <a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)">Irish1Card&nbsp;GET</a> with your Notre Dame credentials.</li>
-				<li>Under the "My Recent Transactions" header, click "View All Transaction History."</li>
-				<li>Making sure "ALL in the past 6 Months" is selected in the Month/Year dropdown, copy the entire table (or the entire page&mdash;it will sort it out for you).
-				For a shortcut, press <kbd>Ctrl</kbd>+<kbd>A</kbd> (<kbd>&#8984; Cmd</kbd>+<kbd>A</kbd> on Mac) to select all and <kbd>Ctrl</kbd>+<kbd>C</kbd> (<kbd>&#8984; Cmd</kbd>+<kbd>C</kbd> on Mac) to copy.</li>
-				<li>Paste it into the text box below. (Don't worry, everything stays in your browser.)</li>
-			</ol>
+
+			<div class="tabs">
+				<button class="tab" :class="{ 'tab-active': tabOption === 'windows' }" @click="tabOption = 'windows'">Windows</button>
+				<button class="tab" :class="{ 'tab-active': tabOption === 'macos' }" @click="tabOption = 'macos'">macOS</button>
+				<button class="tab" :class="{ 'tab-active': tabOption === 'mobile' }" @click="tabOption = 'mobile'">Mobile</button>
+			</div>
+
+			<div class="tabs-content">
+				<ol>
+					<li>Click the link to log in to <a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)">Irish1Card&nbsp;GET</a> with your Notre Dame credentials.</li>
+					<li>Under the "My Recent Transactions" header, {{ tabOption === 'mobile' ? 'tap' : 'click' }} "View All Transaction History."</li>
+					<li>
+						Making sure "ALL in the past 6 Months" is selected in the Month/Year dropdown, copy the entire table (or the entire page&mdash;it will sort it out for you).
+						<strong v-if="tabOption === 'mobile'">Note that copying large blocks of text on a mobile device can be difficult. A desktop or laptop computer is recommended for optimal exprience.</strong>
+						<template v-else>For a shortcut, press <kbd>{{ ctrlOrCmd() }}</kbd>+<kbd>A</kbd> to select all and <kbd>{{ ctrlOrCmd() }}</kbd>+<kbd>C</kbd> to copy.</template>
+					</li>
+					<li>Paste it into the text box below. (Don't worry, everything stays in your browser.)
+						<template v-if="tabOption !== 'mobile'">For a shortcut, press <kbd>{{ ctrlOrCmd() }}</kbd>+<kbd>V</kbd> to paste.</template>
+					</li>
+				</ol>
+			</div>
 
 			<footer role="contentinfo">
 				<p>

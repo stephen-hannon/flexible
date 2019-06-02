@@ -139,12 +139,17 @@ h4 {
 
 button {
 	padding: 0.8rem 1.6rem;
-	background-color: $color-primary;
-	border: $size-border solid transparent;
-	color: $color-white;
+	background: none;
+	border: none;
+	color: $color-ink;
 	font-size: 1.8rem;
 	font-family: inherit;
 	cursor: pointer;
+}
+.button {
+	background-color: $color-primary;
+	border: $size-border solid transparent;
+	color: $color-white;
 	transition-property: border-color, color, background-color;
 	transition-duration: 0.2s;
 
@@ -160,13 +165,16 @@ button {
 	width: 100%;
 }
 .close-button {
-	&, &:hover {
-		float: right;
-		padding: 0 0.8rem;
-		background: none;
-		border: none;
-		color: $color-ink;
-	}
+	float: right;
+	padding: 0 0.8rem;
+}
+
+.tab-active {
+	background-color: $color-white;
+}
+.tabs-content {
+	padding: 0.4rem;
+	background-color: $color-white;
 }
 
 kbd {
