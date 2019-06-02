@@ -169,12 +169,33 @@ button {
 	padding: 0 0.8rem;
 }
 
-.tab-active {
-	background-color: $color-white;
+.flatlist {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	li {
+		display: inline-block;
+		margin: 0 0.8rem;
+	}
+}
+
+.tab {
+	font-size: inherit;
+	background-color: #EEE;
+
+	&.tab-active {
+		background-color: $color-white;
+	}
 }
 .tabs-content {
-	padding: 0.4rem;
+	padding: 1.6rem;
 	background-color: $color-white;
+
+	ol {
+		margin: 0;
+		padding-left: 2.4rem;
+	}
 }
 
 kbd {

@@ -79,13 +79,15 @@
 
 			<p>Follow these quick instructions to see your own full personalized results.</p>
 
-			<div class="tabs">
-				<button class="tab" :class="{ 'tab-active': tabOption === 'windows' }" @click="tabOption = 'windows'">Windows</button>
-				<button class="tab" :class="{ 'tab-active': tabOption === 'macos' }" @click="tabOption = 'macos'">macOS</button>
-				<button class="tab" :class="{ 'tab-active': tabOption === 'mobile' }" @click="tabOption = 'mobile'">Mobile</button>
-			</div>
+			<ul class="flatlist tabs" role="tablist">
+				<li v-for="tab in ['windows', 'macos', 'mobile']" role="presentation">
+					<button	class="tab" role="tab" :class="{ 'tab-active': tabOption === tab }" :aria-selected="tabOption === tab" @click="tabOption = tab">
+						{{ tabOptions[tab] }}
+					</button>
+				</li>
+			</ul>
 
-			<div class="tabs-content">
+			<div class="tabs-content" role="tabpanel">
 				<ol>
 					<li>Click the link to log in to <a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)">Irish1Card&nbsp;GET</a> with your Notre Dame credentials.</li>
 					<li>Under the "My Recent Transactions" header, {{ tabOption === 'mobile' ? 'tap' : 'click' }} "View All Transaction History."</li>

@@ -62,8 +62,13 @@ var vm = new Vue({
 		showMessages: {
 			rawDataComplete: false
 		},
-		startBalance: 500,
-		tabOption: 'windows'
+		startBalance: 500, // currently selected tab
+		tabOption: 'windows',
+		tabOptions: {
+			macos: 'macOS',
+			mobile: 'Mobile',
+			windows: 'Windows'
+		}
 	},
 
 	computed: {
