@@ -1,6 +1,18 @@
-$color-ink: #333;
-$color-primary: #4C6E8D;
-$color-white: #FFF;
+// Colors
+$color-ink:        #070B1C;
+$color-white:      #FFFFFF;
+$color-primary:    #27BC68;
+$color-rose:       #F45B69;
+$color-royalblue:  #005DBA;
 
+$color-error:      $color-rose;
+$color-message:    change-color($color-error, $hue: hue($color-royalblue));
+
+$color-graphlines: steelblue;
+
+// Fonts
 $font-sans-serif: 'PT Sans', 'Segoe UI', Optima, Tahoma, Geneva, sans-serif;
-$font-serif: 'PT Serif', Baskerville, Georgia, serif;
+$font-serif:      'PT Serif', Baskerville, Georgia, serif;
+
+// Sizes
+$size-border: 1.5px;

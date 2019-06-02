@@ -6,7 +6,7 @@ html {
 	font-family: $font-sans-serif;
 	font-size: 10/16 * 100%; // Make 1rem == 10px on typical browsers
 	color: $color-ink;
-	background-color: #CCC;
+	background-color: #D7E4D6;
 	height: 100%;
 }
 
@@ -68,18 +68,21 @@ section {
 section {
 	flex: 1;
 }
+.section-bg-white {
+	background-color: $color-white;
+}
 #instructions {
 	min-width: 250px;
 }
 #results {
 	min-width: 320px;
-	background-color: $color-white;
 }
 
 h2 {
 	margin: 0.8rem 0;
 	font-size: inherit;
 	text-transform: uppercase;
+	color: #555;
 }
 h3 {
 	margin: 0.5rem 0;
@@ -96,8 +99,8 @@ h4 {
 	max-width: 30rem;
 	padding: 0.2rem 2rem;
 	margin-top: 1rem;
-	border-top: 2px solid #282;
-	background-color: #AEA;
+	border-top: 3px solid $color-message;
+	background-color: scale-color($color-message, $lightness: 50%);
 
 	p,
 	pre {
@@ -105,8 +108,8 @@ h4 {
 	}
 }
 .form-error {
-	border-top-color: #F00;
-	background-color: #FCC;
+	border-top-color: $color-error;
+	background-color: scale-color($color-error, $lightness: 50%);
 }
 .pre-wrap {
 	white-space: pre-wrap;
@@ -118,10 +121,10 @@ h4 {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
-	padding: 1px;
+	padding: 0.2rem 0.4rem;
 	background-color: $color-white;
 	width: 8rem;
-	border: 1.5px solid $color-primary;
+	border: $size-border solid $color-primary;
 	font: inherit;
 	resize: none;
 	border-radius: 0;
@@ -137,22 +140,33 @@ h4 {
 button {
 	padding: 0.8rem 1.6rem;
 	background-color: $color-primary;
-	border: none;
+	border: $size-border solid transparent;
 	color: $color-white;
 	font-size: 1.8rem;
 	font-family: inherit;
 	cursor: pointer;
+	transition-property: border-color, color, background-color;
+	transition-duration: 0.2s;
+
+	&:hover {
+		border-color: $color-primary;
+		color: $color-primary;
+		background-color: $color-white;
+	}
 }
 .full-width {
 	box-sizing: border-box;
 	display: block;
 	width: 100%;
 }
-.icon-button {
-	float: right;
-	padding: 0 0.8rem;
-	background: none;
-	color: $color-ink;
+.close-button {
+	&, &:hover {
+		float: right;
+		padding: 0 0.8rem;
+		background: none;
+		border: none;
+		color: $color-ink;
+	}
 }
 
 kbd {
@@ -163,6 +177,10 @@ kbd {
 	white-space: nowrap;
 	font: inherit;
 	font-size: 0.8em;
+}
+
+a {
+	color: $color-royalblue;
 }
 
 .rowbox-container {
@@ -176,7 +194,10 @@ kbd {
 	max-width: 30rem;
 	padding: 0 1.6rem;
 	margin: 0.8rem;
-	background-color: aliceblue;
+	background-color: $color-white;
+}
+.section-bg-white .rowbox-box {
+	background-color: #E7FFE8;
 }
 .rowbox-wide {
 	min-width: 20rem;
@@ -192,14 +213,12 @@ kbd {
 .stats-list {
 	list-style-type: none;
 	padding: 0;
-	margin: 0;
+	margin: 0.8rem 0;
 
 	li {
-		background-color: lightblue;
-		padding: 0.4rem 0.8rem;
-		margin: 0.8rem 0;
+		padding: 0.4rem;
 		box-sizing: border-box;
-		border-bottom: 2px solid $color-primary;
+		border-bottom: 2px solid $color-graphlines;
 	}
 }
 .stats-list-dashed li {
