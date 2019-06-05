@@ -164,9 +164,16 @@ button {
 	display: block;
 	width: 100%;
 }
-.close-button {
-	float: right;
+.icon-button {
 	padding: 0 0.8rem;
+
+	&:disabled {
+		color: #999;
+		cursor: default;
+	}
+}
+.float-right {
+	float: right;
 }
 
 .flatlist {
