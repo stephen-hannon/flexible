@@ -52,6 +52,7 @@ var vm = new Vue({
 	data: {
 		currentIdealBalanceIndex: null,
 		quickBalance: null,
+		MS_PER_DAY: 1000 * 60 * 60 * 24,
 		now: Date.now(),
 		parsedRawData: null,
 		processedView: false, // if we're displaying a semester other than the current one
@@ -59,6 +60,32 @@ var vm = new Vue({
 		rawDataComplete: true,
 		rawDataError: false,
 		remainingBalance: null,
+		semesters: [
+			{
+				year: 2019.2,
+				name: 'Fall 2019',
+				start: new Date(2019, 7, 23).getTime(),
+				end: new Date(2019, 11, 21).getTime()
+			},
+			{
+				year: 2019.1,
+				name: 'Spring 2019',
+				start: new Date(2019, 0, 13).getTime(),
+				end: new Date(2019, 4, 18).getTime()
+			},
+			{
+				year: 2018.2,
+				name: 'Fall 2018',
+				start: new Date(2018, 7, 17).getTime(),
+				end: new Date(2018, 11, 16).getTime()
+			},
+			{
+				year: 2018.1,
+				name: 'Spring 2018',
+				start: new Date(2018, 0, 14).getTime(),
+				end: new Date(2018, 4, 13).getTime()
+			}
+		],
 		showMessages: {
 			rawDataComplete: false
 		},
@@ -223,12 +250,35 @@ var vm = new Vue({
 			}, this);
 		},
 
+		/**
+		 * Modifies the semester start or end date by adding or subtracting days
+		 * @param {'start'|'end'} startOrEnd - whether the start or end date should be changed
+		 * @param {number} deltaDay - how many days to add or subtract
+		 * @param {boolean} validateOnly - if the function should only validate if the change can be made
+		 */
+		changeSemesterDate: function (startOrEnd, deltaDay, validateOnly) {
+			var MS_PER_DAY = 1000 * 60 * 60 * 24;
+			var deltaMs = deltaDay * MS_PER_DAY;
+			if (startOrEnd === 'start') {
+				if (this.semester.start + deltaMs < this.semester.end) {
+					if (validateOnly) return true;
+					this.semester.start += deltaMs;
+				}
+			} else if (startOrEnd === 'end') {
+				if (this.semester.end + deltaMs > this.semester.start) {
+					if (validateOnly) return true;
+					this.semester.end += deltaMs;
+				}
+			}
+			if (validateOnly) return false;
+		},
+
 		ctrlOrCmd: function () {
 			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
 		},
 
 		findSemester: function (date) {
-			return Flex.semesters.reduce(function(prevSemester, curSemester) {
+			return this.semesters.reduce(function(prevSemester, curSemester) {
 				// Find the last semester where we haven't reached the end
 				return (date < curSemester.end + Flex.softSemesterLimit) ? curSemester : prevSemester;
 			});
@@ -251,7 +301,7 @@ var vm = new Vue({
 		},
 
 		formatDate: function (date) {
-			return dayjs(date).format('MMMM D, YYYY');
+			return dayjs(date).format('ddd, MMMM D, YYYY');
 		},
 
 		getIdealBalanceAtDate: function (date) {
