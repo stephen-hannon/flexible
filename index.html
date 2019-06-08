@@ -125,8 +125,8 @@
 				<div class="rowbox-box">
 					<h4>
 						Start
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)">&#x1F860;</button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)">&#x1F862;</button>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)">&larr;</button>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)">&rarr;</button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ formatDate(semester.start) }}</p>
@@ -153,8 +153,8 @@
 				<div class="rowbox-box">
 					<h4>
 						End
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)">&#x1F860;</button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">&#x1F862;</button>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)">&larr;</button>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">&rarr;</button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ formatDate(semester.end) }}</p>
