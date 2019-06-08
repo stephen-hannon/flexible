@@ -57,7 +57,7 @@
 					<h4>In-depth</h4>
 					<div class="rowbox-content">
 						<p>Paste usage data (see below)</p>
-						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData"></textarea>
+						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData" @input="$event.target.blur()"></textarea>
 
 						<div class="errors" v-cloak>
 							<div class="form-message form-error" v-if="rawDataError">
@@ -139,7 +139,7 @@
 					<div class="rowbox-content">
 						<p>{{ formatDate(now) }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							:value="(remainingBalance || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value)" />
+							:value="(remainingBalance || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value); $event.target.blur()" />
 
 						<div class="errors" v-cloak>
 							<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
