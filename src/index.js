@@ -5,7 +5,7 @@ import Highcharts from 'highcharts';
 import dayjs from 'dayjs';
 import sampleData from './sample-data.json';
 
-var Flex = {};
+const Flex = {};
 
 Flex.softSemesterLimit = 1000 * 60 * 60 * 24 * 7; // 1 week
 
@@ -45,7 +45,7 @@ Flex.semesters = [
 	}
 ];
 
-var vm = new Vue({
+const vm = new Vue({
 	el: '#flexible',
 	dayjs: dayjs,
 
@@ -115,16 +115,16 @@ var vm = new Vue({
 				};
 			}
 
-			var MS_PER_DAY = 1000 * 60 * 60 * 24;
-			var DAYS_PER_WEEK = 7;
+			const MS_PER_DAY = 1000 * 60 * 60 * 24;
+			const DAYS_PER_WEEK = 7;
 
-			var msPast = Math.min(this.now, this.semester.end) - this.semester.start;
-			var daysPast = msPast / MS_PER_DAY;
-			var weeksPast = daysPast / DAYS_PER_WEEK;
+			const msPast = Math.min(this.now, this.semester.end) - this.semester.start;
+			const daysPast = msPast / MS_PER_DAY;
+			const weeksPast = daysPast / DAYS_PER_WEEK;
 
-			var msFuture = this.semester.end - Math.max(this.now, this.semester.start);
-			var daysFuture = msFuture / MS_PER_DAY;
-			var weeksFuture = daysFuture / DAYS_PER_WEEK;
+			const msFuture = this.semester.end - Math.max(this.now, this.semester.start);
+			const daysFuture = msFuture / MS_PER_DAY;
+			const weeksFuture = daysFuture / DAYS_PER_WEEK;
 
 			return {
 				past: {
@@ -173,7 +173,7 @@ var vm = new Vue({
 				this.now = this.getNow();
 
 				this.remainingBalance = this.quickBalance;
-				var balanceData = [
+				const balanceData = [
 					[this.semester.start, this.startBalance],
 					[this.now, this.remainingBalance]
 				];
@@ -197,7 +197,7 @@ var vm = new Vue({
 	mounted: function () {
 		// Basic user agent sniffing to determine which tab to show initially.
 		// It's not perfect, but it's just a convenience.
-		var userAgent = window.navigator.userAgent;
+		const userAgent = window.navigator.userAgent;
 		if (/iPhone|iPad|iPod|Android/.test(userAgent)) {
 			this.tabOption = 'mobile';
 		} else if (userAgent.indexOf('Mac') !== -1) {
@@ -207,12 +207,10 @@ var vm = new Vue({
 
 		// Allow overriding the current date by URL hash. No public interface
 		// since it could break things.
-		var nowDate = window.location.hash.match(/^#now=(\d{4})-(\d{2})-(\d{2})$/);
+		const nowDate = window.location.hash.match(/^#now=(\d{4})-(\d{2})-(\d{2})$/);
 		if (nowDate !== null) {
-			var year  = Number(nowDate[1]),
-				month = Number(nowDate[2]),
-				day   = Number(nowDate[3]);
-			var now = new Date(year, month - 1, day);
+			const [, year, month, day] = nowDate.map(e => Number(e));
+			const now = new Date(year, month - 1, day);
 			this.debugNow = now.getTime();
 			this.now = this.debugNow;
 
@@ -232,9 +230,7 @@ var vm = new Vue({
 		 * @param {number} y
 		 * @returns {number} x + y, with two digits of precision
 		 */
-		addCurrency: function (x, y) {
-			return Math.round(x * 100 + y * 100) / 100;
-		},
+		addCurrency: (x, y) => Math.round(x * 100 + y * 100) / 100,
 
 		adjustIncompleteData: function (remainingBalance) {
 			remainingBalance = Number(remainingBalance);
@@ -264,8 +260,8 @@ var vm = new Vue({
 		 * @param {boolean} validateOnly - if the function should only validate if the change can be made
 		 */
 		changeSemesterDate: function (startOrEnd, deltaDay, validateOnly) {
-			var MS_PER_DAY = 1000 * 60 * 60 * 24;
-			var deltaMs = deltaDay * MS_PER_DAY;
+			const MS_PER_DAY = 1000 * 60 * 60 * 24;
+			const deltaMs = deltaDay * MS_PER_DAY;
 			if (startOrEnd === 'start') {
 				if (this.semester.start + deltaMs < this.semester.end) {
 					if (validateOnly) return true;
@@ -299,7 +295,7 @@ var vm = new Vue({
 			if (typeof num !== 'number')
 				return num;
 
-			return (num < 0 ? '\u2212' : '') + '$' + Math.abs(num).toFixed(2);
+			return `${ num < 0 ? '\u2212' : '' }$${ Math.abs(num).toFixed(2) }`;
 		},
 
 		/** temporary */
@@ -313,24 +309,24 @@ var vm = new Vue({
 
 		getIdealBalanceAtDate: function (date) {
 			date = Math.max(this.semester.start, Math.min(date, this.semester.end));
-			var msOverall = this.semester.end - this.semester.start;
-			var msFuture = this.semester.end - date;
+			const msOverall = this.semester.end - this.semester.start;
+			const msFuture = this.semester.end - date;
 
 			return (msFuture / msOverall) * this.startBalance;
 		},
 
 		getIdealBalanceData: function () {
-			var msPerDay = 1000 * 60 * 60 * 24;
-			var idealBalanceData = [];
+			const msPerDay = 1000 * 60 * 60 * 24;
+			const idealBalanceData = [];
 
 			this.currentIdealBalanceIndex = null;
 
-			for (var date = this.semester.start; date < this.semester.end; date += msPerDay) {
+			for (let date = this.semester.start; date < this.semester.end; date += msPerDay) {
 				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
 
 				if (this.now >= date && this.now < date + msPerDay) {
-					var MS_PER_MINUTE = 1000 * 60;
-					var nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
+					const MS_PER_MINUTE = 1000 * 60;
+					const nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
 					idealBalanceData.push({
 						x: nowNearestMinute,
 						y: this.remainingBalanceIdeal,
@@ -367,7 +363,7 @@ var vm = new Vue({
 		 * @returns {Highcharts.ChartObject}
 		 */
 		makeChart: function (data) {
-			var idealBalanceData = [
+			const idealBalanceData = [
 				[this.semester.start, this.startBalance],
 				[this.semester.end, 0]
 			];
@@ -375,7 +371,7 @@ var vm = new Vue({
 				idealBalanceData.splice(1, 0, [this.now, this.remainingBalanceIdeal]);
 			}
 
-			var series = [
+			const series = [
 				{
 					name: 'Ideal balance',
 					color: 'red',
@@ -393,8 +389,8 @@ var vm = new Vue({
 					data: data,
 					tooltip: {
 						pointFormatter: function () {
-							return '<span style="color:' + this.color + '">\u25CF</span> ' + this.series.name + ': <b>$' + this.y.toFixed(2) + '</b><br/>' +
-								'<span style="color:red">\u25CF</span> Ideal balance: <b>$' + vm.getIdealBalanceAtDate(this.x).toFixed(2) + '</b><br/>';
+							return `<span style="color:${ this.color }">\u25CF</span> ${ this.series.name }: <b>$${ this.y.toFixed(2) }</b><br/>` +
+								`<span style="color:red">\u25CF</span> Ideal balance: <b>$${ vm.getIdealBalanceAtDate(this.x).toFixed(2) }</b><br/>`;
 						}
 					}
 				});
@@ -414,14 +410,14 @@ var vm = new Vue({
 				}
 			}
 
-			var _this = this;
+			const _this = this;
 
 			return Highcharts.chart('chart', {
 				chart: {
 					type: 'line',
 					events: {
 						load: function () {
-							var point = this.series[0].data[_this.currentIdealBalanceIndex];
+							const point = this.series[0].data[_this.currentIdealBalanceIndex];
 							this.tooltip.refresh(point);
 						}
 					}
@@ -475,7 +471,7 @@ var vm = new Vue({
 
 		useDemo: function () {
 			// DEBUG
-			// var now = Date.parse('2018-04-01');
+			// const now = Date.parse('2018-04-01');
 			// Flex.demoText = Flex.demoText.filter(function (entry) {
 			// 	return entry[0] < now;
 			// }, this);
@@ -501,27 +497,25 @@ var vm = new Vue({
 Flex.parseRawData = function (rawData) {
 	vm.now = vm.getNow(); // in case the page has been loaded for a long time
 
-	var data = rawData.split('\n').map(function (row) {
-		return row.split('\t');
-	});
+	const data = rawData.split('\n').map(row => row.split('\t'));
 
 	vm.parsedRawData = [];
-	var previousChange = 0;
+	let previousChange = 0;
 	vm.rawDataComplete = false;
 
-	for(var i = 0; i < data.length && !vm.rawDataComplete; i++) {
-		var row = data[i];
+	for(let i = 0; i < data.length && !vm.rawDataComplete; i++) {
+		const row = data[i];
 
 		if (row.length >= 4 && row[0] === 'Flex Points') {
 			// TODO: use a library to parse the date dependably
-			var dateString = row[1]
+			const dateString = row[1]
 				.replace(/\s/g, ' ')
 				.replace(/\B[AP]M/, ' $&'); // Add space before AM or PM so Date.parse understands it.
-			var date = Date.parse(dateString);
+			const date = Date.parse(dateString);
 
-			var minusMatch = row[3].match(/[-\u2013]/); // look for a minus sign (hyphen or en-dash)
-			var spentMatch = row[3].match(/[\d.]+/);
-			var amountChange = spentMatch ? +spentMatch[0] : null;
+			const minusMatch = row[3].match(/[-\u2013]/); // look for a minus sign (hyphen or en-dash)
+			const spentMatch = row[3].match(/[\d.]+/);
+			let amountChange = spentMatch ? +spentMatch[0] : null;
 
 			if (
 				!isNaN(date) &&
@@ -533,7 +527,7 @@ Flex.parseRawData = function (rawData) {
 					amountChange = -amountChange;
 				}
 
-				var firstAmount = vm.parsedRawData[0] ? vm.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
+				const firstAmount = vm.parsedRawData[0] ? vm.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
 				previousChange = amountChange;
 
 				vm.parsedRawData.unshift([date, firstAmount]);
