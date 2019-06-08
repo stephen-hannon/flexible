@@ -53,7 +53,6 @@ var vm = new Vue({
 		currentIdealBalanceIndex: null,
 		debugNow: null,
 		quickBalance: null,
-		MS_PER_DAY: 1000 * 60 * 60 * 24,
 		now: Date.now(),
 		parsedRawData: null,
 		processedView: false, // if we're displaying a semester other than the current one
@@ -61,6 +60,8 @@ var vm = new Vue({
 		rawDataComplete: true,
 		rawDataError: false,
 		remainingBalance: null,
+		// TODO: switch semester from being computed so it can be modified
+		// rather than modifying this whole thing.
 		semesters: [
 			{
 				year: 2019.2,
@@ -110,8 +111,7 @@ var vm = new Vue({
 			if (!this.semester) {
 				return {
 					past: null,
-					future: null,
-					overall: null
+					future: null
 				};
 			}
 
@@ -126,10 +126,6 @@ var vm = new Vue({
 			var daysFuture = msFuture / MS_PER_DAY;
 			var weeksFuture = daysFuture / DAYS_PER_WEEK;
 
-			var msOverall = this.semester.end - this.semester.start;
-			var daysOverall = msOverall / MS_PER_DAY;
-			var weeksOverall = daysOverall / DAYS_PER_WEEK;
-
 			return {
 				past: {
 					total: this.spentBalance,
@@ -140,11 +136,6 @@ var vm = new Vue({
 					total: this.remainingBalance,
 					perDay: this.remainingBalance / daysFuture,
 					perWeek: this.remainingBalance / weeksFuture
-				},
-				overall: {
-					total: this.startBalance,
-					perDay: this.startBalance / daysOverall,
-					perWeek: this.startBalance / weeksOverall
 				}
 			};
 		},
