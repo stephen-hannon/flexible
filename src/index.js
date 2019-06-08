@@ -51,6 +51,7 @@ var vm = new Vue({
 
 	data: {
 		currentIdealBalanceIndex: null,
+		debugNow: null,
 		quickBalance: null,
 		MS_PER_DAY: 1000 * 60 * 60 * 24,
 		now: Date.now(),
@@ -100,7 +101,7 @@ var vm = new Vue({
 
 	computed: {
 		currentSemester: function () {
-			return this.findSemester(Date.now());
+			return this.findSemester(this.getNow());
 		},
 		inSemester: function () {
 			return (this.now > this.semester.start - Flex.softSemesterLimit);
@@ -178,7 +179,7 @@ var vm = new Vue({
 		quickBalance: function () {
 			if (this.quickBalance !== null) {
 				this.rawDataComplete = true;
-				this.now = Date.now();
+				this.now = this.getNow();
 
 				this.remainingBalance = this.quickBalance;
 				var balanceData = [
@@ -212,6 +213,21 @@ var vm = new Vue({
 			this.tabOption = 'macos';
 		}
 		// else stays as 'windows'
+
+		// Allow overriding the current date by URL hash. No public interface
+		// since it could break things.
+		var nowDate = window.location.hash.match(/^#now=(\d{4})-(\d{2})-(\d{2})$/);
+		if (nowDate !== null) {
+			var year  = Number(nowDate[1]),
+				month = Number(nowDate[2]),
+				day   = Number(nowDate[3]);
+			var now = new Date(year, month - 1, day);
+			this.debugNow = now.getTime();
+			this.now = this.debugNow;
+
+			// eslint-disable-next-line no-console
+			console.log('Setting debug date to', now);
+		}
 
 		this.remainingBalance = this.remainingBalanceIdeal;
 		this.makeChart();
@@ -351,6 +367,10 @@ var vm = new Vue({
 			return idealBalanceData;
 		},
 
+		getNow: function () {
+			return this.debugNow || Date.now();
+		},
+
 		/**
 		 * @param {[number, number][]} [data] - array of points of the format [timestamp, amount]
 		 * @returns {Highcharts.ChartObject}
@@ -488,7 +508,7 @@ var vm = new Vue({
 // If this is never reached (i.e., some data is missing), ask them for their current balance and attempt to
 // display the data that way.
 Flex.parseRawData = function (rawData) {
-	vm.now = Date.now(); // in case the page has been loaded for a long time
+	vm.now = vm.getNow(); // in case the page has been loaded for a long time
 
 	var data = rawData.split('\n').map(function (row) {
 		return row.split('\t');
