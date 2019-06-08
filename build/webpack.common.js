@@ -25,6 +25,10 @@ module.exports = (devMode) => ({
 					outputStyle: devMode ? 'expanded' : 'compressed'
 				}
 			}]
+		}, {
+			test: /\.js$/,
+			exclude: /node_modules/,
+			loader: 'babel-loader'
 		}]
 	},
 	resolve: {
