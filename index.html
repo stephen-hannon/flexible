@@ -45,7 +45,7 @@
 				<div class="rowbox-box">
 					<h4>Quick</h4>
 					<div class="rowbox-content">
-						<p>Enter current balance &amp; press Enter</p>
+						<p>Enter current balance &amp; press <kbd>Enter</kbd></p>
 						<!-- TODO: placeholder should always be ideal balance for current semester -->
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemester"
@@ -63,7 +63,7 @@
 							<div class="form-message form-error" v-if="rawDataError">
 								<button class="float-right icon-button" title="Close message" @click="rawDataError = false">&times;</button>
 								<p>Error parsing data. Make sure there are lines of the form:</p>
-								<pre class="pre-wrap">Flex Points	{{ $options.dayjs().format('MMMM D, YYYY, h:mmA') }}	C-Store 1	- $5.08</pre>
+								<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
 							</div>
 						</div>
 					</div>
@@ -116,9 +116,9 @@
 			<h2>Results</h2>
 			<h3 id="results-header" v-cloak>
 				{{ semester.name }}
-				<template v-if="processedView">balance: {{ formatCurrency(remainingBalance) }}
-					({{ formatCurrency(Math.abs(remainingBalanceRelative)) }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
-				<template v-else>ideal balance: {{ formatCurrency(remainingBalanceIdeal) }}</template>
+				<template v-if="processedView">balance: {{ $utils.formatCurrency(remainingBalance) }}
+					({{ $utils.formatCurrency(Math.abs(remainingBalanceRelative)) }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
+				<template v-else>ideal balance: {{ $utils.formatCurrency(remainingBalanceIdeal) }}</template>
 			</h3>
 
 			<div class="rowbox-container" v-cloak>
@@ -129,7 +129,7 @@
 						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)">&rarr;</button>
 					</h4>
 					<div class="rowbox-content">
-						<p>{{ formatDate(semester.start) }}</p>
+						<p>{{ $utils.formatDate(semester.start) }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" v-model.lazy.number="startBalance" />
 					</div>
 				</div>
@@ -137,14 +137,14 @@
 				<div class="rowbox-box">
 					<h4>Now</h4>
 					<div class="rowbox-content">
-						<p>{{ formatDate(now) }}</p>
+						<p>{{ $utils.formatDate(now) }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:value="(remainingBalance || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value); $event.target.blur()" />
 
 						<div class="errors" v-cloak>
 							<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
 								<button class="float-right icon-button" title="Close message" @click="showMessages.rawDataComplete = false;">&times;</button>
-								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press Enter to get accurate results (a guess is fine).</p>
+								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
 							</div>
 						</div>
 					</div>
@@ -157,7 +157,7 @@
 						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">&rarr;</button>
 					</h4>
 					<div class="rowbox-content">
-						<p>{{ formatDate(semester.end) }}</p>
+						<p>{{ $utils.formatDate(semester.end) }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" value="0" disabled />
 					</div>
 				</div>
@@ -167,18 +167,18 @@
 				<div class="rowbox-box rowbox-wide">
 					<h4>Before now</h4>
 					<ul class="stats-list">
-						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.total) }}</span> in total</li>
-						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.perDay) }}</span> per day</li>
-						<li><span class="stat">{{ formatCurrencyOutput(rates.past && rates.past.perWeek) }}</span> per week</li>
+						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.past && rates.past.total) }}</span> in total</li>
+						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.past && rates.past.perDay) }}</span> per day</li>
+						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.past && rates.past.perWeek) }}</span> per week</li>
 					</ul>
 				</div>
 
 				<div class="rowbox-box rowbox-wide">
 					<h4>After now</h4>
 					<ul class="stats-list stats-list-dashed">
-						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.total) }}</span> in total</li>
-						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perDay) }}</span> per day</li>
-						<li><span class="stat">{{ formatCurrencyOutput(rates.future && rates.future.perWeek) }}</span> per week</li>
+						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.future && rates.future.total) }}</span> in total</li>
+						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.future && rates.future.perDay) }}</span> per day</li>
+						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.future && rates.future.perWeek) }}</span> per week</li>
 					</ul>
 				</div>
 			</div>
