@@ -311,21 +311,14 @@ const vm = new Vue({
 		 * @param {number} num - the currency amount, as a float
 		 * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
 		 */
-		formatCurrency: function (num) {
-			if (typeof num !== 'number')
-				return num;
-
-			return `${ num < 0 ? '\u2212' : '' }$${ Math.abs(num).toFixed(2) }`;
-		},
+		formatCurrency: num => `${ num < 0 ? '\u2212' : '' }$${ Math.abs(num).toFixed(2) }`,
 
 		/** temporary */
 		formatCurrencyOutput: function (num) {
 			return (typeof num === 'number') ? this.formatCurrency(num) : '$\u2014';
 		},
 
-		formatDate: function (date) {
-			return dayjs(date).format('ddd, MMMM D, YYYY');
-		},
+		formatDate: date => dayjs(date).format('ddd, MMMM D, YYYY'),
 
 		getIdealBalanceAtDate: function (date) {
 			date = Math.max(this.semester.start, Math.min(date, this.semester.end));
