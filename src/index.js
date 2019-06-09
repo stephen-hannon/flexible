@@ -224,7 +224,7 @@ const vm = new Vue({
 
 	methods: {
 		/**
-		 * Function to add two numbers that avoids floating-point errors like .1 + .2 !== .3
+		 * Adds two numbers that avoids floating-point errors like `.1 + .2 !== .3`
 		 * @private
 		 * @param {number} x
 		 * @param {number} y
@@ -232,6 +232,11 @@ const vm = new Vue({
 		 */
 		addCurrency: (x, y) => Math.round(x * 100 + y * 100) / 100,
 
+		/**
+		 * Adjusts `parsedRawData` so its last balance value is `remainingBalance`
+		 * @param {number} remainingBalance
+		 * @returns {void}
+		 */
 		adjustIncompleteData: function (remainingBalance) {
 			remainingBalance = Number(remainingBalance);
 
@@ -243,6 +248,11 @@ const vm = new Vue({
 			}
 		},
 
+		/**
+		 * Adjusts `parsedRawData` by adding `adjustmentAmount` to each balance
+		 * @param {number} adjustmentAmount
+		 * @returns {void}
+		 */
 		adjustParsedRawData: function (adjustmentAmount) {
 			if (!adjustmentAmount)
 				return;
@@ -258,6 +268,7 @@ const vm = new Vue({
 		 * @param {'start'|'end'} startOrEnd - whether the start or end date should be changed
 		 * @param {number} deltaDay - how many days to add or subtract
 		 * @param {boolean} validateOnly - if the function should only validate if the change can be made
+		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is `true`
 		 */
 		changeSemesterDate: function (startOrEnd, deltaDay, validateOnly) {
 			const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -276,10 +287,19 @@ const vm = new Vue({
 			if (validateOnly) return false;
 		},
 
+		/**
+		 * @returns {string} A representation of the command or control key,
+		 * depending on whether the macOS tab is selected or not
+		 */
 		ctrlOrCmd: function () {
 			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
 		},
 
+		/**
+		 * Finds the last semester whose end date is before `date`
+		 * @param {number} date - the current date, in milliseconds since the epoch
+		 * @returns {object} the semester of `date`
+		 */
 		findSemester: function (date) {
 			return this.semesters.reduce(function(prevSemester, curSemester) {
 				// Find the last semester where we haven't reached the end
