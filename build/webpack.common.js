@@ -19,6 +19,8 @@ module.exports = (devMode) => ({
 			}, {
 				loader: 'css-loader'
 			}, {
+				loader: 'postcss-loader'
+			}, {
 				loader: 'sass-loader',
 				options: {
 					implementation: require('sass'),
