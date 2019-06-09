@@ -45,7 +45,7 @@
 				<div class="rowbox-box">
 					<h4>Quick</h4>
 					<div class="rowbox-content">
-						<p>Enter current balance &amp; press Enter</p>
+						<p>Enter current balance &amp; press <kbd>Enter</kbd></p>
 						<!-- TODO: placeholder should always be ideal balance for current semester -->
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemester"
@@ -144,7 +144,7 @@
 						<div class="errors" v-cloak>
 							<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
 								<button class="float-right icon-button" title="Close message" @click="showMessages.rawDataComplete = false;">&times;</button>
-								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press Enter to get accurate results (a guess is fine).</p>
+								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
 							</div>
 						</div>
 					</div>
