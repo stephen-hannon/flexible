@@ -2,12 +2,10 @@
 /* eslint-env browser */
 import Vue from 'vue';
 import Highcharts from 'highcharts';
-import dayjs from 'dayjs';
+import utils from './utils.js';
 import sampleData from './sample-data.json';
 
 const Flex = {};
-
-Flex.softSemesterLimit = 1000 * 60 * 60 * 24 * 7; // 1 week
 
 Flex.demoText = sampleData.data;
 
@@ -45,9 +43,10 @@ Flex.semesters = [
 	}
 ];
 
+Vue.prototype.$utils = utils;
+
 const vm = new Vue({
 	el: '#flexible',
-	dayjs: dayjs,
 
 	data: {
 		currentIdealBalanceIndex: null,
@@ -105,7 +104,7 @@ const vm = new Vue({
 			return this.findSemester(this.getNow());
 		},
 		inSemester: function () {
-			return (this.now > this.semester.start - Flex.softSemesterLimit);
+			return (this.now > this.semester.start - this.$utils.softSemesterLimit);
 		},
 		rates: function () {
 			if (!this.semester) {
@@ -115,15 +114,14 @@ const vm = new Vue({
 				};
 			}
 
-			const MS_PER_DAY = 1000 * 60 * 60 * 24;
 			const DAYS_PER_WEEK = 7;
 
 			const msPast = Math.min(this.now, this.semester.end) - this.semester.start;
-			const daysPast = msPast / MS_PER_DAY;
+			const daysPast = msPast / this.$utils.MS_PER_DAY;
 			const weeksPast = daysPast / DAYS_PER_WEEK;
 
 			const msFuture = this.semester.end - Math.max(this.now, this.semester.start);
-			const daysFuture = msFuture / MS_PER_DAY;
+			const daysFuture = msFuture / this.$utils.MS_PER_DAY;
 			const weeksFuture = daysFuture / DAYS_PER_WEEK;
 
 			return {
@@ -149,7 +147,7 @@ const vm = new Vue({
 			return this.findSemester(this.now);
 		},
 		spentBalance: function () {
-			return this.addCurrency(this.startBalance, -this.remainingBalance);
+			return this.$utils.addCurrency(this.startBalance, -this.remainingBalance);
 		}
 	},
 
@@ -224,15 +222,6 @@ const vm = new Vue({
 
 	methods: {
 		/**
-		 * Adds two numbers that avoids floating-point errors like `.1 + .2 !== .3`
-		 * @private
-		 * @param {number} x
-		 * @param {number} y
-		 * @returns {number} x + y, with two digits of precision
-		 */
-		addCurrency: (x, y) => Math.round(x * 100 + y * 100) / 100,
-
-		/**
 		 * Adjusts `parsedRawData` so its last balance value is `remainingBalance`
 		 * @param {number} remainingBalance
 		 * @returns {void}
@@ -258,7 +247,7 @@ const vm = new Vue({
 				return;
 
 			this.parsedRawData = this.parsedRawData.map(function (original) {
-				original[1] = this.addCurrency(original[1], adjustmentAmount);
+				original[1] = this.$utils.addCurrency(original[1], adjustmentAmount);
 				return original;
 			}, this);
 		},
@@ -271,8 +260,7 @@ const vm = new Vue({
 		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is `true`
 		 */
 		changeSemesterDate: function (startOrEnd, deltaDay, validateOnly) {
-			const MS_PER_DAY = 1000 * 60 * 60 * 24;
-			const deltaMs = deltaDay * MS_PER_DAY;
+			const deltaMs = deltaDay * this.$utils.MS_PER_DAY;
 			if (startOrEnd === 'start') {
 				if (this.semester.start + deltaMs < this.semester.end) {
 					if (validateOnly) return true;
@@ -303,22 +291,9 @@ const vm = new Vue({
 		findSemester: function (date) {
 			return this.semesters.reduce(function(prevSemester, curSemester) {
 				// Find the last semester where we haven't reached the end
-				return (date < curSemester.end + Flex.softSemesterLimit) ? curSemester : prevSemester;
+				return (date < curSemester.end + utils.softSemesterLimit) ? curSemester : prevSemester;
 			});
 		},
-
-		/**
-		 * @param {number} num - the currency amount, as a float
-		 * @returns {string} the amount, formatted with a dollar sign and rounded to two decimal places
-		 */
-		formatCurrency: num => `${ num < 0 ? '\u2212' : '' }$${ Math.abs(num).toFixed(2) }`,
-
-		/** temporary */
-		formatCurrencyOutput: function (num) {
-			return (typeof num === 'number') ? this.formatCurrency(num) : '$\u2014';
-		},
-
-		formatDate: date => dayjs(date).format('ddd, MMMM D, YYYY'),
 
 		getIdealBalanceAtDate: function (date) {
 			date = Math.max(this.semester.start, Math.min(date, this.semester.end));
@@ -329,15 +304,14 @@ const vm = new Vue({
 		},
 
 		getIdealBalanceData: function () {
-			const msPerDay = 1000 * 60 * 60 * 24;
 			const idealBalanceData = [];
 
 			this.currentIdealBalanceIndex = null;
 
-			for (let date = this.semester.start; date < this.semester.end; date += msPerDay) {
+			for (let date = this.semester.start; date < this.semester.end; date += this.$utils.MS_PER_DAY) {
 				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
 
-				if (this.now >= date && this.now < date + msPerDay) {
+				if (this.now >= date && this.now < date + this.$utils.MS_PER_DAY) {
 					const MS_PER_MINUTE = 1000 * 60;
 					const nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
 					idealBalanceData.push({
@@ -540,7 +514,7 @@ Flex.parseRawData = function (rawData) {
 					amountChange = -amountChange;
 				}
 
-				const firstAmount = vm.parsedRawData[0] ? vm.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
+				const firstAmount = vm.parsedRawData[0] ? this.$utils.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
 				previousChange = amountChange;
 
 				vm.parsedRawData.unshift([date, firstAmount]);
