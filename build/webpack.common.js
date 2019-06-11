@@ -38,6 +38,11 @@ module.exports = (devMode) => ({
 			'vue$': 'vue/dist/vue.esm.js'
 		}
 	},
+	optimization: {
+		splitChunks: {
+			chunks: 'all'
+		}
+	},
 	plugins: [
 		new MiniCssExtractPlugin({
 			// Options similar to the same options in webpackOptions.output
