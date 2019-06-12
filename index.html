@@ -45,7 +45,7 @@
 				<div class="rowbox-box">
 					<h4>Quick</h4>
 					<div class="rowbox-content">
-						<p>Enter current balance &amp; press <kbd>Enter</kbd></p>
+						<p>Enter your current balance &amp; press <kbd>Enter</kbd></p>
 						<!-- TODO: placeholder should always be ideal balance for current semester -->
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemester"
@@ -56,12 +56,12 @@
 				<div class="rowbox-box">
 					<h4>In-depth</h4>
 					<div class="rowbox-content">
-						<p>Paste usage data (see below)</p>
+						<p>Paste your usage data (see below)</p>
 						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData" @input="$event.target.blur()"></textarea>
 
 						<div class="errors" v-cloak>
 							<div class="form-message form-error" v-if="rawDataError">
-								<button class="float-right icon-button" title="Close message" @click="rawDataError = false">&times;</button>
+								<button class="float-right icon-button" title="Close message" @click="rawDataError = false"><i class="fas fa-times"></i></button>
 								<p>Error parsing data. Make sure there are lines of the form:</p>
 								<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
 							</div>
@@ -125,8 +125,8 @@
 				<div class="rowbox-box">
 					<h4>
 						Start
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)">&larr;</button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)">&rarr;</button>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)"><i class="fas fa-arrow-left"></i></button>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)"><i class="fas fa-arrow-right"></i></button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ $utils.formatDate(semester.start) }}</p>
@@ -143,7 +143,7 @@
 
 						<div class="errors" v-cloak>
 							<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
-								<button class="float-right icon-button" title="Close message" @click="showMessages.rawDataComplete = false;">&times;</button>
+								<button class="float-right icon-button" title="Close message" @click="showMessages.rawDataComplete = false;"><i class="fas fa-times"></i></button>
 								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
 							</div>
 						</div>
@@ -153,8 +153,8 @@
 				<div class="rowbox-box">
 					<h4>
 						End
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)">&larr;</button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">&rarr;</button>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)"><i class="fas fa-arrow-left"></i></button>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)"><i class="fas fa-arrow-right"></i></button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ $utils.formatDate(semester.end) }}</p>
