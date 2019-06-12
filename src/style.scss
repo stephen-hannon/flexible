@@ -162,7 +162,9 @@ button {
 	width: 100%;
 }
 .icon-button {
-	padding: 0 0.8rem;
+	padding: 0.4rem 0.8rem;
+	font-size: inherit;
+	color: #555;
 
 	&:disabled {
 		color: #999;
