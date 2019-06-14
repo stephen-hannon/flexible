@@ -4,12 +4,12 @@
 import Vue from 'vue';
 import Highcharts from 'highcharts';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
-// import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faArrowLeft, faArrowRight, faRedo, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import utils from './utils.js';
 import sampleData from './sample-data.json';
 
-library.add(faArrowLeft, faArrowRight, faRedo, faTimes);
+library.add(faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faGithub, faUser, faCommentAlt);
 dom.watch();
 
 const Flex = {};

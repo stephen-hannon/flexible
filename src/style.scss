@@ -2,6 +2,12 @@
 
 @import 'variables';
 
+@media screen and (max-width: 400px) {
+	.hide-below-s {
+		display: none;
+	}
+}
+
 html {
 	font-family: $font-sans-serif;
 	font-size: 10/16 * 100%; // Make 1rem == 10px on typical browsers
@@ -37,6 +43,24 @@ h4 {
 header {
 	background-color: $color-primary;
 	color: $color-white;
+	display: flex;
+	flex-wrap: wrap;
+
+	@media screen and (max-width: 660px) {
+		& {
+			display: unset;
+		}
+
+		.header-links a {
+			display: block;
+			padding-top: 0.8rem;
+			padding-bottom: 0.8rem;
+		}
+
+		.header-links-text {
+			margin: 0;
+		}
+	}
 }
 h1 {
 	margin: 0;
@@ -49,14 +73,8 @@ h1 {
 		text-decoration: inherit;
 	}
 }
-.logo {
-	vertical-align: top;
-}
-.logo-beta {
-	font-weight: normal;
-}
-header,
-section {
+
+.padding-base {
 	padding: 1.5rem 3rem;
 }
 
@@ -148,7 +166,7 @@ button {
 	border: $size-border solid transparent;
 	color: $color-white;
 	transition-property: border-color, color, background-color;
-	transition-duration: 0.2s;
+	transition-duration: $transition-fast;
 
 	&:hover {
 		border-color: $color-primary;
@@ -173,6 +191,10 @@ button {
 }
 .float-right {
 	float: right;
+}
+
+.flex-grow {
+	flex-grow: 1;
 }
 
 .flatlist {
@@ -245,6 +267,47 @@ a {
 	}
 }
 
+.logo {
+	vertical-align: top;
+}
+.logo-beta {
+	font-weight: normal;
+}
+
+.header-links {
+	text-align: right;
+
+	li {
+		height: 100%;
+		margin: 0;
+	}
+
+	a {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		padding: 0 1.6rem;
+		color: $color-white;
+		text-decoration: none;
+		transition: all $transition-fast;
+
+		@media screen and (max-width: 750px) {
+			& {
+				padding-right: 0.8rem;
+				padding-left: 0.8rem;
+			}
+		}
+
+		&:hover {
+			box-shadow: inset 0 -3px 0 0 $color-white;
+			background-color: change-color($color-white, $alpha: 0.1);
+		}
+	}
+}
+.header-links-text {
+	margin-left: 0.8rem;
+}
+
 .stats-list {
 	list-style-type: none;
 	padding: 0;
@@ -275,14 +338,9 @@ a {
 }
 
 footer {
-	padding: 0.8rem 1rem;
-
 	p {
-		margin: 0.8rem 0;
-		text-align: center;
-	}
-	a {
-		color: inherit;
+		margin: 1.6rem 0;
+		font-size: 0.8em;
 	}
 }
 
