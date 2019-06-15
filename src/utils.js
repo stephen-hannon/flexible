@@ -28,7 +28,7 @@ export const getSemesterStart = (year, season) => dayjs(season === 'Spring' ? ne
  * @param {'Spring' | 'Fall'} season
  * @returns {dayjs.Dayjs} the end date of the given semester
  */
-export const getSemesterEnd = (year, season) => dayjs(season === 'Spring' ? new Date(year, 4, 7) : new Date(year, 11, 15)).day(0);
+export const getSemesterEnd = (year, season) => dayjs(season === 'Spring' ? new Date(year, 4, 7) : new Date(year, 11, 15)).day(6);
 
 /**
  * @typedef {Object} semester
