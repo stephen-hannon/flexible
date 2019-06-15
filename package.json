@@ -7,11 +7,12 @@
     "*.css"
   ],
   "scripts": {
-    "build": "webpack --config ./build/webpack.prod.js",
-    "build-dev": "webpack --config ./build/webpack.dev.js",
-    "build-scss": "sass ./src/style.scss ./dist/style.css",
+    "build:prod": "webpack --config ./build/webpack.prod.js",
+    "build:dev": "webpack --config ./build/webpack.dev.js",
+    "build:scss": "sass ./src/style.scss ./dist/style.css",
+    "lint": "eslint ./src/*.js",
     "start": "webpack-dev-server --open --config ./build/webpack.dev.js",
-    "test": "eslint ./src/*.js"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -35,9 +36,12 @@
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "autoprefixer": "^9.6.0",
+    "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "css-loader": "^2.1.1",
     "eslint": "^5.16.0",
+    "jest": "^24.8.0",
     "mini-css-extract-plugin": "^0.7.0",
     "postcss-loader": "^3.0.0",
     "sass": "^1.20.1",

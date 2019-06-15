@@ -14,6 +14,7 @@ cd flexible
 npm install
 ```
 
+### Building
 Flexible uses [Webpack](https://webpack.js.org/) to bundle its assets, so start a development server to avoid manually re-compiling after each save:
 
 ```bash
@@ -23,11 +24,11 @@ npm start
 For a one-time development build, run:
 
 ```bash
-npm run build-dev
+npm run build:dev
 ```
 
 To build for production, run:
 
 ```bash
-npm run build
+npm run build:prod
 ```
