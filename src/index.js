@@ -1,12 +1,11 @@
 'use strict';
-/* eslint-env browser */
 
 import Vue from 'vue';
 import Highcharts from 'highcharts';
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
-import * as utils from './utils.js';
+import * as utils from './utils';
 import sampleData from './sample-data.json';
 
 library.add(faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faGithub, faUser, faCommentAlt);
@@ -15,40 +14,6 @@ dom.watch();
 const Flex = {};
 
 Flex.demoText = sampleData.data;
-
-/* Array of semester data (starting with LATEST semester)
- * Keys in object:
- *   year: year plus 0.1 if spring, 0.2 if fall
- *   name: human-readable name: [Spring|Fall] <year>
- *   start: unix time of the start of the semester (when using new Date, subtract 1 from the month first)
- *   end: unix time of the end of the semester (when using new Date, subtract 1 from the month first)
- */
-Flex.semesters = [
-	{
-		year: 2019.2,
-		name: 'Fall 2019',
-		start: new Date(2019, 7, 23).getTime(),
-		end: new Date(2019, 11, 21).getTime()
-	},
-	{
-		year: 2019.1,
-		name: 'Spring 2019',
-		start: new Date(2019, 0, 13).getTime(),
-		end: new Date(2019, 4, 18).getTime()
-	},
-	{
-		year: 2018.2,
-		name: 'Fall 2018',
-		start: new Date(2018, 7, 17).getTime(),
-		end: new Date(2018, 11, 16).getTime()
-	},
-	{
-		year: 2018.1,
-		name: 'Spring 2018',
-		start: new Date(2018, 0, 14).getTime(),
-		end: new Date(2018, 4, 13).getTime()
-	}
-];
 
 Vue.prototype.$utils = utils;
 
@@ -97,13 +62,13 @@ const vm = new Vue({
 		showMessages: {
 			rawDataComplete: false
 		},
-		startBalance: 500, // currently selected tab
-		tabOption: 'windows',
+		startBalance: 500,
+		tabOption: 'windows', // currently selected tab
 		tabOptions: {
 			macos: 'macOS',
 			mobile: 'Mobile',
-			windows: 'Windows'
-		}
+			windows: 'Windows',
+		},
 	},
 
 	computed: {
@@ -141,7 +106,7 @@ const vm = new Vue({
 					total: this.remainingBalance,
 					perDay: this.remainingBalance / daysFuture,
 					perWeek: this.remainingBalance / weeksFuture
-				}
+				},
 			};
 		},
 		remainingBalanceIdeal: function () {
@@ -155,8 +120,9 @@ const vm = new Vue({
 		},
 		spentBalance: function () {
 			return this.$utils.addCurrency(this.startBalance, -this.remainingBalance);
-		}
+		},
 	},
+
 
 	watch: {
 		rawData: function (rawData) {
@@ -180,7 +146,7 @@ const vm = new Vue({
 				this.remainingBalance = this.quickBalance;
 				const balanceData = [
 					[this.semester.start, this.startBalance],
-					[this.now, this.remainingBalance]
+					[this.now, this.remainingBalance],
 				];
 
 				this.processedView = true;
@@ -196,7 +162,7 @@ const vm = new Vue({
 				}
 				this.makeChart();
 			}
-		}
+		},
 	},
 
 	mounted: function () {
@@ -262,7 +228,7 @@ const vm = new Vue({
 		/**
 		 * Modifies the semester start or end date by adding or subtracting days
 		 * @param {'start'|'end'} startOrEnd - whether the start or end date should be changed
-		 * @param {number} deltaDay - how many days to add or subtract
+		 * @param {number} deltaDay - how many days to add (can be negative)
 		 * @param {boolean} validateOnly - if the function should only validate if the change can be made
 		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is `true`
 		 */
@@ -359,7 +325,7 @@ const vm = new Vue({
 		makeChart: function (data) {
 			const idealBalanceData = [
 				[this.semester.start, this.startBalance],
-				[this.semester.end, 0]
+				[this.semester.end, 0],
 			];
 			if (this.inSemester) {
 				idealBalanceData.splice(1, 0, [this.now, this.remainingBalanceIdeal]);
@@ -372,7 +338,7 @@ const vm = new Vue({
 					lineWidth: 1,
 					enableMouseTracking: !data,
 					data: this.getIdealBalanceData()
-				}
+				},
 			];
 
 			if (data) {
@@ -385,8 +351,8 @@ const vm = new Vue({
 						pointFormatter: function () {
 							return `<span style="color:${ this.color }">\u25CF</span> ${ this.series.name }: <b>$${ this.y.toFixed(2) }</b><br/>` +
 								`<span style="color:red">\u25CF</span> Ideal balance: <b>$${ vm.getIdealBalanceAtDate(this.x).toFixed(2) }</b><br/>`;
-						}
-					}
+						},
+					},
 				});
 
 				// If we're in the middle of the semester, add a dashed line with projected usage
@@ -398,7 +364,7 @@ const vm = new Vue({
 						enableMouseTracking: false,
 						data: [
 							[this.now, this.remainingBalance],
-							[this.semester.end, 0]
+							[this.semester.end, 0],
 						]
 					});
 				}
@@ -413,53 +379,53 @@ const vm = new Vue({
 						load: function () {
 							const point = this.series[0].data[_this.currentIdealBalanceIndex];
 							this.tooltip.refresh(point);
-						}
-					}
+						},
+					},
 				},
 				title: {
-					text: undefined
+					text: undefined,
 				},
 				xAxis: {
 					crosshair: {
-						snap: false
+						snap: false,
 					},
 					labels: {
-						format: '{value:%b %e}'
+						format: '{value:%b %e}',
 					},
-					type: 'datetime'
+					type: 'datetime',
 				},
 				yAxis: {
 					crosshair: {
-						snap: false
+						snap: false,
 					},
 					max: this.startBalance,
 					title: {
-						text: 'Flex Points'
+						text: 'Flex Points',
 					},
 					labels: {
-						format: '${value}'
-					}
+						format: '${value}',
+					},
 				},
 				plotOptions: {
 					line: {
 						marker: {
-							enabled: false
-						}
-					}
+							enabled: false,
+						},
+					},
 				},
 				series: series,
 				tooltip: {
 					// split: true,
 					dateTimeLabelFormats: {
 						day: '%a, %B %e',
-						minute: '%a, %B %e, %l:%M %p'
+						minute: '%a, %B %e, %l:%M %p',
 					},
 					valueDecimals: 2,
-					valuePrefix: '$'
+					valuePrefix: '$',
 				},
 				time: {
-					useUTC: false
-				}
+					useUTC: false,
+				},
 			});
 		},
 
@@ -477,8 +443,8 @@ const vm = new Vue({
 
 			this.processedView = true;
 			this.makeChart(Flex.demoText);
-		}
-	}
+		},
+	},
 });
 
 
