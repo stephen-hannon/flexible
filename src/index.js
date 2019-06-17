@@ -487,7 +487,7 @@ Flex.parseRawData = function (rawData) {
 					amountChange = -amountChange;
 				}
 
-				const firstAmount = vm.parsedRawData[0] ? this.$utils.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
+				const firstAmount = vm.parsedRawData[0] ? utils.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
 				previousChange = amountChange;
 
 				vm.parsedRawData.unshift([date, firstAmount]);
