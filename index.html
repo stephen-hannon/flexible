@@ -52,7 +52,7 @@
 		</ul>
 	</header>
 
-	<div class="content-container">
+	<div class="content-container" v-cloak>
 		<section id="instructions" class="padding-base">
 			<h2>Instructions</h2>
 			<h3>Analyze your Flex Point usage &amp; start spending smarter.</h3>
@@ -65,8 +65,8 @@
 						<p>Enter your current balance &amp; press <kbd>Enter</kbd></p>
 						<!-- TODO: placeholder should always be ideal balance for current semester -->
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							:placeholder="remainingBalanceIdeal.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemester"
-							:title="inSemester ? '' : 'Cannot use quick balance outside of semester'" />
+							:placeholder="remainingBalanceIdealCurrent.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemesterCurrent"
+							:title="inSemesterCurrent ? '' : 'Cannot use quick balance outside of semester'" />
 					</div>
 				</div>
 
@@ -78,7 +78,9 @@
 
 						<div class="errors" v-cloak>
 							<div class="form-message form-error" v-if="rawDataError">
-								<button class="float-right icon-button" title="Close message" @click="rawDataError = false"><i class="fas fa-times"></i></button>
+								<button class="float-right icon-button" title="Close message" @click="rawDataError = false">
+									<i class="fas fa-times"></i>
+								</button>
 								<p>Error parsing data. Make sure there are lines of the form:</p>
 								<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
 							</div>
@@ -126,19 +128,26 @@
 
 		<section id="results" class="padding-base section-bg-white">
 			<h2>Results</h2>
-			<h3 id="results-header" v-cloak>
+			<h3 id="results-header">
 				{{ semester.name }}
 				<template v-if="processedView">balance: {{ $utils.formatCurrency(remainingBalance) }}
 					({{ $utils.formatCurrency(Math.abs(remainingBalanceRelative)) }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
 				<template v-else>ideal balance: {{ $utils.formatCurrency(remainingBalanceIdeal) }}</template>
 			</h3>
 
-			<div class="rowbox-container" v-cloak>
+			<div class="rowbox-container">
 				<div class="rowbox-box">
 					<h4>
 						Start
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)"><i class="fas fa-arrow-left"></i></button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)"><i class="fas fa-arrow-right"></i></button>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)">
+							<i class="fas fa-arrow-left"></i>
+						</button>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)">
+							<i class="fas fa-arrow-right"></i>
+						</button>
+						<button class="icon-button" title="Reset start day" v-if="manualDates.start" @click="manualDates.start = null; makeChart()">
+							<i class="fas fa-redo"></i>
+						</button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ $utils.formatDate(semester.start) }}</p>
@@ -151,11 +160,13 @@
 					<div class="rowbox-content">
 						<p>{{ $utils.formatDate(now) }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							:value="(remainingBalance || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value); $event.target.blur()" />
+							:value="(remainingBalance || remainingBalanceIdeal || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value); $event.target.blur()" />
 
 						<div class="errors" v-cloak>
 							<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
-								<button class="float-right icon-button" title="Close message" @click="showMessages.rawDataComplete = false;"><i class="fas fa-times"></i></button>
+								<button class="float-right icon-button" title="Close message" @click="showMessages.rawDataComplete = false;">
+									<i class="fas fa-times"></i>
+								</button>
 								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
 							</div>
 						</div>
@@ -165,8 +176,15 @@
 				<div class="rowbox-box">
 					<h4>
 						End
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)"><i class="fas fa-arrow-left"></i></button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)"><i class="fas fa-arrow-right"></i></button>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)">
+							<i class="fas fa-arrow-left"></i>
+						</button>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">
+							<i class="fas fa-arrow-right"></i>
+						</button>
+						<button class="icon-button" title="Reset end day" v-if="manualDates.end" @click="manualDates.end = null">
+							<i class="fas fa-redo"></i>
+						</button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ $utils.formatDate(semester.end) }}</p>
@@ -175,7 +193,7 @@
 				</div>
 			</div>
 
-			<div class="rowbox-container" v-cloak>
+			<div class="rowbox-container">
 				<div class="rowbox-box rowbox-wide">
 					<h4>Before now</h4>
 					<ul class="stats-list">
