@@ -242,6 +242,7 @@ const vm = new Vue({
 				}
 			}
 			if (validateOnly) return false;
+			this.makeChart();
 		},
 
 		/**
