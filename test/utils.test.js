@@ -44,7 +44,7 @@ describe('utils.js', () => {
 	});
 
 	describe('findSemester', () => {
-		it('finds semester of September 1, 2019 with all properties', () => {
+		it('finds semester of September 1, 2019, with all properties', () => {
 			expect(utils.findSemester(new Date(2019, 8, 1)))
 				.toEqual({
 					year: 2019.2,
@@ -78,6 +78,28 @@ describe('utils.js', () => {
 		it('formats a date', () => {
 			expect(utils.formatDate(new Date(2019, 5, 15)))
 				.toBe('Sat, June 15, 2019');
+		});
+	});
+
+	describe('parseDataRow', () => {
+		it('returns null on an invalid row', () => {
+			[
+				'',
+				'Gold 14\tMay 11, 2018 9:16AM\tSDH West2\t- $1.00',
+			].forEach(row => {
+				expect(utils.parseDataRow(row)).toBeNull();
+			});
+		});
+		it('parses a row with Flex Points', () => {
+			expect(utils.parseDataRow('Flex Points\tMay 10, 2018 9:10AM\tSubway 1\t- $5.49'))
+				.toEqual({
+					date: new Date(2018, 4, 10, 9, 10).valueOf(),
+					amountChange: -5.49,
+				});
+		});
+		it('handles positive balances', () => {
+			expect(utils.parseDataRow('Flex Points\tMay 10, 2018 9:10AM\tSubway 1\t+ $5.49'))
+				.toHaveProperty('amountChange', 5.49);
 		});
 	});
 });

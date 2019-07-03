@@ -109,6 +109,8 @@ const vm = new Vue({
 		},
 		semesterCurrent: function () {
 			const semester = this.$utils.findSemester(this.getNow());
+			// this.semester may have customized dates, so use that.
+			// TODO: Customized dates could make findSemester not line up with this.semester.
 			return (semester.year === this.semester.year) ? this.semester : semester;
 		},
 		spentBalance: function () {
@@ -212,8 +214,7 @@ const vm = new Vue({
 		 * @returns {void}
 		 */
 		adjustParsedRawData: function (adjustmentAmount) {
-			if (!adjustmentAmount)
-				return;
+			if (!adjustmentAmount) return;
 
 			this.parsedRawData = this.parsedRawData.map(function (original) {
 				original[1] = this.$utils.addCurrency(original[1], adjustmentAmount);
@@ -454,44 +455,25 @@ const vm = new Vue({
 Flex.parseRawData = function (rawData) {
 	vm.now = vm.getNow(); // in case the page has been loaded for a long time
 
-	const data = rawData.split('\n').map(row => row.split('\t'));
+	const data = rawData.split('\n');
 
 	vm.parsedRawData = [];
 	let previousChange = 0;
 	vm.rawDataComplete = false;
 
 	for(let i = 0; i < data.length && !vm.rawDataComplete; i++) {
-		const row = data[i];
+		const parseResult = utils.parseDataRow(data[i]);
 
-		if (row.length >= 4 && row[0] === 'Flex Points') {
-			// TODO: use a library to parse the date dependably
-			const dateString = row[1]
-				.replace(/\s/g, ' ')
-				.replace(/\B[AP]M/, ' $&'); // Add space before AM or PM so Date.parse understands it.
-			const date = Date.parse(dateString);
+		if (parseResult !== null) {
+			const { date, amountChange } = parseResult;
 
-			const minusMatch = row[3].match(/[-\u2013]/); // look for a minus sign (hyphen or en-dash)
-			const spentMatch = row[3].match(/[\d.]+/);
-			let amountChange = spentMatch ? +spentMatch[0] : null;
+			const firstAmount = vm.parsedRawData[0] ? utils.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
+			previousChange = amountChange;
 
-			if (
-				!isNaN(date) &&
-				amountChange !== null
-				// && date < vm.now // debug
-			) {
-				// account for positive/negative changes
-				if (minusMatch && minusMatch.index < spentMatch.index) {
-					amountChange = -amountChange;
-				}
+			vm.parsedRawData.unshift([date, firstAmount]);
 
-				const firstAmount = vm.parsedRawData[0] ? utils.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
-				previousChange = amountChange;
-
-				vm.parsedRawData.unshift([date, firstAmount]);
-
-				if (amountChange === vm.startBalance) {
-					vm.rawDataComplete = true;
-				}
+			if (amountChange === vm.startBalance) {
+				vm.rawDataComplete = true;
 			}
 		}
 	}

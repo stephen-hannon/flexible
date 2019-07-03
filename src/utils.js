@@ -1,8 +1,22 @@
 import dayjs from 'dayjs';
 
+/**
+ * @typedef {Object} semester
+ * @property {number} year - year plus 0.1 if spring, 0.2 if fall
+ * @property {string} name - human-readable name: `[Spring|Fall] <year>`
+ * @property {number} start - start date, as a unix timestamp in milliseconds
+ * @property {number} end - end date, as a unix timestamp in milliseconds
+ */
+
+/**
+ * @typedef {Object} parsedRow
+ * @property {number} date - a unix timestamp in milliseconds
+ * @property {number} amountChange
+ */
+
 export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-export const softSemesterLimit = 1000 * 60 * 60 * 24 * 7; // 1 week
+export const softSemesterLimit = MS_PER_DAY * 7; // 1 week
 
 /**
  * Adds two numbers that avoids floating-point errors like `.1 + .2 !== .3`
@@ -19,7 +33,10 @@ export const addCurrency = (x, y) => Math.round(x * 100 + y * 100) / 100;
  * @param {'Spring' | 'Fall'} season
  * @returns {dayjs.Dayjs} the start date of the given semester
  */
-export const getSemesterStart = (year, season) => dayjs(season === 'Spring' ? new Date(year, 0, 15) : new Date(year, 7, 25)).day(0);
+export const getSemesterStart = (year, season) =>
+	dayjs(
+		season === 'Spring' ? new Date(year, 0, 15) : new Date(year, 7, 25)
+	).day(0);
 
 /**
  * For spring: Saturday, May 7-13
@@ -28,15 +45,10 @@ export const getSemesterStart = (year, season) => dayjs(season === 'Spring' ? ne
  * @param {'Spring' | 'Fall'} season
  * @returns {dayjs.Dayjs} the end date of the given semester
  */
-export const getSemesterEnd = (year, season) => dayjs(season === 'Spring' ? new Date(year, 4, 7) : new Date(year, 11, 15)).day(6);
-
-/**
- * @typedef {Object} semester
- * @property {number} year - year plus 0.1 if spring, 0.2 if fall
- * @property {string} name - human-readable name: `[Spring|Fall] <year>`
- * @property {number} start - start date, as a unix timestamp in milliseconds
- * @property {number} end - end date, as a unix timestamp in milliseconds
- */
+export const getSemesterEnd = (year, season) =>
+	dayjs(
+		season === 'Spring' ? new Date(year, 4, 7) : new Date(year, 11, 15)
+	).day(6);
 
 /**
  * @param {number | Date | string} now
@@ -77,3 +89,36 @@ export const formatCurrency = num => `${ num < 0 ? '\u2212' : '' }$${ Math.abs(n
 export const formatCurrencyOutput = num => (typeof num === 'number' && !isNaN(num)) ? formatCurrency(num) : '$\u2014';
 
 export const formatDate = date => dayjs(date).format('ddd, MMMM D, YYYY');
+
+/**
+ * Parses a row from the Flex Point usage table
+ * @param {string} row - the row, each cell separated by tabs
+ * @returns {parsedRow} the date and the amount changed, or null if an invalid row
+ */
+export const parseDataRow = row => {
+	const [category, dateString, , amount] = row.split('\t');
+
+	if (amount === undefined || category !== 'Flex Points') return null;
+
+	// TODO: use a library to parse the date dependably
+	const dateStringFormatted = dateString
+		.replace(/\s/g, ' ')
+		.replace(/\B[AP]M/, ' $&'); // Add space before AM or PM so Date.parse understands it.
+	const date = Date.parse(dateStringFormatted);
+	const spentMatch = amount.match(/[\d.]+/);
+
+	if (isNaN(date) || !spentMatch) return null;
+
+	const minusMatch = amount.match(/[-\u2013]/); // look for a minus sign (hyphen or en-dash)
+	let amountChange = +spentMatch[0];
+
+	// account for positive/negative changes
+	if (minusMatch && minusMatch.index < spentMatch.index) {
+		amountChange = -amountChange;
+	}
+
+	return  {
+		date,
+		amountChange,
+	};
+};
