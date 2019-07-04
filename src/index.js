@@ -4,23 +4,24 @@ import Vue from 'vue';
 import Highcharts from 'highcharts';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
-	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt
+	faGithub,
+} from '@fortawesome/free-brands-svg-icons';
+import {
+	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import * as utils from './utils';
 import { parseData } from './parse';
 import sampleData from './sample-data.json';
 
-library.add(faGithub, faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt);
+library.add(
+	faGithub,
+	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt,
+);
 dom.watch();
 
-const Flex = {};
-
-Flex.demoText = sampleData.data;
-
-Vue.prototype.$utils = utils;
+Vue.prototype.$utils = utils; // Make utils accessible from HTML file
 
 const vm = new Vue({
 	el: '#flexible',
@@ -139,7 +140,7 @@ const vm = new Vue({
 				if (rawData.indexOf('Flex Points') === -1) {
 					this.rawDataError = true;
 				} else {
-					Flex.parseRawData(rawData);
+					this.parseRawData(rawData);
 				}
 
 				this.rawData = null;
@@ -321,6 +322,8 @@ const vm = new Vue({
 				[this.semester.start, this.startBalance],
 				[this.semester.end, 0],
 			];
+			const idealSeriesColor = 'red';
+
 			if (this.inSemester) {
 				idealBalanceData.splice(1, 0, [this.now, this.remainingBalanceIdeal]);
 			}
@@ -328,7 +331,7 @@ const vm = new Vue({
 			const series = [
 				{
 					name: 'Ideal balance',
-					color: 'red',
+					color: idealSeriesColor,
 					lineWidth: 1,
 					enableMouseTracking: !data,
 					data: this.getIdealBalanceData()
@@ -343,8 +346,10 @@ const vm = new Vue({
 					data: data,
 					tooltip: {
 						pointFormatter: function () {
-							return `<span style="color:${ this.color }">\u25CF</span> ${ this.series.name }: <b>$${ this.y.toFixed(2) }</b><br/>` +
-								`<span style="color:red">\u25CF</span> Ideal balance: <b>$${ vm.getIdealBalanceAtDate(this.x).toFixed(2) }</b><br/>`;
+							return `<span style="color:${ this.color }">\u25CF</span>` +
+								`${ this.series.name }: <b>${ utils.formatCurrency(this.y) }</b><br/>` +
+								`<span style="color:${ idealSeriesColor }">\u25CF</span>` +
+								`Ideal balance: <b>${ utils.formatCurrency(vm.getIdealBalanceAtDate(this.x)) }</b><br/>`;
 						},
 					},
 				});
@@ -359,7 +364,7 @@ const vm = new Vue({
 						data: [
 							[this.now, this.remainingBalance],
 							[this.semester.end, 0],
-						]
+						],
 					});
 				}
 			}
@@ -411,8 +416,8 @@ const vm = new Vue({
 				tooltip: {
 					// split: true,
 					dateTimeLabelFormats: {
-						day: '%a, %B %e',
-						minute: '%a, %B %e, %l:%M %p',
+						day: '%a, %B %e, %Y',
+						minute: '%a, %B %e, %Y, %l:%M %p',
 					},
 					valueDecimals: 2,
 					valuePrefix: '$',
@@ -423,53 +428,51 @@ const vm = new Vue({
 			});
 		},
 
+		parseRawData: function (rawData) {
+			this.now = this.getNow(); // in case the page has been loaded for a long time
+
+			const { parsedRawData, rawDataComplete } = parseData(rawData, this.startBalance);
+			this.parsedRawData = parsedRawData;
+			this.rawDataComplete = rawDataComplete;
+
+			// Check for invalid data supplied
+			if (this.parsedRawData.length === 0) {
+				this.rawDataError = true;
+				return;
+			}
+
+			this.rawDataError = false;
+
+			// If the data goes all the way back to the beginning, we know the current
+			// balance, so we adjust the remaining balance from 0
+			if (this.rawDataComplete) {
+				this.adjustParsedRawData(this.startBalance - this.parsedRawData[0][1]);
+			} else {
+				this.showMessages.rawDataComplete = true;
+			}
+
+			[, this.remainingBalance] = this.parsedRawData[this.parsedRawData.length - 1];
+
+			if (this.remainingBalance !== 0) {
+				this.parsedRawData.push([this.now, this.remainingBalance]);
+			}
+
+			this.processedView = true;
+			this.makeChart(this.parsedRawData);
+		},
+
 		useDemo: function () {
 			// DEBUG
-			// const now = Date.parse('2018-04-01');
-			// Flex.demoText = Flex.demoText.filter(function (entry) {
-			// 	return entry[0] < now;
+			// sampleData = sampleData.filter(function (entry) {
+			// 	return entry[0] < this.now;
 			// }, this);
 
 			this.rawDataComplete = true;
-			this.startBalance = Flex.demoText[0][1];
-			this.remainingBalance = Flex.demoText[Flex.demoText.length - 1][1];
-			this.now = Flex.demoText[Flex.demoText.length - 1][0];
+			this.startBalance = sampleData[0][1];
+			[this.now, this.remainingBalance] = sampleData[sampleData.length - 1];
 
 			this.processedView = true;
-			this.makeChart(Flex.demoText);
+			this.makeChart(sampleData);
 		},
 	},
 });
-
-Flex.parseRawData = function (rawData) {
-	vm.now = vm.getNow(); // in case the page has been loaded for a long time
-
-	const { parsedRawData, rawDataComplete } = parseData(rawData, vm.startBalance);
-	vm.parsedRawData = parsedRawData;
-	vm.rawDataComplete = rawDataComplete;
-
-	// Check for invalid data supplied
-	if (vm.parsedRawData.length === 0) {
-		vm.rawDataError = true;
-		return;
-	}
-
-	vm.rawDataError = false;
-
-	// If the data goes all the way back to the beginning, we know the current
-	// balance, so we adjust the remaining balance from 0
-	if (vm.rawDataComplete) {
-		vm.adjustParsedRawData(vm.startBalance - vm.parsedRawData[0][1]);
-	} else {
-		vm.showMessages.rawDataComplete = true;
-	}
-
-	[vm.now, vm.remainingBalance] = vm.parsedRawData[vm.parsedRawData.length - 1];
-
-	if (vm.remainingBalance !== 0) {
-		vm.parsedRawData.push([vm.now, vm.remainingBalance]);
-	}
-
-	vm.processedView = true;
-	vm.makeChart(vm.parsedRawData);
-};

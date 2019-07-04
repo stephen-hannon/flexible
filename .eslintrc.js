@@ -2,28 +2,37 @@ module.exports = {
     "env": {
         "browser": true,
         "es6": true,
-        "commonjs": true
+        "commonjs": true,
     },
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaVersion": 2017,
-        "sourceType": "module"
+        "sourceType": "module",
     },
     "rules": {
         "indent": [
             "warn",
-            "tab"
+            "tab",
         ],
         "quotes": [
             "error",
-            "single"
+            "single",
         ],
         "semi": [
             "error",
-            "always"
+            "always",
         ],
         "no-useless-escape": "warn",
         "no-trailing-spaces": "warn",
-        "no-console": "warn"
-    }
+        "no-console": "warn",
+        "max-len": [
+            "error",
+            {
+                "code": 120,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true,
+                "ignoreRegExpLiterals": true,
+            },
+        ],
+    },
 };
