@@ -5,9 +5,12 @@ import Highcharts from 'highcharts';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt
+} from '@fortawesome/free-solid-svg-icons';
 
 import * as utils from './utils';
+import { parseData } from './parse';
 import sampleData from './sample-data.json';
 
 library.add(faGithub, faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt);
@@ -114,7 +117,10 @@ const vm = new Vue({
 			return (semester.year === this.semester.year) ? this.semester : semester;
 		},
 		spentBalance: function () {
-			return this.$utils.addCurrency(this.startBalance, -(this.remainingBalance || this.remainingBalanceIdeal));
+			return this.$utils.addCurrency(
+				this.startBalance,
+				-(this.remainingBalance || this.remainingBalanceIdeal)
+			);
 		},
 	},
 
@@ -203,7 +209,9 @@ const vm = new Vue({
 			if (!this.rawDataComplete && !isNaN(remainingBalance)) {
 				this.showMessages.rawDataComplete = false;
 				this.remainingBalance = remainingBalance;
-				this.adjustParsedRawData(remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]);
+				this.adjustParsedRawData(
+					remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]
+				);
 				this.makeChart(this.parsedRawData);
 			}
 		},
@@ -252,18 +260,6 @@ const vm = new Vue({
 		 */
 		ctrlOrCmd: function () {
 			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
-		},
-
-		/**
-		 * Finds the last semester whose end date is before `date`
-		 * @param {number} date - the current date, in milliseconds since the epoch
-		 * @returns {object} the semester of `date`
-		 */
-		findSemester: function (date) {
-			return this.semesters.reduce(function(prevSemester, curSemester) {
-				// Find the last semester where we haven't reached the end
-				return (date < curSemester.end + utils.softSemesterLimit) ? curSemester : prevSemester;
-			});
 		},
 
 		getIdealBalanceAtDate: function (date, semester = this.semester) {
@@ -445,38 +441,12 @@ const vm = new Vue({
 	},
 });
 
-
-// How we parse:
-// Iterate through the table data (which is in reverse chronological order)
-// Prepend each flex point change to the beginning of the data list, assuming for now that it ends at zero.
-// Stop iterating when we reach a row that is the addition of the full balance (i.e., the semester start).
-// If this is never reached (i.e., some data is missing), ask them for their current balance and attempt to
-// display the data that way.
 Flex.parseRawData = function (rawData) {
 	vm.now = vm.getNow(); // in case the page has been loaded for a long time
 
-	const data = rawData.split('\n');
-
-	vm.parsedRawData = [];
-	let previousChange = 0;
-	vm.rawDataComplete = false;
-
-	for(let i = 0; i < data.length && !vm.rawDataComplete; i++) {
-		const parseResult = utils.parseDataRow(data[i]);
-
-		if (parseResult !== null) {
-			const { date, amountChange } = parseResult;
-
-			const firstAmount = vm.parsedRawData[0] ? utils.addCurrency(vm.parsedRawData[0][1], -previousChange) : 0;
-			previousChange = amountChange;
-
-			vm.parsedRawData.unshift([date, firstAmount]);
-
-			if (amountChange === vm.startBalance) {
-				vm.rawDataComplete = true;
-			}
-		}
-	}
+	const { parsedRawData, rawDataComplete } = parseData(rawData, vm.startBalance);
+	vm.parsedRawData = parsedRawData;
+	vm.rawDataComplete = rawDataComplete;
 
 	// Check for invalid data supplied
 	if (vm.parsedRawData.length === 0) {
@@ -494,8 +464,7 @@ Flex.parseRawData = function (rawData) {
 		vm.showMessages.rawDataComplete = true;
 	}
 
-	vm.remainingBalance = vm.parsedRawData[vm.parsedRawData.length - 1][1];
-	vm.now = vm.parsedRawData[vm.parsedRawData.length - 1][0];
+	[vm.now, vm.remainingBalance] = vm.parsedRawData[vm.parsedRawData.length - 1];
 
 	if (vm.remainingBalance !== 0) {
 		vm.parsedRawData.push([vm.now, vm.remainingBalance]);
