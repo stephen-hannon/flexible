@@ -55,10 +55,10 @@ const vm = new Vue({
 
 	computed: {
 		inSemester: function () {
-			return (this.now > this.semester.start - this.$utils.softSemesterLimit);
+			return (this.now > this.semester.start - utils.softSemesterLimit);
 		},
 		inSemesterCurrent: function () {
-			return (this.getNow() > this.semesterCurrent.start - this.$utils.softSemesterLimit);
+			return (this.getNow() > this.semesterCurrent.start - utils.softSemesterLimit);
 		},
 		rates: function () {
 			if (!this.semester) {
@@ -72,11 +72,11 @@ const vm = new Vue({
 			const remainingBalance = this.remainingBalance || this.remainingBalanceIdeal;
 
 			const msPast = Math.min(this.now, this.semester.end) - this.semester.start;
-			const daysPast = msPast / this.$utils.MS_PER_DAY;
+			const daysPast = msPast / utils.MS_PER_DAY;
 			const weeksPast = daysPast / DAYS_PER_WEEK;
 
 			const msFuture = this.semester.end - Math.max(this.now, this.semester.start);
-			const daysFuture = msFuture / this.$utils.MS_PER_DAY;
+			const daysFuture = msFuture / utils.MS_PER_DAY;
 			const weeksFuture = daysFuture / DAYS_PER_WEEK;
 
 			return {
@@ -102,7 +102,7 @@ const vm = new Vue({
 			return this.remainingBalance - this.remainingBalanceIdeal || 0;
 		},
 		semester: function () {
-			const semester = this.$utils.findSemester(this.now);
+			const semester = utils.findSemester(this.now);
 			if (this.manualDates.start) {
 				semester.start += this.manualDates.start;
 			}
@@ -112,13 +112,14 @@ const vm = new Vue({
 			return semester;
 		},
 		semesterCurrent: function () {
-			const semester = this.$utils.findSemester(this.getNow());
+			const semester = utils.findSemester(this.getNow());
 			// this.semester may have customized dates, so use that.
 			// TODO: Customized dates could make findSemester not line up with this.semester.
+			// Move the manualDates logic from `semester` to a reusable method.
 			return (semester.year === this.semester.year) ? this.semester : semester;
 		},
 		spentBalance: function () {
-			return this.$utils.addCurrency(
+			return utils.addCurrency(
 				this.startBalance,
 				-(this.remainingBalance || this.remainingBalanceIdeal)
 			);
@@ -226,7 +227,7 @@ const vm = new Vue({
 			if (!adjustmentAmount) return;
 
 			this.parsedRawData = this.parsedRawData.map(function (original) {
-				original[1] = this.$utils.addCurrency(original[1], adjustmentAmount);
+				original[1] = utils.addCurrency(original[1], adjustmentAmount);
 				return original;
 			}, this);
 		},
@@ -239,7 +240,7 @@ const vm = new Vue({
 		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is `true`
 		 */
 		changeSemesterDate: function (startOrEnd, deltaDay, validateOnly) {
-			const deltaMs = deltaDay * this.$utils.MS_PER_DAY;
+			const deltaMs = deltaDay * utils.MS_PER_DAY;
 			if (startOrEnd === 'start') {
 				if (this.semester.start + deltaMs < this.semester.end) {
 					if (validateOnly) return true;
@@ -276,10 +277,10 @@ const vm = new Vue({
 
 			this.currentIdealBalanceIndex = null;
 
-			for (let date = this.semester.start; date < this.semester.end; date += this.$utils.MS_PER_DAY) {
+			for (let date = this.semester.start; date < this.semester.end; date += utils.MS_PER_DAY) {
 				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
 
-				if (this.now >= date && this.now < date + this.$utils.MS_PER_DAY) {
+				if (this.now >= date && this.now < date + utils.MS_PER_DAY) {
 					const MS_PER_MINUTE = 1000 * 60;
 					const nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
 					idealBalanceData.push({
@@ -451,9 +452,15 @@ const vm = new Vue({
 				this.showMessages.rawDataComplete = true;
 			}
 
-			[, this.remainingBalance] = this.parsedRawData[this.parsedRawData.length - 1];
+			let lastDate;
+			[lastDate, this.remainingBalance] = this.parsedRawData[this.parsedRawData.length - 1];
 
-			if (this.remainingBalance !== 0) {
+			const dataSemester = utils.findSemester(lastDate);
+			// If the data was from a different (previous) semester, update `now` to match this semester.
+			if (dataSemester.year !== this.semester.year) {
+				this.now = lastDate;
+			} else if (this.remainingBalance !== 0) {
+				// `else if` because we don't need a duplicate point if `this.now` is already `lastDate`.
 				this.parsedRawData.push([this.now, this.remainingBalance]);
 			}
 
