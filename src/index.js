@@ -11,6 +11,7 @@ import {
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
+import * as filters from './filters';
 import * as utils from './utils';
 import { parseData } from './parse';
 import sampleData from './sample-data.json';
@@ -21,10 +22,16 @@ library.add(
 );
 dom.watch();
 
-Vue.prototype.$utils = utils; // Make utils accessible from HTML file
+Vue.config.productionTip = false;
 
 const vm = new Vue({
 	el: '#flexible',
+
+	filters: {
+		currency: filters.formatCurrency,
+		currencySafe: filters.formatCurrencySafe,
+		date: filters.formatDate,
+	},
 
 	data: {
 		currentIdealBalanceIndex: null,
@@ -102,14 +109,7 @@ const vm = new Vue({
 			return this.remainingBalance - this.remainingBalanceIdeal || 0;
 		},
 		semester: function () {
-			const semester = utils.findSemester(this.now);
-			if (this.manualDates.start) {
-				semester.start += this.manualDates.start;
-			}
-			if (this.manualDates.end) {
-				semester.end += this.manualDates.end;
-			}
-			return semester;
+			return this.findSemesterAdjusted(this.now);
 		},
 		semesterCurrent: function () {
 			const semester = utils.findSemester(this.getNow());
@@ -237,7 +237,7 @@ const vm = new Vue({
 		 * @param {'start'|'end'} startOrEnd - whether the start or end date should be changed
 		 * @param {number} deltaDay - how many days to add (can be negative)
 		 * @param {boolean} validateOnly - if the function should only validate if the change can be made
-		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is `true`
+		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is truthy
 		 */
 		changeSemesterDate: function (startOrEnd, deltaDay, validateOnly) {
 			const deltaMs = deltaDay * utils.MS_PER_DAY;
@@ -262,6 +262,21 @@ const vm = new Vue({
 		 */
 		ctrlOrCmd: function () {
 			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
+		},
+
+		/**
+		 * Extends `utils.findSemester` to take into account `manualDates`
+		 * @param {string | number | Date} now
+		 */
+		findSemesterAdjusted: function (now) {
+			const semester = utils.findSemester(now);
+			if (this.manualDates.start) {
+				semester.start += this.manualDates.start;
+			}
+			if (this.manualDates.end) {
+				semester.end += this.manualDates.end;
+			}
+			return semester;
 		},
 
 		getIdealBalanceAtDate: function (date, semester = this.semester) {
@@ -348,9 +363,9 @@ const vm = new Vue({
 					tooltip: {
 						pointFormatter: function () {
 							return `<span style="color:${ this.color }">\u25CF</span>` +
-								`${ this.series.name }: <b>${ utils.formatCurrency(this.y) }</b><br/>` +
+								`${ this.series.name }: <b>${ filters.formatCurrency(this.y) }</b><br/>` +
 								`<span style="color:${ idealSeriesColor }">\u25CF</span>` +
-								`Ideal balance: <b>${ utils.formatCurrency(vm.getIdealBalanceAtDate(this.x)) }</b><br/>`;
+								`Ideal balance: <b>${ filters.formatCurrency(vm.getIdealBalanceAtDate(this.x)) }</b><br/>`;
 						},
 					},
 				});

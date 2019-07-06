@@ -64,20 +64,4 @@ describe('utils.js', () => {
 				.toHaveProperty('name', 'Spring 2020');
 		});
 	});
-
-	describe('formatCurrency', () => {
-		it('formats positive currency', () => {
-			expect(utils.formatCurrency(0)).toBe('$0.00');
-		});
-		it('formats negative currency', () => {
-			expect(utils.formatCurrency(-1.23)).toBe('\u2212$1.23');
-		});
-	});
-
-	describe('formatDate', () => {
-		it('formats a date', () => {
-			expect(utils.formatDate(new Date(2019, 5, 15)))
-				.toBe('Sat, June 15, 2019');
-		});
-	});
 });
