@@ -1,4 +1,4 @@
-import * as filters from '../src/filters';
+import * as filters from '../src/js/filters';
 
 describe('filters.js', () => {
 	describe('formatCurrency', () => {

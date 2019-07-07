@@ -1,4 +1,4 @@
-import * as parse from '../src/parse';
+import * as parse from '../src/js/parse';
 
 describe('parse.js', () => {
 	describe('parseData', () => {

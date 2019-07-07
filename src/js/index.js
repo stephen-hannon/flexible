@@ -14,7 +14,7 @@ import {
 import * as filters from './filters';
 import * as utils from './utils';
 import { parseData } from './parse';
-import sampleData from './sample-data.json';
+import sampleData from '../assets/sample-data.json';
 
 library.add(
 	faGithub,
