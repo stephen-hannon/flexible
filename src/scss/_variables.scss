@@ -1,14 +1,16 @@
 // Colors
 $color-ink:        #070B1C;
 $color-white:      #FFFFFF;
-$color-primary:    #27BC68;
 $color-rose:       #F45B69;
+$color-green:      #27BC68;
 $color-royalblue:  #005DBA;
 
+$color-primary:    $color-green;
 $color-error:      $color-rose;
 $color-message:    change-color($color-error, $hue: hue($color-royalblue));
 
-$color-graphlines: steelblue;
+$color-graph-primary:   steelblue;
+$color-graph-secondary: $color-rose;
 
 // Fonts
 $font-sans-serif: 'PT Sans', 'Segoe UI', Optima, Tahoma, Geneva, sans-serif;
@@ -19,3 +21,8 @@ $size-border: 1.5px;
 
 // Transitions
 $transition-fast: 0.2s;
+
+:export {
+	colorGraphPrimary: $color-graph-primary;
+	colorGraphSecondary: $color-graph-secondary;
+}

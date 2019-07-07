@@ -15,6 +15,7 @@ import * as filters from './filters';
 import * as utils from './utils';
 import { parseData } from './parse';
 import sampleData from '../assets/sample-data.json';
+import styles from '../scss/_variables.scss';
 
 library.add(
 	faGithub,
@@ -338,7 +339,6 @@ const vm = new Vue({
 				[this.semester.start, this.startBalance],
 				[this.semester.end, 0],
 			];
-			const idealSeriesColor = 'red';
 
 			if (this.inSemester) {
 				idealBalanceData.splice(1, 0, [this.now, this.remainingBalanceIdeal]);
@@ -347,8 +347,8 @@ const vm = new Vue({
 			const series = [
 				{
 					name: 'Ideal balance',
-					color: idealSeriesColor,
-					lineWidth: 1,
+					color: styles.colorGraphSecondary,
+					// lineWidth: 1,
 					enableMouseTracking: !data,
 					data: this.getIdealBalanceData()
 				},
@@ -357,14 +357,14 @@ const vm = new Vue({
 			if (data) {
 				series.push({
 					name: 'Actual balance',
-					color: 'steelblue',
+					color: styles.colorGraphPrimary,
 					step: (this.quickBalance === null) ? 'left' : null,
 					data: data,
 					tooltip: {
 						pointFormatter: function () {
 							return `<span style="color:${ this.color }">\u25CF</span>` +
 								`${ this.series.name }: <b>${ filters.formatCurrency(this.y) }</b><br/>` +
-								`<span style="color:${ idealSeriesColor }">\u25CF</span>` +
+								`<span style="color:${ styles.colorGraphSecondary }">\u25CF</span>` +
 								`Ideal balance: <b>${ filters.formatCurrency(vm.getIdealBalanceAtDate(this.x)) }</b><br/>`;
 						},
 					},
@@ -374,7 +374,7 @@ const vm = new Vue({
 				if (this.inSemester && this.remainingBalance !== 0) {
 					series.push({
 						name: 'Projected balance',
-						color: 'steelblue',
+						color: styles.colorGraphPrimary,
 						dashStyle: 'shortdash',
 						enableMouseTracking: false,
 						data: [

@@ -130,7 +130,13 @@
 			<h3 id="results-header">
 				{{ semester.name }}
 				<template v-if="processedView">balance: {{ remainingBalance | currency }}
-					({{ Math.abs(remainingBalanceRelative) | currency }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
+					(<span
+						:class="{
+							'color-behind': remainingBalanceRelative &lt; -10,
+							'color-ahead': remainingBalanceRelative &gt; 10,
+						}"
+					>{{ Math.abs(remainingBalanceRelative) | currency }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }}</span>)
+				</template>
 				<template v-else>ideal balance: {{ remainingBalanceIdeal | currency }}</template>
 			</h3>
 

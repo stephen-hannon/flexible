@@ -110,6 +110,13 @@ h4 {
 	margin: 0.8rem 0;
 }
 
+.color-behind {
+	color: $color-rose;
+}
+.color-ahead {
+	color: $color-green;
+}
+
 .errors {
 	position: absolute;
 }
@@ -317,7 +324,7 @@ a {
 	li {
 		padding: 0.4rem;
 		box-sizing: border-box;
-		border-bottom: 2px solid $color-graphlines;
+		border-bottom: 2px solid $color-graph-primary;
 	}
 }
 .stats-list-dashed li {
