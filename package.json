@@ -9,8 +9,8 @@
   "scripts": {
     "build:prod": "webpack --config ./build/webpack.prod.js",
     "build:dev": "webpack --config ./build/webpack.dev.js",
-    "build:scss": "sass ./src/style.scss ./dist/style.css",
-    "lint": "eslint ./src/*.js",
+    "build:scss": "sass ./src/scss/style.scss ./dist/style.css",
+    "lint": "eslint ./src/**/*.js",
     "start": "webpack-dev-server --open --config ./build/webpack.dev.js",
     "test": "jest"
   },
