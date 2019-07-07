@@ -63,7 +63,6 @@
 					<h4>Quick</h4>
 					<div class="rowbox-content">
 						<p>Enter your current balance &amp; press <kbd>Enter</kbd></p>
-						<!-- TODO: placeholder should always be ideal balance for current semester -->
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:placeholder="remainingBalanceIdealCurrent.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemesterCurrent"
 							:title="inSemesterCurrent ? '' : 'Cannot use quick balance outside of semester'" />
@@ -130,9 +129,9 @@
 			<h2>Results</h2>
 			<h3 id="results-header">
 				{{ semester.name }}
-				<template v-if="processedView">balance: {{ $utils.formatCurrency(remainingBalance) }}
-					({{ $utils.formatCurrency(Math.abs(remainingBalanceRelative)) }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
-				<template v-else>ideal balance: {{ $utils.formatCurrency(remainingBalanceIdeal) }}</template>
+				<template v-if="processedView">balance: {{ remainingBalance | currency }}
+					({{ Math.abs(remainingBalanceRelative) | currency }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }})</template>
+				<template v-else>ideal balance: {{ remainingBalanceIdeal | currency }}</template>
 			</h3>
 
 			<div class="rowbox-container">
@@ -150,7 +149,7 @@
 						</button>
 					</h4>
 					<div class="rowbox-content">
-						<p>{{ $utils.formatDate(semester.start) }}</p>
+						<p>{{ semester.start | date }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" v-model.lazy.number="startBalance" />
 					</div>
 				</div>
@@ -158,7 +157,7 @@
 				<div class="rowbox-box">
 					<h4>Now</h4>
 					<div class="rowbox-content">
-						<p>{{ $utils.formatDate(now) }}</p>
+						<p>{{ now | date }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
 							:value="(remainingBalance || remainingBalanceIdeal || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value); $event.target.blur()" />
 
@@ -187,7 +186,7 @@
 						</button>
 					</h4>
 					<div class="rowbox-content">
-						<p>{{ $utils.formatDate(semester.end) }}</p>
+						<p>{{ semester.end | date }}</p>
 						$<input type="number" class="appearance-textfield hide-steppers" value="0" disabled />
 					</div>
 				</div>
@@ -197,18 +196,18 @@
 				<div class="rowbox-box rowbox-wide">
 					<h4>Before now</h4>
 					<ul class="stats-list">
-						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.past && rates.past.total) }}</span> in total</li>
-						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.past && rates.past.perDay) }}</span> per day</li>
-						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.past && rates.past.perWeek) }}</span> per week</li>
+						<li><span class="stat">{{ rates.past && rates.past.total | currencySafe }}</span> in total</li>
+						<li><span class="stat">{{ rates.past && rates.past.perDay | currencySafe }}</span> per day</li>
+						<li><span class="stat">{{ rates.past && rates.past.perWeek | currencySafe }}</span> per week</li>
 					</ul>
 				</div>
 
 				<div class="rowbox-box rowbox-wide">
 					<h4>After now</h4>
 					<ul class="stats-list stats-list-dashed">
-						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.future && rates.future.total) }}</span> in total</li>
-						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.future && rates.future.perDay) }}</span> per day</li>
-						<li><span class="stat">{{ $utils.formatCurrencyOutput(rates.future && rates.future.perWeek) }}</span> per week</li>
+						<li><span class="stat">{{ rates.future && rates.future.total | currencySafe }}</span> in total</li>
+						<li><span class="stat">{{ rates.future && rates.future.perDay | currencySafe }}</span> per day</li>
+						<li><span class="stat">{{ rates.future && rates.future.perWeek | currencySafe }}</span> per week</li>
 					</ul>
 				</div>
 			</div>
