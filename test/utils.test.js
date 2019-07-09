@@ -13,6 +13,20 @@ describe('utils.js', () => {
 		});
 	});
 
+	describe('adjustBalances', () => {
+		it('adds 2', () => {
+			const input = [
+				[1, 0],
+				[2, -1],
+			];
+			const output = [
+				[1, 2],
+				[2, 1],
+			];
+			expect(utils.adjustBalances(input, 2)).toEqual(output);
+		});
+	});
+
 	describe('getSemesterStart', () => {
 		[
 			['Fall', 2018, 7, 19],

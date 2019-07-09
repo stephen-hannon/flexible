@@ -21,6 +21,16 @@ export const softSemesterLimit = MS_PER_DAY * 7; // 1 week
 export const addCurrency = (x, y) => Math.round(x * 100 + y * 100) / 100;
 
 /**
+ * Adds `adjustmentAmount` to the second element of each item in `data`
+ * @param {[number, number][]} data - an array of `[date, balance]` pairs
+ * @param {number} adjustmentAmount
+ * @returns {[number, number][]} the new array
+ */
+export const adjustBalances = (data, adjustmentAmount) => adjustmentAmount
+	? data.map(([first, second]) => [first, addCurrency(second, adjustmentAmount)])
+	: data;
+
+/**
  * For spring: Sunday, January 9-15
  * For fall: Sunday, August 19-25
  * @param {number} year

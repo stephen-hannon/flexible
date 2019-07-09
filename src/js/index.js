@@ -212,25 +212,12 @@ const vm = new Vue({
 			if (!this.rawDataComplete && !isNaN(remainingBalance)) {
 				this.showMessages.rawDataComplete = false;
 				this.remainingBalance = remainingBalance;
-				this.adjustParsedRawData(
+				this.parsedRawData = utils.adjustBalances(
+					this.parsedRawData,
 					remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]
 				);
 				this.makeChart(this.parsedRawData);
 			}
-		},
-
-		/**
-		 * Adjusts `parsedRawData` by adding `adjustmentAmount` to each balance
-		 * @param {number} adjustmentAmount
-		 * @returns {void}
-		 */
-		adjustParsedRawData: function (adjustmentAmount) {
-			if (!adjustmentAmount) return;
-
-			this.parsedRawData = this.parsedRawData.map(function (original) {
-				original[1] = utils.addCurrency(original[1], adjustmentAmount);
-				return original;
-			}, this);
 		},
 
 		/**
@@ -454,7 +441,10 @@ const vm = new Vue({
 			// If the data goes all the way back to the beginning, we know the current
 			// balance, so we adjust the remaining balance from 0
 			if (this.rawDataComplete) {
-				this.adjustParsedRawData(this.startBalance - this.parsedRawData[0][1]);
+				this.parsedRawData = utils.adjustBalances(
+					this.parsedRawData,
+					this.startBalance - this.parsedRawData[0][1],
+				);
 			} else {
 				this.showMessages.rawDataComplete = true;
 			}
@@ -466,8 +456,8 @@ const vm = new Vue({
 			// If the data was from a different (previous) semester, update `now` to match this semester.
 			if (dataSemester.year !== this.semester.year) {
 				this.now = lastDate;
-			} else if (this.remainingBalance !== 0) {
-				// `else if` because we don't need a duplicate point if `this.now` is already `lastDate`.
+			} else {
+				// `else` because we don't need a duplicate point if `this.now` is already `lastDate`.
 				this.parsedRawData.push([this.now, this.remainingBalance]);
 			}
 
