@@ -288,40 +288,15 @@ const vm = new Vue({
 			return (msFuture / msOverall) * this.startBalance;
 		},
 
-		getIdealBalanceData: function () {
+		getIdealBalanceData: function (timeStep = utils.MS_PER_DAY) {
 			const idealBalanceData = [];
 
-			this.currentIdealBalanceIndex = null;
-
-			for (let date = this.semester.start; date < this.semester.end; date += utils.MS_PER_DAY) {
+			for (let date = this.semester.start; date < this.semester.end; date += timeStep) {
 				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
-
-				if (this.now >= date && this.now < date + utils.MS_PER_DAY) {
-					const MS_PER_MINUTE = 1000 * 60;
-					const nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
-					idealBalanceData.push({
-						x: nowNearestMinute,
-						y: this.remainingBalanceIdeal,
-						marker: {
-							enabled: true
-						}
-					});
-					this.currentIdealBalanceIndex = idealBalanceData.length - 1;
-				}
 			}
 
 			// always include the last data point ($0)
-			idealBalanceData.push({
-				x: this.semester.end,
-				y: 0,
-				marker: {
-					enabled: (this.currentIdealBalanceIndex === null)
-				}
-			});
-
-			if (this.currentIdealBalanceIndex === null) {
-				this.currentIdealBalanceIndex = idealBalanceData.length - 1;
-			}
+			idealBalanceData.push([this.semester.end, 0]);
 
 			return idealBalanceData;
 		},
@@ -335,14 +310,29 @@ const vm = new Vue({
 		 * @returns {Highcharts.ChartObject}
 		 */
 		makeChart: function (data) {
-			const idealBalanceData = [
-				[this.semester.start, this.startBalance],
-				[this.semester.end, 0],
-			];
+			// If data was provided, the ideal series won't have mouse tracking, so we only have to
+			// graph the beginning and end of the semester. Input Infinity to ensure
+			// getIdealBalanceData's for loop only runs once.
+			const idealBalanceData = this.getIdealBalanceData(data ? Infinity : undefined);
 
-			if (this.inSemester) {
-				idealBalanceData.splice(1, 0, [this.now, this.remainingBalanceIdeal]);
+			let currentIdealBalanceIndex = idealBalanceData.findIndex(function (value) {
+				return value[0] >= this.now;
+			}, this);
+
+			if (currentIdealBalanceIndex === -1) {
+				currentIdealBalanceIndex = idealBalanceData.length;
 			}
+
+			const MS_PER_MINUTE = 1000 * 60;
+			const nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
+
+			idealBalanceData.splice(currentIdealBalanceIndex, 0, {
+				x: nowNearestMinute,
+				y: this.remainingBalanceIdeal,
+				marker: {
+					enabled: true,
+				},
+			});
 
 			const series = [
 				{
@@ -350,7 +340,8 @@ const vm = new Vue({
 					color: styles.colorGraphSecondary,
 					// lineWidth: 1,
 					enableMouseTracking: !data,
-					data: this.getIdealBalanceData()
+					data: idealBalanceData,
+					id: 'ideal',
 				},
 			];
 
@@ -360,6 +351,7 @@ const vm = new Vue({
 					color: styles.colorGraphPrimary,
 					step: (this.quickBalance === null) ? 'left' : null,
 					data: data,
+					id: 'actual',
 					tooltip: {
 						pointFormatter: function () {
 							return `<span style="color:${ this.color }">\u25CF</span>` +
@@ -381,18 +373,18 @@ const vm = new Vue({
 							[this.now, this.remainingBalance],
 							[this.semester.end, 0],
 						],
+						id: 'projected',
+						linkedTo: ':previous',
 					});
 				}
 			}
-
-			const _this = this;
 
 			return Highcharts.chart('chart', {
 				chart: {
 					type: 'line',
 					events: {
 						load: function () {
-							const point = this.series[0].data[_this.currentIdealBalanceIndex];
+							const point = this.get('ideal').data[currentIdealBalanceIndex];
 							this.tooltip.refresh(point);
 						},
 					},
