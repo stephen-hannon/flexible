@@ -77,7 +77,6 @@ const vm = new Vue({
 			}
 
 			const DAYS_PER_WEEK = 7;
-			const remainingBalance = this.remainingBalance || this.remainingBalanceIdeal;
 
 			const msPast = Math.min(this.now, this.semester.end) - this.semester.start;
 			const daysPast = msPast / utils.MS_PER_DAY;
@@ -94,9 +93,9 @@ const vm = new Vue({
 					perWeek: this.spentBalance / weeksPast || 0,
 				},
 				future: {
-					total: remainingBalance,
-					perDay: remainingBalance / daysFuture || 0,
-					perWeek: remainingBalance / weeksFuture || 0,
+					total: this.remainingBalanceSafe,
+					perDay: this.remainingBalanceSafe / daysFuture || 0,
+					perWeek: this.remainingBalanceSafe / weeksFuture || 0,
 				},
 			};
 		},
@@ -107,7 +106,13 @@ const vm = new Vue({
 			return this.getIdealBalanceAtDate(this.getNow(), this.semesterCurrent);
 		},
 		remainingBalanceRelative: function () {
-			return this.remainingBalance - this.remainingBalanceIdeal || 0;
+			return this.remainingBalanceSafe - this.remainingBalanceIdeal;
+		},
+		/**
+		 * If `remainingBalance` is null (unset), fall back to `remainingBalanceIdeal`
+		 */
+		remainingBalanceSafe: function () {
+			return this.remainingBalance == null ? this.remainingBalanceIdeal : this.remainingBalance;
 		},
 		semester: function () {
 			return this.findSemesterAdjusted(this.now);
@@ -122,7 +127,7 @@ const vm = new Vue({
 		spentBalance: function () {
 			return utils.addCurrency(
 				this.startBalance,
-				-(this.remainingBalance || this.remainingBalanceIdeal)
+				-this.remainingBalanceSafe
 			);
 		},
 	},
