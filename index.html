@@ -164,8 +164,15 @@
 					<h4>Now</h4>
 					<div class="rowbox-content">
 						<p>{{ now | date }}</p>
-						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							:value="(remainingBalance || remainingBalanceIdeal || 0).toFixed(2)" :disabled="!inSemester || rawDataComplete" @change="adjustIncompleteData($event.target.value); $event.target.blur()" />
+						$<input
+							type="number"
+							class="appearance-textfield hide-steppers"
+							min="0" :max="startBalance"
+							step="0.01"
+							:value="remainingBalanceSafe.toFixed(2)"
+							:disabled="!inSemester || rawDataComplete"
+							@change="adjustIncompleteData($event.target.value); $event.target.blur()"
+							/>
 
 						<div class="errors" v-cloak>
 							<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
