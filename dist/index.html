@@ -194,7 +194,7 @@
 						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">
 							<i class="fas fa-arrow-right"></i>
 						</button>
-						<button class="icon-button" title="Reset end day" v-if="manualDates.end" @click="manualDates.end = null">
+						<button class="icon-button" title="Reset end day" v-if="manualDates.end" @click="manualDates.end = null; makeChart()">
 							<i class="fas fa-redo"></i>
 						</button>
 					</h4>

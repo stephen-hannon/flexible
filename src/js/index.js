@@ -25,7 +25,7 @@ dom.watch();
 
 Vue.config.productionTip = false;
 
-const vm = new Vue({
+new Vue({
 	el: '#flexible',
 
 	filters: {
@@ -307,11 +307,19 @@ const vm = new Vue({
 		 */
 		makeChart: function () {
 			const data = this.processedView === 'quick' ? this.quickData : this.chartData;
+			const projectedData = [
+				[this.now, this.remainingBalance],
+				[this.semester.end, 0],
+			];
 
-			// If data was provided, the ideal series won't have mouse tracking, so we only have to
-			// graph the beginning and end of the semester. Input Infinity to ensure
-			// getIdealBalanceData's for loop only runs once.
-			const idealBalanceData = this.getIdealBalanceData(data ? Infinity : undefined);
+			const idealBalanceData = data
+				? [...data, ...projectedData].map(function ([date]) {
+					return [
+						date,
+						this.getIdealBalanceAtDate(date),
+					];
+				}, this)
+				: this.getIdealBalanceData();
 
 			let currentIdealBalanceIndex = idealBalanceData.findIndex(function (value) {
 				return value[0] >= this.now;
@@ -336,8 +344,6 @@ const vm = new Vue({
 				{
 					name: 'Ideal balance',
 					color: styles.colorGraphSecondary,
-					// lineWidth: 1,
-					enableMouseTracking: !data,
 					data: idealBalanceData,
 					id: 'ideal',
 				},
@@ -350,14 +356,6 @@ const vm = new Vue({
 					step: (this.processedView !== 'quick') ? 'left' : null,
 					data: data,
 					id: 'actual',
-					tooltip: {
-						pointFormatter: function () {
-							return `<span style="color:${ this.color }">\u25CF</span>` +
-								`${ this.series.name }: <b>${ filters.formatCurrency(this.y) }</b><br/>` +
-								`<span style="color:${ styles.colorGraphSecondary }">\u25CF</span>` +
-								`Ideal balance: <b>${ filters.formatCurrency(vm.getIdealBalanceAtDate(this.x)) }</b><br/>`;
-						},
-					},
 				});
 
 				// If we're in the middle of the semester, add a dashed line with projected usage
@@ -366,11 +364,7 @@ const vm = new Vue({
 						name: 'Projected balance',
 						color: styles.colorGraphPrimary,
 						dashStyle: 'shortdash',
-						enableMouseTracking: false,
-						data: [
-							[this.now, this.remainingBalance],
-							[this.semester.end, 0],
-						],
+						data: projectedData,
 						id: 'projected',
 						linkedTo: ':previous',
 					});
@@ -381,10 +375,17 @@ const vm = new Vue({
 				chart: {
 					type: 'line',
 					events: {
-						load: function () {
-							const point = this.get('ideal').data[currentIdealBalanceIndex];
-							this.tooltip.refresh(point);
-						},
+						load: this.processedView !== 'demo'
+							? function () {
+								const pointIdeal = this.get('ideal').data[currentIdealBalanceIndex];
+								const pointActual = this.get('actual')
+									&& this.get('actual').data[currentIdealBalanceIndex];
+
+								this.tooltip.refresh(
+									pointActual ? [pointIdeal, pointActual] : [pointIdeal]
+								);
+							}
+							: undefined,
 					},
 				},
 				title: {
@@ -420,7 +421,7 @@ const vm = new Vue({
 				},
 				series: series,
 				tooltip: {
-					// split: true,
+					split: true,
 					dateTimeLabelFormats: {
 						day: '%a, %B %e, %Y',
 						minute: '%a, %B %e, %Y, %l:%M %p',
