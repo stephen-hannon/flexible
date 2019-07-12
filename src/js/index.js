@@ -35,6 +35,7 @@ const vm = new Vue({
 	},
 
 	data: {
+		chartData: null,
 		currentIdealBalanceIndex: null,
 		debugNow: null,
 		manualDates: {
@@ -43,8 +44,8 @@ const vm = new Vue({
 		},
 		quickBalance: null,
 		now: Date.now(),
-		parsedRawData: null,
-		processedView: false, // if we're displaying a semester other than the current one
+		/** @type {'quick' | 'parse' | 'demo'} */
+		processedView: null,
 		rawData: '',
 		rawDataComplete: true,
 		rawDataError: false,
@@ -67,6 +68,12 @@ const vm = new Vue({
 		},
 		inSemesterCurrent: function () {
 			return (this.getNow() > this.semesterCurrent.start - utils.softSemesterLimit);
+		},
+		quickData: function () {
+			return [
+				[this.semester.start, this.startBalance],
+				[this.now, this.remainingBalance],
+			];
 		},
 		rates: function () {
 			if (!this.semester) {
@@ -157,16 +164,10 @@ const vm = new Vue({
 		quickBalance: function () {
 			if (this.quickBalance !== null) {
 				this.rawDataComplete = true;
-				this.now = this.getNow();
 
 				this.remainingBalance = this.quickBalance;
-				const balanceData = [
-					[this.semester.start, this.startBalance],
-					[this.now, this.remainingBalance],
-				];
-
-				this.processedView = true;
-				this.makeChart(balanceData);
+				this.processedView = 'quick';
+				this.makeChart();
 				this.quickBalance = null;
 			}
 		},
@@ -207,21 +208,25 @@ const vm = new Vue({
 
 	methods: {
 		/**
-		 * Adjusts `parsedRawData` so its last balance value is `remainingBalance`
+		 * Adjusts `chartData` so its last balance value is `remainingBalance`
 		 * @param {number} remainingBalance
 		 * @returns {void}
 		 */
 		adjustIncompleteData: function (remainingBalance) {
 			remainingBalance = Number(remainingBalance);
 
-			if (!this.rawDataComplete && !isNaN(remainingBalance)) {
+			if (
+				this.processedView === 'parse'
+				&& !this.rawDataComplete
+				&& !isNaN(remainingBalance)
+			) {
 				this.showMessages.rawDataComplete = false;
 				this.remainingBalance = remainingBalance;
-				this.parsedRawData = utils.adjustBalances(
-					this.parsedRawData,
-					remainingBalance - this.parsedRawData[this.parsedRawData.length - 1][1]
+				this.chartData = utils.adjustBalances(
+					this.chartData,
+					remainingBalance - this.chartData[this.chartData.length - 1][1]
 				);
-				this.makeChart(this.parsedRawData);
+				this.makeChart();
 			}
 		},
 
@@ -298,10 +303,11 @@ const vm = new Vue({
 		},
 
 		/**
-		 * @param {[number, number][]} [data] - array of points of the format [timestamp, amount]
 		 * @returns {Highcharts.ChartObject}
 		 */
-		makeChart: function (data) {
+		makeChart: function () {
+			const data = this.processedView === 'quick' ? this.quickData : this.chartData;
+
 			// If data was provided, the ideal series won't have mouse tracking, so we only have to
 			// graph the beginning and end of the semester. Input Infinity to ensure
 			// getIdealBalanceData's for loop only runs once.
@@ -341,7 +347,7 @@ const vm = new Vue({
 				series.push({
 					name: 'Actual balance',
 					color: styles.colorGraphPrimary,
-					step: (this.quickBalance === null) ? 'left' : null,
+					step: (this.processedView !== 'quick') ? 'left' : null,
 					data: data,
 					id: 'actual',
 					tooltip: {
@@ -355,7 +361,7 @@ const vm = new Vue({
 				});
 
 				// If we're in the middle of the semester, add a dashed line with projected usage
-				if (this.inSemester && this.remainingBalance !== 0) {
+				if (this.inSemester) {
 					series.push({
 						name: 'Projected balance',
 						color: styles.colorGraphPrimary,
@@ -432,11 +438,11 @@ const vm = new Vue({
 			this.now = this.getNow(); // in case the page has been loaded for a long time
 
 			const { parsedRawData, rawDataComplete } = parseData(rawData, this.startBalance);
-			this.parsedRawData = parsedRawData;
+			this.chartData = parsedRawData;
 			this.rawDataComplete = rawDataComplete;
 
 			// Check for invalid data supplied
-			if (this.parsedRawData.length === 0) {
+			if (this.chartData.length === 0) {
 				this.rawDataError = true;
 				return;
 			}
@@ -446,16 +452,16 @@ const vm = new Vue({
 			// If the data goes all the way back to the beginning, we know the current
 			// balance, so we adjust the remaining balance from 0
 			if (this.rawDataComplete) {
-				this.parsedRawData = utils.adjustBalances(
-					this.parsedRawData,
-					this.startBalance - this.parsedRawData[0][1],
+				this.chartData = utils.adjustBalances(
+					this.chartData,
+					this.startBalance - this.chartData[0][1],
 				);
 			} else {
 				this.showMessages.rawDataComplete = true;
 			}
 
 			let lastDate;
-			[lastDate, this.remainingBalance] = this.parsedRawData[this.parsedRawData.length - 1];
+			[lastDate, this.remainingBalance] = this.chartData[this.chartData.length - 1];
 
 			const dataSemester = utils.findSemester(lastDate);
 			// If the data was from a different (previous) semester, update `now` to match this semester.
@@ -463,11 +469,11 @@ const vm = new Vue({
 				this.now = lastDate;
 			} else {
 				// `else` because we don't need a duplicate point if `this.now` is already `lastDate`.
-				this.parsedRawData.push([this.now, this.remainingBalance]);
+				this.chartData.push([this.now, this.remainingBalance]);
 			}
 
-			this.processedView = true;
-			this.makeChart(this.parsedRawData);
+			this.processedView = 'parse';
+			this.makeChart();
 		},
 
 		useDemo: function () {
@@ -477,11 +483,12 @@ const vm = new Vue({
 			// }, this);
 
 			this.rawDataComplete = true;
+			this.chartData = sampleData;
 			this.startBalance = sampleData[0][1];
 			[this.now, this.remainingBalance] = sampleData[sampleData.length - 1];
 
-			this.processedView = true;
-			this.makeChart(sampleData);
+			this.processedView = 'demo';
+			this.makeChart();
 		},
 	},
 });
