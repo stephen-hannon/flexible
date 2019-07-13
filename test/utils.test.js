@@ -86,6 +86,10 @@ describe('utils.js', () => {
 			expect(utils.interpolate(0.1, 0.2, 1))
 				.toEqual([0.1, 0.2]);
 		});
+		it('interpolates the same point', () => {
+			expect(utils.interpolate(1, 1, 0.5))
+				.toEqual([1, 1]);
+		});
 	});
 
 	describe('interpolatePoint', () => {

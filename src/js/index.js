@@ -71,7 +71,7 @@ new Vue({
 		},
 		quickData: function () {
 			return utils.interpolateLine(
-				this.semester.start,
+				Math.min(this.semester.start, this.now),
 				this.now,
 				this.startBalance,
 				this.remainingBalance,
@@ -294,7 +294,7 @@ new Vue({
 			const data = this.processedView === 'quick' ? this.quickData : this.chartData;
 			const projectedData = utils.interpolateLine(
 				this.now,
-				this.semester.end,
+				Math.max(this.semester.end, this.now),
 				this.remainingBalance,
 				0
 			);

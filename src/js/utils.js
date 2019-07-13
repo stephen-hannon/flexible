@@ -111,13 +111,6 @@ export const interpolate = (x1, x2, step = MS_PER_DAY) => {
 	returnArr.push(x2);
 
 	return returnArr;
-	// return Array(Math.ceil((x2 - x1) / step) + 1)
-	// 	.fill()
-	// 	.map((_el, index, array) => {
-	// 		const x = index * step + x1;
-	// 		const y = (y2 - y1) * (index / array.length) + y1;
-	// 		return [x, y];
-	// 	});
 };
 
 /**
@@ -145,5 +138,10 @@ export const interpolatePoint = (x, x1, x2, y1, y2) => {
  * @returns {[number, number][]}
  */
 export const interpolateLine = (x1, x2, y1, y2) => {
-	return interpolate(x1, x2).map(x => [x, interpolatePoint(x, x1, x2, y1, y2)]);
+	return x1 !== x2
+		? interpolate(x1, x2).map(x => [x, interpolatePoint(x, x1, x2, y1, y2)])
+		: [
+			[x1, y1],
+			[x2, y2],
+		];
 };
