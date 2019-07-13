@@ -70,10 +70,12 @@ new Vue({
 			return (this.getNow() > this.semesterCurrent.start - utils.softSemesterLimit);
 		},
 		quickData: function () {
-			return [
-				[this.semester.start, this.startBalance],
-				[this.now, this.remainingBalance],
-			];
+			return utils.interpolateLine(
+				this.semester.start,
+				this.now,
+				this.startBalance,
+				this.remainingBalance,
+			);
 		},
 		rates: function () {
 			if (!this.semester) {
@@ -278,24 +280,7 @@ new Vue({
 		},
 
 		getIdealBalanceAtDate: function (date, semester = this.semester) {
-			date = Math.max(semester.start, Math.min(date, semester.end));
-			const msOverall = semester.end - semester.start;
-			const msFuture = semester.end - date;
-
-			return (msFuture / msOverall) * this.startBalance;
-		},
-
-		getIdealBalanceData: function (timeStep = utils.MS_PER_DAY) {
-			const idealBalanceData = [];
-
-			for (let date = this.semester.start; date < this.semester.end; date += timeStep) {
-				idealBalanceData.push([date, this.getIdealBalanceAtDate(date)]);
-			}
-
-			// always include the last data point ($0)
-			idealBalanceData.push([this.semester.end, 0]);
-
-			return idealBalanceData;
+			return utils.interpolatePoint(date, semester.start, semester.end, this.startBalance, 0);
 		},
 
 		getNow: function () {
@@ -307,10 +292,12 @@ new Vue({
 		 */
 		makeChart: function () {
 			const data = this.processedView === 'quick' ? this.quickData : this.chartData;
-			const projectedData = [
-				[this.now, this.remainingBalance],
-				[this.semester.end, 0],
-			];
+			const projectedData = utils.interpolateLine(
+				this.now,
+				this.semester.end,
+				this.remainingBalance,
+				0
+			);
 
 			const idealBalanceData = data
 				? [...data, ...projectedData].map(function ([date]) {
@@ -319,7 +306,12 @@ new Vue({
 						this.getIdealBalanceAtDate(date),
 					];
 				}, this)
-				: this.getIdealBalanceData();
+				: utils.interpolateLine(
+					this.semester.start,
+					this.semester.end,
+					this.startBalance,
+					0,
+				);
 
 			let currentIdealBalanceIndex = idealBalanceData.findIndex(function (value) {
 				return value[0] >= this.now;

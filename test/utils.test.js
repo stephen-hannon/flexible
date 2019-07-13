@@ -78,4 +78,21 @@ describe('utils.js', () => {
 				.toHaveProperty('name', 'Spring 2020');
 		});
 	});
+
+	describe('interpolate', () => {
+		it('interpolates', () => {
+			expect(utils.interpolate(0.5, 3.1, 1))
+				.toEqual([0.5, 1, 2, 3, 3.1]);
+			expect(utils.interpolate(0.1, 0.2, 1))
+				.toEqual([0.1, 0.2]);
+		});
+	});
+
+	describe('interpolatePoint', () => {
+		it('interpolates a point', () => {
+			expect(utils.interpolatePoint(2, 1, 4, 0, 6)).toBe(2);
+			expect(utils.interpolatePoint(2, 0, 1, 0, 1)).toBe(1);
+			expect(utils.interpolatePoint(-1, 0, 1, 0, 1)).toBe(0);
+		});
+	});
 });

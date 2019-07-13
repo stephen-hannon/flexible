@@ -84,3 +84,66 @@ export const findSemester = (now) => {
 		end: getSemesterEnd(year, season).valueOf(),
 	};
 };
+
+/**
+ * Calculates an array of numbers between `x1` and `x2`, such the middle numbers differ from each
+ * other by `step` and are divisible by `step`
+ * @param {number} x1 - the starting number
+ * @param {number} x2 - the ending number
+ * @param {number} step - how much to increase each number by
+ * @returns {number[]}
+ */
+export const interpolate = (x1, x2, step = MS_PER_DAY) => {
+	const returnArr = [];
+	let x = x1;
+
+	const startOffset = step - (x1 % step);
+	if (startOffset) {
+		returnArr.push(x1);
+		x += startOffset;
+	}
+
+	while (x < x2) {
+		returnArr.push(x);
+		x += step;
+	}
+
+	returnArr.push(x2);
+
+	return returnArr;
+	// return Array(Math.ceil((x2 - x1) / step) + 1)
+	// 	.fill()
+	// 	.map((_el, index, array) => {
+	// 		const x = index * step + x1;
+	// 		const y = (y2 - y1) * (index / array.length) + y1;
+	// 		return [x, y];
+	// 	});
+};
+
+/**
+ * Given `x`, computes `y` such that `(x, y)` lies on the line created between `(x1, y1)` and `(x2, y2)`.
+ * `y` is clamped to always be between `y1` and `y2`.
+ * @param {number} x
+ * @param {number} x1
+ * @param {number} x2
+ * @param {number} y1
+ * @param {number} y2
+ * @returns {number} y
+ */
+export const interpolatePoint = (x, x1, x2, y1, y2) => {
+	const xNormalized = (x - x1) / (x2 - x1);
+	const xNormalizedClamped = Math.max(0, Math.min(xNormalized, 1));
+	return xNormalizedClamped * (y2 - y1) + y1;
+};
+
+/**
+ * Outputs an array of evenly spaced `(x, y)` pairs between `(x1, y1)` and `(x2, y2)`
+ * @param {number} x1
+ * @param {number} x2
+ * @param {number} y1
+ * @param {number} y2
+ * @returns {[number, number][]}
+ */
+export const interpolateLine = (x1, x2, y1, y2) => {
+	return interpolate(x1, x2).map(x => [x, interpolatePoint(x, x1, x2, y1, y2)]);
+};
