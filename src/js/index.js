@@ -11,6 +11,8 @@ import {
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
+import MessageComponent from '../Message.vue';
+
 import * as filters from './filters';
 import * as utils from './utils';
 import { parseData } from './parse';
@@ -27,6 +29,10 @@ Vue.config.productionTip = false;
 
 new Vue({
 	el: '#flexible',
+
+	components: {
+		'app-message': MessageComponent,
+	},
 
 	filters: {
 		currency: filters.formatCurrency,

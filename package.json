@@ -12,7 +12,7 @@
     "build:scss": "sass ./src/scss/style.scss ./dist/style.css",
     "lint": "eslint ./src/**/*.js",
     "start": "webpack-dev-server --open --config ./build/webpack.dev.js",
-    "test": "jest"
+    "test": "jest --verbose --color"
   },
   "repository": {
     "type": "git",
@@ -47,6 +47,8 @@
     "sass": "^1.20.1",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
+    "vue-loader": "^15.7.0",
+    "vue-template-compiler": "^2.6.10",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1",

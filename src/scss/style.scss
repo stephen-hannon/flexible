@@ -120,22 +120,7 @@ h4 {
 .errors {
 	position: absolute;
 }
-.form-message {
-	max-width: 30rem;
-	padding: 0.2rem 2rem;
-	margin-top: 1rem;
-	border-top: 3px solid $color-message;
-	background-color: scale-color($color-message, $lightness: 50%);
 
-	p,
-	pre {
-		margin: 0.5rem 0;
-	}
-}
-.form-error {
-	border-top-color: $color-error;
-	background-color: scale-color($color-error, $lightness: 50%);
-}
 .pre-wrap {
 	white-space: pre-wrap;
 	word-wrap: break-word;

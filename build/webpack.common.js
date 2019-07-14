@@ -1,6 +1,7 @@
 /* eslint-env node */
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = (devMode) => ({
 	entry: [
@@ -31,6 +32,9 @@ module.exports = (devMode) => ({
 			test: /\.js$/,
 			exclude: /node_modules/,
 			loader: 'babel-loader'
+		}, {
+			test: /\.vue$/,
+			loader: 'vue-loader'
 		}]
 	},
 	resolve: {
@@ -49,6 +53,7 @@ module.exports = (devMode) => ({
 			// both options are optional
 			filename: '[name].css',
 			chunkFilename: '[id].css'
-		})
+		}),
+		new VueLoaderPlugin(),
 	]
 });
