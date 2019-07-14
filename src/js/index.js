@@ -78,34 +78,15 @@ new Vue({
 			);
 		},
 		rates: function () {
-			if (!this.semester) {
-				return {
-					past: null,
-					future: null,
-				};
-			}
-
-			const DAYS_PER_WEEK = 7;
-
-			const msPast = Math.min(this.now, this.semester.end) - this.semester.start;
-			const daysPast = msPast / utils.MS_PER_DAY;
-			const weeksPast = daysPast / DAYS_PER_WEEK;
-
-			const msFuture = this.semester.end - Math.max(this.now, this.semester.start);
-			const daysFuture = msFuture / utils.MS_PER_DAY;
-			const weeksFuture = daysFuture / DAYS_PER_WEEK;
-
 			return {
-				past: {
-					total: this.spentBalance,
-					perDay: this.spentBalance / daysPast || 0,
-					perWeek: this.spentBalance / weeksPast || 0,
-				},
-				future: {
-					total: this.remainingBalanceSafe,
-					perDay: this.remainingBalanceSafe / daysFuture || 0,
-					perWeek: this.remainingBalanceSafe / weeksFuture || 0,
-				},
+				past: utils.getRates(
+					this.semester && Math.min(this.now, this.semester.end) - this.semester.start,
+					this.spentBalance,
+				),
+				future: utils.getRates(
+					this.semester && this.semester.end - Math.max(this.now, this.semester.start),
+					this.remainingBalanceSafe,
+				),
 			};
 		},
 		remainingBalanceIdeal: function () {
@@ -165,6 +146,7 @@ new Vue({
 
 		quickBalance: function () {
 			if (this.quickBalance !== null) {
+				this.now = this.getNow();
 				this.rawDataComplete = true;
 
 				this.remainingBalance = this.quickBalance;

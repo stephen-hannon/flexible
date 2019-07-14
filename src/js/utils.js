@@ -86,6 +86,27 @@ export const findSemester = (now) => {
 };
 
 /**
+ *
+ * @param {number} ms - a negative value will return null for `perDay` and `perWeek`
+ * @param {number} total - should never be negative
+ */
+export const getRates = (ms, total) => {
+	const DAYS_PER_WEEK = 7;
+
+	const days = ms / MS_PER_DAY;
+	const weeks = days / DAYS_PER_WEEK;
+
+	const perDay = ms > 0 ? (total / days || 0) : null;
+	const perWeek = ms > 0 ? (total / weeks || 0) : null;
+
+	return {
+		total,
+		perDay,
+		perWeek,
+	};
+};
+
+/**
  * Calculates an array of numbers between `x1` and `x2`, such the middle numbers differ from each
  * other by `step` and are divisible by `step`
  * @param {number} x1 - the starting number
