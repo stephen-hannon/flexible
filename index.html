@@ -63,9 +63,16 @@
 					<h4>Quick</h4>
 					<div class="rowbox-content">
 						<p>Enter your current balance &amp; press <kbd>Enter</kbd></p>
-						$<input type="number" class="appearance-textfield hide-steppers" min="0" :max="startBalance" step="0.01"
-							:placeholder="remainingBalanceIdealCurrent.toFixed(2)" v-model.lazy.number="quickBalance" :disabled="!inSemesterCurrent"
-							:title="inSemesterCurrent ? '' : 'Cannot use quick balance outside of semester'" />
+						$<input
+							type="number"
+							class="appearance-textfield hide-steppers"
+							min="0" :max="startBalance"
+							step="0.01"
+							:placeholder="remainingBalanceIdealCurrent.toFixed(2)"
+							v-model.lazy.number="quickBalance"
+							:disabled="!inSemesterCurrent"
+							:title="inSemesterCurrent ? '' : 'Cannot use quick balance outside of semester'"
+							/>
 					</div>
 				</div>
 
@@ -76,13 +83,14 @@
 						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData" @input="$event.target.blur()"></textarea>
 
 						<div class="errors" v-cloak>
-							<div class="form-message form-error" v-if="rawDataError">
-								<button class="float-right icon-button" title="Close message" @click="rawDataError = false">
-									<i class="fas fa-times"></i>
-								</button>
+							<app-message
+								v-if="rawDataError"
+								type="error"
+								@close="rawDataError = false"
+							>
 								<p>Error parsing data. Make sure there are lines of the form:</p>
 								<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
-							</div>
+							</app-message>
 						</div>
 					</div>
 				</div>
@@ -175,12 +183,12 @@
 							/>
 
 						<div class="errors" v-cloak>
-							<div class="form-message" v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete">
-								<button class="float-right icon-button" title="Close message" @click="showMessages.rawDataComplete = false;">
-									<i class="fas fa-times"></i>
-								</button>
+							<app-message
+								v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete"
+								@close="showMessages.rawDataComplete = false;"
+							>
 								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
-							</div>
+							</app-message>
 						</div>
 					</div>
 				</div>
