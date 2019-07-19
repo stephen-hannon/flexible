@@ -12,7 +12,7 @@ before_script:
 
 script:
   - npm run lint
-  - npm test -- --ci --color --verbose
+  - npm test -- --ci
 
 deploy:
   provider: pages
