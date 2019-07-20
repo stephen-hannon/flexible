@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 
 export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-export const softSemesterLimit = MS_PER_DAY * 7; // 1 week
+export const softSemesterLimit = MS_PER_DAY * 14; // 2 weeks
 
 /**
  * Adds two numbers that avoids floating-point errors like `.1 + .2 !== .3`

@@ -74,8 +74,8 @@ describe('utils.js', () => {
 		});
 
 		it('finds semester of December 31, 2019', () => {
-			expect(utils.findSemester(new Date(2019, 11, 31)))
-				.toHaveProperty('name', 'Spring 2020');
+			expect(utils.findSemester(new Date(2023, 11, 31)))
+				.toHaveProperty('name', 'Spring 2024');
 		});
 	});
 
