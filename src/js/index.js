@@ -18,7 +18,6 @@ import * as filters from './filters';
 import * as utils from './utils';
 import { parseData } from './parse';
 import sampleData from '../assets/sample-data.json';
-import styles from '../scss/_variables.scss';
 
 library.add(
 	faGithub,
@@ -317,7 +316,7 @@ new Vue({
 			const series = [
 				{
 					name: 'Ideal balance',
-					color: styles.colorGraphSecondary,
+					colorIndex: 1,
 					data: idealBalanceData,
 					id: 'ideal',
 				},
@@ -326,21 +325,21 @@ new Vue({
 			if (data) {
 				series.push({
 					name: 'Estimated balance',
-					color: styles.colorGraphPrimary,
-					dashStyle: 'shortdash',
+					colorIndex: 0,
+					className: 'line-dash',
 					data: estimatedData,
 					id: 'estimated',
 					linkedTo: 'actual',
 				}, {
 					name: 'Actual balance',
-					color: styles.colorGraphPrimary,
+					colorIndex: 0,
 					step: (this.processedView !== 'quick') ? 'left' : null,
 					data: data,
 					id: 'actual',
 				}, {
 					name: 'Projected balance',
-					color: styles.colorGraphPrimary,
-					dashStyle: 'shortdash',
+					colorIndex: 0,
+					className: 'line-dash',
 					data: projectedData,
 					id: 'projected',
 					linkedTo: ':previous',
@@ -350,6 +349,7 @@ new Vue({
 			return Highcharts.chart('chart', {
 				chart: {
 					type: 'line',
+					styledMode: true,
 					events: {
 						load: this.processedView !== 'demo'
 							? function () {

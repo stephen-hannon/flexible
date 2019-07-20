@@ -1,0 +1,25 @@
+@import 'variables';
+
+$colors: $color-graph-primary $color-graph-secondary;
+$neutral-color-80: $color-ink;
+
+$font-family: $font-sans-serif;
+
+.highcharts-root {
+	font-size: 1.3rem;
+
+	// Extra specifity to override library style
+	.highcharts-tooltip {
+		filter: none;
+	}
+}
+
+.highcharts-color-none {
+	stroke: $neutral-color-80;
+}
+
+.line-dash .highcharts-graph {
+	stroke-dasharray: 6, 6;
+}
+
+@import '~highcharts/css/highcharts';
