@@ -63,16 +63,12 @@
 					<h4>Quick</h4>
 					<div class="rowbox-content">
 						<p>Enter your current balance &amp; press <kbd>Enter</kbd></p>
-						$<input
-							type="number"
-							class="appearance-textfield hide-steppers"
-							min="0" :max="startBalance"
-							step="0.01"
+						<app-input
+							:min="0" :max="startBalance"
+							:step="0.01"
 							:placeholder="remainingBalanceIdealCurrent.toFixed(2)"
-							v-model.lazy.number="quickBalance"
-							:disabled="!inSemesterCurrent"
-							:title="inSemesterCurrent ? '' : 'Cannot use quick balance outside of semester'"
-							/>
+							@submit="useQuick"
+						></app-input>
 					</div>
 				</div>
 
@@ -107,7 +103,13 @@
 
 			<ul class="flatlist tabs" role="tablist">
 				<li v-for="tab in ['windows', 'macos', 'mobile']" role="presentation">
-					<button	class="tab" role="tab" :class="{ 'tab-active': tabOption === tab }" :aria-selected="tabOption === tab" @click="tabOption = tab">
+					<button
+						class="tab"
+						role="tab"
+						:class="{ 'tab-active': tabOption === tab }"
+						:aria-selected="tabOption === tab"
+						@click="tabOption = tab"
+					>
 						{{ tabOptions[tab] }}
 					</button>
 				</li>
@@ -164,7 +166,10 @@
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ semester.start | date }}</p>
-						$<input type="number" class="appearance-textfield hide-steppers" min="0" v-model.lazy.number="startBalance" />
+						<app-input
+							:min="0"
+							v-model="startBalance"
+						></app-input>
 					</div>
 				</div>
 
@@ -172,20 +177,18 @@
 					<h4>Now</h4>
 					<div class="rowbox-content">
 						<p>{{ now | date }}</p>
-						$<input
-							type="number"
-							class="appearance-textfield hide-steppers"
-							min="0" :max="startBalance"
-							step="0.01"
-							:value="remainingBalanceSafe.toFixed(2)"
+						<app-input
+							:min="0" :max="startBalance"
+							:step="0.01"
 							:disabled="!inSemester || rawDataComplete"
-							@change="adjustIncompleteData($event.target.value); $event.target.blur()"
-							/>
+							:value="remainingBalanceSafe.toFixed(2)"
+							@submit="adjustIncompleteData"
+						></app-input>
 
 						<div class="errors" v-cloak>
 							<app-message
 								v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete"
-								@close="showMessages.rawDataComplete = false;"
+								@close="showMessages.rawDataComplete = false"
 							>
 								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
 							</app-message>
@@ -217,18 +220,18 @@
 				<div class="rowbox-box rowbox-wide">
 					<h4>Before now</h4>
 					<ul class="stats-list">
-						<li><span class="stat">{{ rates.past && rates.past.total | currencySafe }}</span> in total</li>
-						<li><span class="stat">{{ rates.past && rates.past.perDay | currencySafe }}</span> per day</li>
-						<li><span class="stat">{{ rates.past && rates.past.perWeek | currencySafe }}</span> per week</li>
+						<li><span class="stat">{{ rates.past.total | currencySafe }}</span> in total</li>
+						<li><span class="stat">{{ rates.past.perDay | currencySafe }}</span> per day</li>
+						<li><span class="stat">{{ rates.past.perWeek | currencySafe }}</span> per week</li>
 					</ul>
 				</div>
 
 				<div class="rowbox-box rowbox-wide">
 					<h4>After now</h4>
 					<ul class="stats-list stats-list-dashed">
-						<li><span class="stat">{{ rates.future && rates.future.total | currencySafe }}</span> in total</li>
-						<li><span class="stat">{{ rates.future && rates.future.perDay | currencySafe }}</span> per day</li>
-						<li><span class="stat">{{ rates.future && rates.future.perWeek | currencySafe }}</span> per week</li>
+						<li><span class="stat">{{ rates.future.total | currencySafe }}</span> in total</li>
+						<li><span class="stat">{{ rates.future.perDay | currencySafe }}</span> per day</li>
+						<li><span class="stat">{{ rates.future.perWeek | currencySafe }}</span> per week</li>
 					</ul>
 				</div>
 			</div>

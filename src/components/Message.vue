@@ -15,13 +15,13 @@
 <script>
 export default {
 	props: {
-		type: String
+		type: String,
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import './scss/_variables';
+@import '../scss/_variables';
 
 .form-message {
 	max-width: 30rem;

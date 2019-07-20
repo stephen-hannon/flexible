@@ -11,7 +11,8 @@ import {
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
-import MessageComponent from '../Message.vue';
+import InputComponent from '../components/Input.vue';
+import MessageComponent from '../components/Message.vue';
 
 import * as filters from './filters';
 import * as utils from './utils';
@@ -26,13 +27,11 @@ library.add(
 dom.watch();
 
 Vue.config.productionTip = false;
+Vue.component('app-input', InputComponent);
+Vue.component('app-message', MessageComponent);
 
 new Vue({
 	el: '#flexible',
-
-	components: {
-		'app-message': MessageComponent,
-	},
 
 	filters: {
 		currency: filters.formatCurrency,
@@ -48,7 +47,6 @@ new Vue({
 			start: null,
 			end: null,
 		},
-		quickBalance: null,
 		now: Date.now(),
 		/** @type {'quick' | 'parse' | 'demo'} */
 		processedView: null,
@@ -150,22 +148,8 @@ new Vue({
 			}
 		},
 
-		quickBalance: function () {
-			if (this.quickBalance !== null) {
-				this.now = this.getNow();
-				this.rawDataComplete = true;
-
-				this.remainingBalance = this.quickBalance;
-				this.processedView = 'quick';
-				this.makeChart();
-				this.quickBalance = null;
-			}
-		},
-
-		startBalance: function (startBalance, oldStartBalance) {
-			if (startBalance !== oldStartBalance) {
-				this.makeChart();
-			}
+		startBalance: function () {
+			this.makeChart();
 		},
 	},
 
@@ -469,6 +453,15 @@ new Vue({
 			[this.now, this.remainingBalance] = sampleData[sampleData.length - 1];
 
 			this.processedView = 'demo';
+			this.makeChart();
+		},
+
+		useQuick: function (quickBalance) {
+			this.now = this.getNow();
+			this.rawDataComplete = true;
+
+			this.remainingBalance = quickBalance;
+			this.processedView = 'quick';
 			this.makeChart();
 		},
 	},

@@ -1,6 +1,6 @@
 {
   "name": "flexible",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Flex Point usage analyzer",
   "private": true,
   "sideEffects": [
@@ -11,7 +11,7 @@
     "build:prod": "webpack --config ./build/webpack.prod.js",
     "build:dev": "webpack --config ./build/webpack.dev.js",
     "build:scss": "sass ./src/scss/style.scss ./dist/style.css",
-    "lint": "eslint ./src/**/*.js",
+    "lint": "eslint ./src/**/*.js ./test/**/*.js",
     "start": "webpack-dev-server --open --config ./build/webpack.dev.js",
     "test": "jest --verbose --color"
   },
