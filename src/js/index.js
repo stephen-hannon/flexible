@@ -337,19 +337,14 @@ new Vue({
 					step: (this.processedView !== 'quick') ? 'left' : null,
 					data: data,
 					id: 'actual',
+				}, {
+					name: 'Projected balance',
+					color: styles.colorGraphPrimary,
+					dashStyle: 'shortdash',
+					data: projectedData,
+					id: 'projected',
+					linkedTo: ':previous',
 				});
-
-				// If we're in the middle of the semester, add a dashed line with projected usage
-				if (this.inSemester) {
-					series.push({
-						name: 'Projected balance',
-						color: styles.colorGraphPrimary,
-						dashStyle: 'shortdash',
-						data: projectedData,
-						id: 'projected',
-						linkedTo: ':previous',
-					});
-				}
 			}
 
 			return Highcharts.chart('chart', {
