@@ -264,6 +264,16 @@ new Vue({
 		 */
 		makeChart: function () {
 			const data = this.processedView === 'quick' ? this.quickData : this.chartData;
+
+			const estimatedData = this.processedView === 'parse' && !this.rawDataComplete
+				? utils.interpolateLine(
+					this.semester.start,
+					data[0][0],
+					this.startBalance,
+					data[0][1],
+				)
+				: [];
+
 			const projectedData = utils.interpolateLine(
 				this.now,
 				Math.max(this.semester.end, this.now),
@@ -272,7 +282,7 @@ new Vue({
 			);
 
 			const idealBalanceData = data
-				? [...data, ...projectedData].map(function ([date]) {
+				? [...estimatedData, ...data, ...projectedData].map(function ([date]) {
 					return [
 						date,
 						this.getIdealBalanceAtDate(date),
@@ -315,6 +325,13 @@ new Vue({
 
 			if (data) {
 				series.push({
+					name: 'Estimated balance',
+					color: styles.colorGraphPrimary,
+					dashStyle: 'shortdash',
+					data: estimatedData,
+					id: 'estimated',
+					linkedTo: 'actual',
+				}, {
 					name: 'Actual balance',
 					color: styles.colorGraphPrimary,
 					step: (this.processedView !== 'quick') ? 'left' : null,
