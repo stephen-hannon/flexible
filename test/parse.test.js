@@ -27,6 +27,7 @@ describe('parse.js', () => {
 				.toEqual({
 					date: new Date(2018, 4, 10, 9, 10).valueOf(),
 					amountChange: -5.49,
+					details: 'Subway 1',
 				});
 		});
 		it('handles positive balances', () => {

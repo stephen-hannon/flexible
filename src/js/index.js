@@ -419,7 +419,7 @@ new Vue({
 		parseRawData: function (rawData) {
 			this.now = this.getNow(); // in case the page has been loaded for a long time
 
-			const { parsedRawData, rawDataComplete } = parseData(rawData, this.startBalance);
+			const { parsedRawData, rawDataComplete, newStartBalance } = parseData(rawData, this.startBalance);
 			this.chartData = parsedRawData;
 			this.rawDataComplete = rawDataComplete;
 
@@ -430,6 +430,10 @@ new Vue({
 			}
 
 			this.rawDataError = false;
+
+			if (newStartBalance !== undefined) {
+				this.startBalance = newStartBalance;
+			}
 
 			// If the data goes all the way back to the beginning, we know the current
 			// balance, so we adjust the remaining balance from 0

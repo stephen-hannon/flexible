@@ -4,12 +4,14 @@ import {
 
 /**
  * @typedef {Object} parsedRow
- * @property {number} date - a unix timestamp in milliseconds
  * @property {number} amountChange
+ * @property {number} date - a unix timestamp in milliseconds
+ * @property {string} details - the third column of the data
  */
 
 /**
  * @typedef {Object} parsedData
+ * @property {number} [newStartBalance] - if defined, the new starting balance, according to the data
  * @property {number[][]} parsedRawData
  * @property {boolean} rawDataComplete - whether the data goes back to the semester beginning
  */
@@ -30,12 +32,13 @@ export const parseData = (rawData, startBalance) => {
 	const parsedRawData = [];
 	let rawDataComplete = false;
 	let previousChange = 0;
+	let newStartBalance;
 
 	for(let i = 0; i < data.length && !rawDataComplete; i++) {
 		const parseResult = parseDataRow(data[i]);
 
 		if (parseResult !== null) {
-			const { date, amountChange } = parseResult;
+			const { date, amountChange, details } = parseResult;
 
 			const firstAmount = parsedRawData[0]
 				? addCurrency(parsedRawData[0][1], -previousChange)
@@ -46,6 +49,10 @@ export const parseData = (rawData, startBalance) => {
 
 			if (amountChange === startBalance) {
 				rawDataComplete = true;
+			} else if (details === 'PatronImport Location') {
+				// If the data has a different starting balance than the UI, trust the data.
+				rawDataComplete = true;
+				newStartBalance = amountChange;
 			}
 		}
 	}
@@ -53,6 +60,7 @@ export const parseData = (rawData, startBalance) => {
 	return {
 		parsedRawData,
 		rawDataComplete,
+		newStartBalance,
 	};
 };
 
@@ -62,7 +70,7 @@ export const parseData = (rawData, startBalance) => {
  * @returns {parsedRow} the date and the amount changed, or null if an invalid row
  */
 export const parseDataRow = row => {
-	const [category, dateString, , amount] = row.split('\t');
+	const [category, dateString, details, amount] = row.split('\t');
 
 	if (amount === undefined || category !== 'Flex Points') return null;
 
@@ -86,5 +94,6 @@ export const parseDataRow = row => {
 	return {
 		date,
 		amountChange,
+		details,
 	};
 };
