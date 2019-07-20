@@ -14,7 +14,12 @@ import {
  * @property {number} [newStartBalance] - if defined, the new starting balance, according to the data
  * @property {number[][]} parsedRawData
  * @property {boolean} rawDataComplete - whether the data goes back to the semester beginning
+ * @property {boolean} rawDataCompleteEnd - whether the data starts with the semseter ending
  */
+
+// Lowest starting Flex Point balance of all meal plans
+// https://dining.nd.edu/services/meal-plans/off-campus-undergrads-graduate-students/
+const MIN_START_BALANCE = 110;
 
 /**
  * How we parse:
@@ -31,6 +36,7 @@ export const parseData = (rawData, startBalance) => {
 	const data = rawData.split('\n');
 	const parsedRawData = [];
 	let rawDataComplete = false;
+	let rawDataCompleteEnd = false;
 	let previousChange = 0;
 	let newStartBalance;
 
@@ -39,6 +45,10 @@ export const parseData = (rawData, startBalance) => {
 
 		if (parseResult !== null) {
 			const { date, amountChange, details } = parseResult;
+
+			if (details === 'GUI Location' && parsedRawData.length === 0) {
+				rawDataCompleteEnd = true;
+			}
 
 			const firstAmount = parsedRawData[0]
 				? addCurrency(parsedRawData[0][1], -previousChange)
@@ -49,7 +59,7 @@ export const parseData = (rawData, startBalance) => {
 
 			if (amountChange === startBalance) {
 				rawDataComplete = true;
-			} else if (details === 'PatronImport Location') {
+			} else if (details === 'PatronImport Location' && amountChange >= MIN_START_BALANCE) {
 				// If the data has a different starting balance than the UI, trust the data.
 				rawDataComplete = true;
 				newStartBalance = amountChange;
@@ -60,6 +70,7 @@ export const parseData = (rawData, startBalance) => {
 	return {
 		parsedRawData,
 		rawDataComplete,
+		rawDataCompleteEnd,
 		newStartBalance,
 	};
 };

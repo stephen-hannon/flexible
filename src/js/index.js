@@ -419,7 +419,12 @@ new Vue({
 		parseRawData: function (rawData) {
 			this.now = this.getNow(); // in case the page has been loaded for a long time
 
-			const { parsedRawData, rawDataComplete, newStartBalance } = parseData(rawData, this.startBalance);
+			const {
+				parsedRawData,
+				rawDataComplete,
+				rawDataCompleteEnd,
+				newStartBalance
+			} = parseData(rawData, this.startBalance);
 			this.chartData = parsedRawData;
 			this.rawDataComplete = rawDataComplete;
 
@@ -435,15 +440,17 @@ new Vue({
 				this.startBalance = newStartBalance;
 			}
 
-			// If the data goes all the way back to the beginning, we know the current
-			// balance, so we adjust the remaining balance from 0
-			if (this.rawDataComplete) {
-				this.chartData = utils.adjustBalances(
-					this.chartData,
-					this.startBalance - this.chartData[0][1],
-				);
-			} else {
-				this.showMessages.rawDataComplete = true;
+			if (!rawDataCompleteEnd) {
+				// If the data goes all the way back to the beginning, we know the current
+				// balance, so we adjust the remaining balance from 0
+				if (this.rawDataComplete) {
+					this.chartData = utils.adjustBalances(
+						this.chartData,
+						this.startBalance - this.chartData[0][1],
+					);
+				} else {
+					this.showMessages.rawDataComplete = true;
+				}
 			}
 
 			let lastDate;
