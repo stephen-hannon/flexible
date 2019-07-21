@@ -19,7 +19,9 @@
 
 	<title>Flexible – A Flex Point Analyzer</title>
 
-	<link href="https://fonts.googleapis.com/css?family=PT+Sans|PT+Serif:700" rel="stylesheet">
+	<style>[v-cloak] { display: none; }</style>
+
+	<link href="https://fonts.googleapis.com/css?family=PT+Sans|PT+Serif:700&display=fallback" rel="stylesheet preconnect">
 	<link href="main.css" rel="stylesheet">
 </head>
 
@@ -48,15 +50,15 @@
 		</h1>
 
 		<ul class="flatlist header-links" role="navigation">
-			<li><a href="https://stephen-hannon.github.io" target="_blank">
+			<li><a href="https://stephen-hannon.github.io" target="_blank" rel="noreferrer">
 				<i class="fas fa-user"></i>
 				<span class="header-links-text"><span class="hide-below-s">By</span> Stephen Hannon</span>
 			</a></li>
-			<li><a href="https://github.com/stephen-hannon/flexible" target="_blank">
+			<li><a href="https://github.com/stephen-hannon/flexible" target="_blank" rel="noreferrer">
 				<i class="fab fa-github"></i>
 				<span class="header-links-text">Source <span class="hide-below-s">code</span></span>
 			</a></li>
-			<li><a href="https://goo.gl/forms/Sw20wbBGAIeyeTt02" target="_blank">
+			<li><a href="https://goo.gl/forms/Sw20wbBGAIeyeTt02" target="_blank" rel="noreferrer">
 				<i class="fas fa-comment-alt"></i>
 				<span class="header-links-text">Feedback</span>
 			</a></li>
@@ -73,11 +75,12 @@
 				<div class="rowbox-box">
 					<h4>Quick</h4>
 					<div class="rowbox-content">
-						<p>Enter your current balance &amp; press <kbd>Enter</kbd></p>
+						<p id="label-quickbalance">Enter your current balance &amp; press <kbd>Enter</kbd></p>
 						<app-input
 							:min="0" :max="startBalance"
 							:step="0.01"
 							:placeholder="remainingBalanceIdealCurrent.toFixed(2)"
+							aria-labelledby="label-quickbalance"
 							@submit="useQuick"
 						></app-input>
 					</div>
@@ -86,8 +89,15 @@
 				<div class="rowbox-box">
 					<h4>In-depth</h4>
 					<div class="rowbox-content">
-						<p>Paste your usage data (see below)</p>
-						<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" v-model="rawData" @input="$event.target.blur()"></textarea>
+						<p id="label-rawdata">Paste your usage data (see below)</p>
+						<textarea
+							class="appearance-textfield full-width"
+							autocomplete="off"
+							cols="50" rows="1"
+							aria-labelledby="label-rawdata"
+							v-model="rawData"
+							@input="$event.target.blur()"
+						></textarea>
 
 						<div class="errors" v-cloak>
 							<app-message
@@ -128,14 +138,15 @@
 
 			<div class="tabs-content" role="tabpanel">
 				<ol>
-					<li>{{ tabOption === 'mobile' ? 'Tap' : 'Click' }} the link to log in to <a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)">Irish1Card&nbsp;GET</a> with your Notre Dame credentials.</li>
+					<li>{{ tabOption === 'mobile' ? 'Tap' : 'Click' }} the link to log in to <a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)" rel="noreferrer">Irish1Card&nbsp;GET</a> with your Notre Dame credentials.</li>
 					<li>Under the "My Recent Transactions" header, {{ tabOption === 'mobile' ? 'tap' : 'click' }} "View All Transaction History."</li>
 					<li>
 						Making sure "ALL in the past 6 Months" is selected in the Month/Year dropdown, copy the entire table (or the entire page&mdash;it will sort it out for you).
 						<strong v-if="tabOption === 'mobile'">Note that copying large blocks of text on a mobile device can be difficult. A desktop or laptop computer is recommended for optimal exprience.</strong>
 						<template v-else>For a shortcut, press <kbd>{{ ctrlOrCmd() }}</kbd>+<kbd>A</kbd> to select all and <kbd>{{ ctrlOrCmd() }}</kbd>+<kbd>C</kbd> to copy.</template>
 					</li>
-					<li>Paste it into the text box below. (Don't worry, everything stays in your browser.)
+					<li>
+						Paste it into the text box below. (Don't worry, everything stays in your browser.)
 						<template v-if="tabOption !== 'mobile'">For a shortcut, press <kbd>{{ ctrlOrCmd() }}</kbd>+<kbd>V</kbd> to paste.</template>
 					</li>
 				</ol>
@@ -165,20 +176,36 @@
 				<div class="rowbox-box">
 					<h4>
 						Start
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)">
-							<i class="fas fa-arrow-left"></i>
+						<button
+							class="icon-button"
+							title="Previous day"
+							@click="changeSemesterDate('start', -1, false)"
+							:disabled="!changeSemesterDate('start', -1, true)"
+						>
+							<i title="Previous day" class="fas fa-arrow-left"></i>
 						</button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)">
-							<i class="fas fa-arrow-right"></i>
+						<button
+							class="icon-button"
+							title="Next day"
+							@click="changeSemesterDate('start', +1, false)"
+							:disabled="!changeSemesterDate('start', +1, true)"
+						>
+							<i title="Next day" class="fas fa-arrow-right"></i>
 						</button>
-						<button class="icon-button" title="Reset start day" v-if="manualDates.start" @click="manualDates.start = null; makeChart()">
-							<i class="fas fa-redo"></i>
+						<button
+							class="icon-button"
+							title="Reset start day"
+							v-if="manualDates.start"
+							@click="manualDates.start = null; makeChart()"
+						>
+							<i title="Reset start day" class="fas fa-redo"></i>
 						</button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ semester.start | date }}</p>
 						<app-input
 							:min="0"
+							aria-label="Start balance"
 							v-model="startBalance"
 						></app-input>
 					</div>
@@ -192,6 +219,7 @@
 							:min="0" :max="startBalance"
 							:step="0.01"
 							:disabled="!inSemester || rawDataComplete"
+							aria-label="Current remaining balance"
 							:value="remainingBalanceSafe.toFixed(2)"
 							@submit="adjustIncompleteData"
 						></app-input>
@@ -210,19 +238,40 @@
 				<div class="rowbox-box">
 					<h4>
 						End
-						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)">
-							<i class="fas fa-arrow-left"></i>
+						<button
+							class="icon-button"
+							title="Previous day"
+							@click="changeSemesterDate('end', -1, false)"
+							:disabled="!changeSemesterDate('end', -1, true)"
+						>
+							<i title="Previous day" class="fas fa-arrow-left"></i>
 						</button>
-						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">
-							<i class="fas fa-arrow-right"></i>
+						<button
+							class="icon-button"
+							title="Next day"
+							@click="changeSemesterDate('end', +1, false)"
+							:disabled="!changeSemesterDate('end', +1, true)"
+						>
+							<i title="Next day" class="fas fa-arrow-right"></i>
 						</button>
-						<button class="icon-button" title="Reset end day" v-if="manualDates.end" @click="manualDates.end = null; makeChart()">
-							<i class="fas fa-redo"></i>
+						<button
+							class="icon-button"
+							title="Reset end day"
+							v-if="manualDates.end"
+							@click="manualDates.end = null; makeChart()"
+						>
+							<i title="Reset end day" class="fas fa-redo"></i>
 						</button>
 					</h4>
 					<div class="rowbox-content">
 						<p>{{ semester.end | date }}</p>
-						$<input type="number" class="appearance-textfield hide-steppers" value="0" disabled />
+						$<input
+							type="number"
+							class="appearance-textfield hide-steppers"
+							aria-label="End balance (0)"
+							value="0"
+							disabled
+						/>
 					</div>
 				</div>
 			</div>
