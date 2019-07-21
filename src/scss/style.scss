@@ -88,7 +88,7 @@ h1 {
 }
 
 .padding-base {
-	padding: 1.5rem 3rem;
+	padding: $size-page-padding-vertical $size-page-padding-horizontal;
 }
 
 .section-bg-white {
@@ -165,7 +165,8 @@ button {
 	transition-property: border-color, color, background-color;
 	transition-duration: $transition-fast;
 
-	&:hover {
+	&:hover,
+	&:focus {
 		border-color: $color-primary;
 		color: $color-primary;
 		background-color: $color-white;
@@ -272,7 +273,9 @@ a {
 	font-weight: normal;
 }
 
+$header-links-padding-horizontal: 1.6rem;
 .header-links {
+	padding: 0 ($size-page-padding-horizontal - $header-links-padding-horizontal);
 	text-align: right;
 
 	li {
@@ -296,7 +299,9 @@ a {
 			}
 		}
 
-		&:hover {
+		&:hover,
+		&:focus {
+			outline: none;
 			box-shadow: inset 0 -3px 0 0 $color-white;
 			background-color: change-color($color-white, $alpha: 0.1);
 		}
