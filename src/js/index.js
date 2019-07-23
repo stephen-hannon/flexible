@@ -488,6 +488,7 @@ new Vue({
 			this.remainingBalance = quickBalance;
 			this.processedView = 'quick';
 			this.makeChart();
+			document.getElementById('results').scrollIntoView();
 		},
 	},
 });
