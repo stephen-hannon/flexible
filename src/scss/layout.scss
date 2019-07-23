@@ -1,0 +1,58 @@
+@import 'variables';
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    min-width: 320px;
+}
+
+@media screen and (min-width: 720px) {
+	.wrapper {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
+	.content-container {
+		flex: 1;
+		display: flex;
+	}
+
+	section {
+		flex: 1;
+		height: 100%;
+		box-sizing: border-box;
+		overflow: auto;
+	}
+}
+
+.rowbox-container {
+	display: flex;
+	justify-content: space-evenly;
+	flex-wrap: wrap;
+	margin: 0 -0.8rem;
+}
+.rowbox-box {
+	flex: 1 0;
+	min-width: 15rem;
+	max-width: 30rem;
+	padding: 0 1.6rem;
+	margin: 0.8rem;
+	background-color: $color-white;
+}
+.section-bg-white .rowbox-box {
+	background-color: #E7FFE8;
+}
+.rowbox-wide {
+	min-width: 20rem;
+}
+.rowbox-content {
+	&,
+	p,
+	pre {
+		margin: 0.8rem 0;
+	}
+}
