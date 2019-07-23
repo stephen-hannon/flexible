@@ -431,6 +431,7 @@ new Vue({
 				return;
 			}
 
+			this.scrollToResults();
 			this.rawDataError = false;
 
 			if (newStartBalance !== undefined) {
@@ -466,7 +467,14 @@ new Vue({
 			this.makeChart();
 		},
 
+		scrollToResults: function () {
+			this.$nextTick(function () {
+				document.getElementById('results').scrollIntoView();
+			});
+		},
+
 		useDemo: function () {
+			this.scrollToResults();
 			// DEBUG
 			// sampleData = sampleData.filter(function (entry) {
 			// 	return entry[0] < this.now;
@@ -482,13 +490,13 @@ new Vue({
 		},
 
 		useQuick: function (quickBalance) {
+			this.scrollToResults();
 			this.now = this.getNow();
 			this.rawDataComplete = true;
 
 			this.remainingBalance = quickBalance;
 			this.processedView = 'quick';
 			this.makeChart();
-			document.getElementById('results').scrollIntoView();
 		},
 	},
 });
