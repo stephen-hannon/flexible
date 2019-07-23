@@ -209,9 +209,16 @@ button {
 .tab {
 	font-size: inherit;
 	background-color: #EEE;
+	border-top: $size-line solid transparent;
 
 	&.tab-active {
 		background-color: $color-white;
+		border-top-color: $color-primary;
+	}
+
+	&:focus {
+		outline: none;
+		border-top-color: grayscale($color-primary)
 	}
 }
 .tabs-content {
@@ -319,7 +326,7 @@ $header-links-padding-horizontal: 1.6rem;
 	li {
 		padding: 0.4rem;
 		box-sizing: border-box;
-		border-bottom: 2px solid $color-graph-primary;
+		border-bottom: $size-line solid $color-graph-primary;
 	}
 }
 .stats-list-dashed li {
