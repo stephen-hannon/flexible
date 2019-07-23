@@ -42,6 +42,7 @@ new Vue({
 		chartData: null,
 		currentIdealBalanceIndex: null,
 		debugNow: null,
+		loaderShow: true,
 		manualDates: {
 			start: null,
 			end: null,
@@ -66,6 +67,13 @@ new Vue({
 	},
 
 	computed: {
+		/**
+		 * @returns {string} A representation of the command or control key,
+		 * depending on whether the macOS tab is selected or not
+		 */
+		ctrlOrCmd: function () {
+			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
+		},
 		inSemester: function () {
 			return (this.now > this.semester.start - utils.softSemesterLimit);
 		},
@@ -153,6 +161,8 @@ new Vue({
 	},
 
 	mounted: function () {
+		this.loaderShow = false;
+
 		// Basic user agent sniffing to determine which tab to show initially.
 		// It's not perfect, but it's just a convenience.
 		const userAgent = window.navigator.userAgent;
@@ -225,14 +235,6 @@ new Vue({
 			}
 			if (validateOnly) return false;
 			this.makeChart();
-		},
-
-		/**
-		 * @returns {string} A representation of the command or control key,
-		 * depending on whether the macOS tab is selected or not
-		 */
-		ctrlOrCmd: function () {
-			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
 		},
 
 		/**
