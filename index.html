@@ -107,7 +107,7 @@
 								type="error"
 								@close="rawDataError = false"
 							>
-								<p>Error parsing data. Make sure there are lines of the form:</p>
+								<p>Unable to parse the data you pasted. Make sure there are lines of the form:</p>
 								<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
 							</app-message>
 						</div>
@@ -252,7 +252,7 @@
 							@submit="adjustIncompleteData"
 						></app-input>
 
-						<div class="errors" v-cloak>
+						<div class="errors errors-above" v-cloak>
 							<app-message
 								v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete"
 								@close="showMessages.rawDataComplete = false"
