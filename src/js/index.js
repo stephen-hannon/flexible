@@ -71,16 +71,16 @@ new Vue({
 		 * @returns {string} A representation of the command or control key,
 		 * depending on whether the macOS tab is selected or not
 		 */
-		ctrlOrCmd: function () {
+		ctrlOrCmd () {
 			return (this.tabOption === 'macos') ? '\u2318 Cmd' : 'Ctrl';
 		},
-		inSemester: function () {
+		inSemester () {
 			return (this.now > this.semester.start - utils.softSemesterLimit);
 		},
-		inSemesterCurrent: function () {
+		inSemesterCurrent () {
 			return (this.getNow() > this.semesterCurrent.start - utils.softSemesterLimit);
 		},
-		quickData: function () {
+		quickData () {
 			return utils.interpolateLine(
 				Math.min(this.semester.start, this.now),
 				this.now,
@@ -88,7 +88,7 @@ new Vue({
 				this.remainingBalance,
 			);
 		},
-		rates: function () {
+		rates () {
 			return {
 				past: utils.getRates(
 					this.semester && Math.min(this.now, this.semester.end) - this.semester.start,
@@ -100,32 +100,32 @@ new Vue({
 				),
 			};
 		},
-		remainingBalanceIdeal: function () {
+		remainingBalanceIdeal () {
 			return this.getIdealBalanceAtDate(this.now);
 		},
-		remainingBalanceIdealCurrent: function () {
+		remainingBalanceIdealCurrent () {
 			return this.getIdealBalanceAtDate(this.getNow(), this.semesterCurrent);
 		},
-		remainingBalanceRelative: function () {
+		remainingBalanceRelative () {
 			return this.remainingBalanceSafe - this.remainingBalanceIdeal;
 		},
 		/**
 		 * If `remainingBalance` is null (unset), fall back to `remainingBalanceIdeal`
 		 */
-		remainingBalanceSafe: function () {
+		remainingBalanceSafe () {
 			return this.remainingBalance == null ? this.remainingBalanceIdeal : this.remainingBalance;
 		},
-		semester: function () {
+		semester () {
 			return this.findSemesterAdjusted(this.now);
 		},
-		semesterCurrent: function () {
+		semesterCurrent () {
 			const semester = utils.findSemester(this.getNow());
 			// this.semester may have customized dates, so use that.
 			// TODO: Customized dates could make findSemester not line up with this.semester.
 			// Move the manualDates logic from `semester` to a reusable method.
 			return (semester.year === this.semester.year) ? this.semester : semester;
 		},
-		spentBalance: function () {
+		spentBalance () {
 			return utils.addCurrency(
 				this.startBalance,
 				-this.remainingBalanceSafe
@@ -135,14 +135,14 @@ new Vue({
 
 
 	watch: {
-		now: function () {
+		now () {
 			this.manualDates = {
 				start: null,
 				end: null,
 			};
 		},
 
-		rawData: function (rawData) {
+		rawData (rawData) {
 			if (rawData) {
 				// quick sanity check
 				if (rawData.indexOf('Flex Points') === -1) {
@@ -155,12 +155,12 @@ new Vue({
 			}
 		},
 
-		startBalance: function () {
+		startBalance () {
 			this.makeChart();
 		},
 	},
 
-	mounted: function () {
+	mounted () {
 		this.loaderShow = false;
 
 		// Basic user agent sniffing to determine which tab to show initially.
@@ -195,7 +195,7 @@ new Vue({
 		 * @param {number} remainingBalance
 		 * @returns {void}
 		 */
-		adjustIncompleteData: function (remainingBalance) {
+		adjustIncompleteData (remainingBalance) {
 			remainingBalance = Number(remainingBalance);
 
 			if (
@@ -220,7 +220,7 @@ new Vue({
 		 * @param {boolean} validateOnly - if the function should only validate if the change can be made
 		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is truthy
 		 */
-		changeSemesterDate: function (startOrEnd, deltaDay, validateOnly) {
+		changeSemesterDate (startOrEnd, deltaDay, validateOnly) {
 			const deltaMs = deltaDay * utils.MS_PER_DAY;
 			if (startOrEnd === 'start') {
 				if (this.semester.start + deltaMs < this.semester.end) {
@@ -241,7 +241,7 @@ new Vue({
 		 * Extends `utils.findSemester` to take into account `manualDates`
 		 * @param {string | number | Date} now
 		 */
-		findSemesterAdjusted: function (now) {
+		findSemesterAdjusted (now) {
 			const semester = utils.findSemester(now);
 			if (this.manualDates.start) {
 				semester.start += this.manualDates.start;
@@ -252,18 +252,18 @@ new Vue({
 			return semester;
 		},
 
-		getIdealBalanceAtDate: function (date, semester = this.semester) {
+		getIdealBalanceAtDate (date, semester = this.semester) {
 			return utils.interpolatePoint(date, semester.start, semester.end, this.startBalance, 0);
 		},
 
-		getNow: function () {
+		getNow () {
 			return this.debugNow || Date.now();
 		},
 
 		/**
 		 * @returns {Highcharts.ChartObject}
 		 */
-		makeChart: function () {
+		makeChart () {
 			const data = this.processedView === 'quick' ? this.quickData : this.chartData;
 
 			const estimatedData = this.processedView === 'parse' && !this.rawDataComplete
@@ -413,14 +413,14 @@ new Vue({
 			});
 		},
 
-		parseRawData: function (rawData) {
+		parseRawData (rawData) {
 			this.now = this.getNow(); // in case the page has been loaded for a long time
 
 			const {
 				parsedRawData,
 				rawDataComplete,
 				rawDataCompleteEnd,
-				newStartBalance
+				newStartBalance,
 			} = parseData(rawData, this.startBalance);
 			this.chartData = parsedRawData;
 			this.rawDataComplete = rawDataComplete;
@@ -467,18 +467,14 @@ new Vue({
 			this.makeChart();
 		},
 
-		scrollToResults: function () {
+		scrollToResults () {
 			this.$nextTick(function () {
 				document.getElementById('results').scrollIntoView();
 			});
 		},
 
-		useDemo: function () {
+		useDemo () {
 			this.scrollToResults();
-			// DEBUG
-			// sampleData = sampleData.filter(function (entry) {
-			// 	return entry[0] < this.now;
-			// }, this);
 
 			this.rawDataComplete = true;
 			this.chartData = sampleData;
@@ -489,7 +485,7 @@ new Vue({
 			this.makeChart();
 		},
 
-		useQuick: function (quickBalance) {
+		useQuick (quickBalance) {
 			this.scrollToResults();
 			this.now = this.getNow();
 			this.rawDataComplete = true;

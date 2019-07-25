@@ -6,7 +6,11 @@ import dayjs from 'dayjs';
  */
 export const formatCurrency = num => `${ num < 0 ? '\u2212' : '' }$${ Math.abs(num).toFixed(2) }`;
 
-/** temporary */
+/**
+ * Formats a dollar amount, but degrading gracefully to `$-` if NaN is supplied
+ * @param {number} num
+ * @returns {string}
+ */
 export const formatCurrencySafe = num => (
 	(typeof num === 'number' && !isNaN(num)) ? formatCurrency(num) : '$\u2014'
 );

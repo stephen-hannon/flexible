@@ -10,6 +10,7 @@ module.exports = {
         "sourceType": "module",
     },
     "rules": {
+        "comma-dangle": ["warn", "always-multiline"],
         "indent": [
             "warn",
             "tab",

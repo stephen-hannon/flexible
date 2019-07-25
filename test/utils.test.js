@@ -64,7 +64,7 @@ describe('utils.js', () => {
 					year: 2019.2,
 					name: 'Fall 2019',
 					start: new Date(2019, 7, 25).valueOf(),
-					end: new Date(2019, 11, 21).valueOf()
+					end: new Date(2019, 11, 21).valueOf(),
 				});
 		});
 
