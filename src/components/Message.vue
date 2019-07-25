@@ -24,7 +24,7 @@ export default {
 @import '../scss/_variables';
 
 .form-message {
-	max-width: 30rem;
+	width: 30rem;
 	padding: 0.2rem 2rem;
 	margin-top: 1rem;
 	border-top: 3px solid $color-message;

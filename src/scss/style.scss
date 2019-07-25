@@ -97,6 +97,11 @@ h4 {
 
 .errors {
 	position: absolute;
+	padding-left: 1.6rem;
+	z-index: 99;
+}
+.errors-above {
+	bottom: 100%;
 }
 
 .pre-wrap {
@@ -232,6 +237,7 @@ a {
 }
 
 $header-links-padding-horizontal: 1.6rem;
+
 .header-links {
 	padding: 0 ($size-page-padding-horizontal - $header-links-padding-horizontal);
 	text-align: right;
