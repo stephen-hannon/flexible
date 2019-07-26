@@ -366,8 +366,26 @@ new Vue({
 							: undefined,
 					},
 				},
+				plotOptions: {
+					line: {
+						marker: {
+							enabled: false,
+						},
+					},
+				},
+				series,
+				time: {
+					useUTC: false,
+				},
 				title: {
-					text: undefined,
+					// Easter egg :)
+					text: this.remainingBalance === 246.01 ? 'My name is Jean Valjean' : undefined,
+				},
+				tooltip: {
+					split: true,
+					valueDecimals: 2,
+					valuePrefix: '$',
+					xDateFormat: '%a, %B %e, %Y, %l:%M %p',
 				},
 				xAxis: {
 					crosshair: {
@@ -389,26 +407,6 @@ new Vue({
 					labels: {
 						format: '${value}',
 					},
-				},
-				plotOptions: {
-					line: {
-						marker: {
-							enabled: false,
-						},
-					},
-				},
-				series: series,
-				tooltip: {
-					split: true,
-					dateTimeLabelFormats: {
-						day: '%a, %B %e, %Y',
-						minute: '%a, %B %e, %Y, %l:%M %p',
-					},
-					valueDecimals: 2,
-					valuePrefix: '$',
-				},
-				time: {
-					useUTC: false,
 				},
 			});
 		},
