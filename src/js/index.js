@@ -8,9 +8,10 @@ import {
 	faGithub,
 } from '@fortawesome/free-brands-svg-icons';
 import {
-	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt,
+	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt, faChevronUp,
 } from '@fortawesome/free-solid-svg-icons';
 
+import CollapsibleComponent from '../components/Collapsible.vue';
 import InputComponent from '../components/Input.vue';
 import MessageComponent from '../components/Message.vue';
 
@@ -21,11 +22,12 @@ import sampleData from '../assets/sample-data.json';
 
 library.add(
 	faGithub,
-	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt,
+	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt, faChevronUp,
 );
 dom.watch();
 
 Vue.config.productionTip = false;
+Vue.component('app-collapsible', CollapsibleComponent);
 Vue.component('app-input', InputComponent);
 Vue.component('app-message', MessageComponent);
 
@@ -40,6 +42,7 @@ new Vue({
 
 	data: {
 		chartData: null,
+		collapseInstructions: false,
 		currentIdealBalanceIndex: null,
 		debugNow: null,
 		loaderShow: true,
@@ -161,7 +164,11 @@ new Vue({
 	},
 
 	mounted () {
-		this.loaderShow = false;
+		// https://stackoverflow.com/a/8876069/3902568
+		const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+		if (viewportWidth < 720) {
+			this.collapseInstructions = true;
+		}
 
 		// Basic user agent sniffing to determine which tab to show initially.
 		// It's not perfect, but it's just a convenience.
@@ -185,6 +192,8 @@ new Vue({
 			// eslint-disable-next-line no-console
 			console.log('Setting debug date to', now);
 		}
+
+		this.loaderShow = false;
 
 		this.makeChart();
 	},
