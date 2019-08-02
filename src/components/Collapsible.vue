@@ -41,6 +41,7 @@ export default {
 $transition: 0.3s;
 
 .collapsible-container {
+	margin: 1.6rem 0;
 	border-top: $size-line solid $color-primary;
 	border-bottom: $size-line solid $color-primary;
 }
