@@ -9,24 +9,20 @@ body {
     min-width: 320px;
 }
 
-@media screen and (min-width: 720px) {
-	.wrapper {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-	}
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
 
-	.content-container {
-		flex: 1;
-		display: flex;
-	}
+.content-container {
+	flex: 1;
+	display: flex;
+	flex-wrap: wrap;
+}
 
-	section {
-		flex: 1;
-		height: 100%;
-		box-sizing: border-box;
-		overflow: auto;
-	}
+section {
+	flex: 1;
 }
 
 .rowbox-container {
