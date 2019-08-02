@@ -91,7 +91,7 @@
 				<div class="rowbox-box">
 					<h4>In-depth</h4>
 					<div class="rowbox-content">
-						<p id="label-rawdata">Paste your usage data (see below)</p>
+						<p id="label-rawdata">Paste your usage data (see below{{ tabOption === 'mobile' ? '&mdash;not recommended on mobile' : '' }})</p>
 						<textarea
 							class="appearance-textfield full-width"
 							autocomplete="off"
@@ -309,15 +309,16 @@
 	</div>
 </div>
 
-	<!-- global site tag (gtag.js) - google analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=ua-126257561-1"></script>
-	<script>
-	window.datalayer = window.datalayer || [];
-	function gtag(){datalayer.push(arguments);}
-	gtag('js', new date());
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-126257561-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-	gtag('config', 'ua-126257561-1');
-	</script>
+  gtag('config', 'UA-126257561-1');
+</script>
+
 
 <script src="./vendors~main.js"></script>
 <script src="./main.js"></script>
