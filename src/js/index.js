@@ -51,6 +51,7 @@ new Vue({
 			end: null,
 		},
 		now: Date.now(),
+		platformGuess: 'windows',
 		/** @type {'quick' | 'parse' | 'demo'} */
 		processedView: null,
 		rawData: '',
@@ -61,7 +62,7 @@ new Vue({
 			rawDataComplete: false,
 		},
 		startBalance: 500,
-		tabOption: 'windows', // currently selected tab
+		tabOption: null, // currently selected tab
 		tabOptions: {
 			macos: 'macOS',
 			mobile: 'Mobile',
@@ -174,11 +175,12 @@ new Vue({
 		// It's not perfect, but it's just a convenience.
 		const userAgent = window.navigator.userAgent;
 		if (/iPhone|iPad|iPod|Android/.test(userAgent)) {
-			this.tabOption = 'mobile';
+			this.platformGuess = 'mobile';
 		} else if (userAgent.indexOf('Mac') !== -1) {
-			this.tabOption = 'macos';
+			this.platformGuess = 'macos';
 		}
 		// else stays as 'windows'
+		this.tabOption = this.platformGuess;
 
 		// Allow overriding the current date by URL hash. No public interface
 		// since it could break things.
@@ -361,6 +363,8 @@ new Vue({
 				chart: {
 					type: 'line',
 					styledMode: true,
+					spacingLeft: 0,
+					spacingRight: 0,
 					events: {
 						load: this.processedView !== 'demo'
 							? function () {
