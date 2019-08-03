@@ -2,58 +2,60 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = (devMode) => ({
 	entry: [
 		'./src/js/index.js',
-		'./src/scss/style.scss'
+		'./src/scss/style.scss',
 	],
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, '../dist')
+		path: path.resolve(__dirname, '../dist'),
 	},
 	module: {
 		rules: [{
 			test: /\.scss$/,
 			use: [{
-				loader: MiniCssExtractPlugin.loader
+				loader: MiniCssExtractPlugin.loader,
 			}, {
-				loader: 'css-loader'
+				loader: 'css-loader',
 			}, {
-				loader: 'postcss-loader'
+				loader: 'postcss-loader',
 			}, {
 				loader: 'sass-loader',
 				options: {
 					implementation: require('sass'),
-					outputStyle: devMode ? 'expanded' : 'compressed'
-				}
-			}]
+					outputStyle: devMode ? 'expanded' : 'compressed',
+				},
+			}],
 		}, {
 			test: /\.js$/,
 			exclude: /node_modules/,
-			loader: 'babel-loader'
+			loader: 'babel-loader',
 		}, {
 			test: /\.vue$/,
-			loader: 'vue-loader'
-		}]
+			loader: 'vue-loader',
+		}],
 	},
 	resolve: {
 		alias: {
-			'vue$': 'vue/dist/vue.esm.js'
-		}
+			'vue$': 'vue/dist/vue.esm.js',
+		},
 	},
 	optimization: {
 		splitChunks: {
-			chunks: 'all'
-		}
+			chunks: 'all',
+		},
 	},
 	plugins: [
 		new MiniCssExtractPlugin({
 			// Options similar to the same options in webpackOptions.output
 			// both options are optional
 			filename: '[name].css',
-			chunkFilename: '[id].css'
+			chunkFilename: '[id].css',
 		}),
 		new VueLoaderPlugin(),
-	]
+		new WorkboxPlugin.GenerateSW(),
+	],
 });
