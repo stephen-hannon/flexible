@@ -88,8 +88,11 @@ h4 {
 	margin: 0.8rem 0;
 }
 
-.color-behind {
+.color-error {
 	color: $color-rose;
+}
+.color-behind {
+	@extend .color-error
 }
 .color-ahead {
 	color: $color-green;
