@@ -120,7 +120,7 @@ h4 {
 	border: $size-border solid $color-primary;
 	font: inherit;
 	resize: none;
-	border-radius: 0;
+	border-radius: $border-radius;
 	overflow-x: hidden; // Firefox adds extra space for a scrollbar
 	box-shadow: none;
 
@@ -149,6 +149,7 @@ button {
 	background-color: $color-primary;
 	border: $size-border solid transparent;
 	color: $color-white;
+	border-radius: $border-radius;
 	transition-property: border-color, color, background-color;
 	transition-duration: $transition-fast;
 
@@ -196,22 +197,44 @@ button {
 .tab {
 	font-size: inherit;
 	background-color: #EEE;
-	border-top: $size-line solid transparent;
 	margin: 0;
+	position: relative;
+	overflow: hidden;
+	border-radius: $border-radius $border-radius 0 0;
 
 	&.tab-active {
 		background-color: $color-white;
-		border-top-color: $color-primary;
+
+		&::before {
+			background-color: $color-primary;
+			height: $size-line;
+		}
 	}
 
+	&::before {
+		content: "";
+		position: absolute;
+		background-color: grayscale($color-primary);
+		height: 0;
+		left: 0;
+		right: 0;
+		top: 0;
+		transition: height $transition-fast;
+	}
+
+	&:hover,
 	&:focus {
 		outline: none;
-		border-top-color: grayscale($color-primary)
+
+		&::before {
+			height: $size-line;
+		}
 	}
 }
 .tabs-content {
 	padding: 1.6rem;
 	background-color: $color-white;
+	border-radius: $border-radius;
 
 	ol {
 		margin: 0;
@@ -278,13 +301,14 @@ $header-links-padding-horizontal: 1.6rem;
 	}
 
 	a {
+		position: relative;
 		display: flex;
 		align-items: center;
 		height: 100%;
 		padding: 0 1.6rem;
 		color: $color-white;
 		text-decoration: none;
-		transition: all $transition-fast;
+		transition: background-color $transition-fast;
 
 		@media screen and (max-width: 750px) {
 			& {
@@ -293,11 +317,25 @@ $header-links-padding-horizontal: 1.6rem;
 			}
 		}
 
+		&::after {
+			content: "";
+			position: absolute;
+			background-color: $color-white;
+			height: $size-line;
+			left: 0;
+			right: 100%;
+			bottom: 0;
+			transition: right $transition-fast;
+		}
+
 		&:hover,
 		&:focus {
 			outline: none;
-			box-shadow: inset 0 -3px 0 0 $color-white;
 			background-color: change-color($color-white, $alpha: 0.1);
+
+			&::after {
+				right: 0%;
+			}
 		}
 	}
 }

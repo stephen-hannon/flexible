@@ -23,6 +23,7 @@ export default {
 	margin: 0.8rem;
 	background-color: $color-white;
 	border: 1px solid #DDD;
+	border-radius: $border-radius;
 
 	&.card-wide {
 		min-width: 20rem;

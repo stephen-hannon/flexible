@@ -1,6 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		$<input
+		$ <input
 			type="number"
 			class="appearance-textfield hide-steppers"
 			required
