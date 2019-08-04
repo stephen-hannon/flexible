@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-env browser, node */
 
 import Vue from 'vue';
 import Highcharts from 'highcharts';
@@ -9,8 +10,10 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import {
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt, faChevronUp,
+	faCalendarAlt, faCalendarDay, faCalendarWeek,
 } from '@fortawesome/free-solid-svg-icons';
 
+import CardComponent from '../components/Card.vue';
 import CollapsibleComponent from '../components/Collapsible.vue';
 import InputComponent from '../components/Input.vue';
 import MessageComponent from '../components/Message.vue';
@@ -23,10 +26,12 @@ import sampleData from '../assets/sample-data.json';
 library.add(
 	faGithub,
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt, faChevronUp,
+	faCalendarAlt, faCalendarDay, faCalendarWeek,
 );
 dom.watch();
 
 Vue.config.productionTip = false;
+Vue.component('app-card', CardComponent);
 Vue.component('app-collapsible', CollapsibleComponent);
 Vue.component('app-input', InputComponent);
 Vue.component('app-message', MessageComponent);
@@ -509,8 +514,11 @@ new Vue({
 	},
 });
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('./service-worker.js');
+		navigator.serviceWorker.register('./service-worker.js').catch(error => {
+			// eslint-disable-next-line no-console
+			console.log('Unable to register service worker:', error);
+		});
 	});
 }

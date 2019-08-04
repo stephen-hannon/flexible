@@ -2,7 +2,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = (devMode) => ({
 	entry: [
@@ -56,6 +55,5 @@ module.exports = (devMode) => ({
 			chunkFilename: '[id].css',
 		}),
 		new VueLoaderPlugin(),
-		new WorkboxPlugin.GenerateSW(),
 	],
 });

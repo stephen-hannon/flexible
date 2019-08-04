@@ -197,6 +197,7 @@ button {
 	font-size: inherit;
 	background-color: #EEE;
 	border-top: $size-line solid transparent;
+	margin: 0;
 
 	&.tab-active {
 		background-color: $color-white;
@@ -215,6 +216,32 @@ button {
 	ol {
 		margin: 0;
 		padding-left: 2.4rem;
+	}
+}
+
+ol.fancylist {
+	list-style: none;
+	padding: 0;
+	counter-reset: fancylist-counter;
+
+	li {
+		counter-increment: fancylist-counter;
+		border-top: $size-border solid $color-secondary;
+		padding-left: 3.2rem;
+		position: relative;
+		margin: 1.2rem 0;
+
+		&::before {
+			content: counter(fancylist-counter);
+			width: 2.4rem;
+			position: absolute;
+			left: 0;
+			font-weight: 700;
+			font-size: 1.8rem;
+			color: $color-white;
+			text-align: center;
+			background-color: $color-secondary;
+		}
 	}
 }
 
@@ -284,7 +311,7 @@ $header-links-padding-horizontal: 1.6rem;
 	margin: 0.8rem 0;
 
 	li {
-		padding: 0.4rem;
+		padding: 0.4rem 0;
 		box-sizing: border-box;
 		border-bottom: $size-line solid $color-graph-primary;
 	}

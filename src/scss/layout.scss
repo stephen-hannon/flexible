@@ -1,4 +1,5 @@
 @import 'variables';
+$rowbox-margin: 0.8rem;
 
 html,
 body {
@@ -30,28 +31,10 @@ section {
 	display: flex;
 	justify-content: space-evenly;
 	flex-wrap: wrap;
-	margin: 0 -0.8rem;
-}
-.rowbox-box {
-	flex: 1 0;
-	min-width: 15rem;
-	max-width: 30rem;
-	padding: 0 1.6rem;
-	margin: 0.8rem;
-	background-color: $color-white;
-}
-.section-bg-white .rowbox-box {
-	background-color: #E7FFE8;
-}
-.rowbox-wide {
-	min-width: 20rem;
-}
-.rowbox-content {
-    position: relative;
+	margin: 0 (-$rowbox-margin);
 
-	&,
-	p,
-	pre {
-		margin: 0.8rem 0;
+	> .card {
+		flex: 1 0;
+		margin: $rowbox-margin;
 	}
 }

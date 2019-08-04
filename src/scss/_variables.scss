@@ -6,6 +6,7 @@ $color-green:      #27BC68;
 $color-royalblue:  #005DBA;
 
 $color-primary:    $color-green;
+$color-secondary:  $color-royalblue;
 $color-error:      $color-rose;
 $color-message:    change-color($color-error, $hue: hue($color-royalblue));
 
