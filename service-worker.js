@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.331eafd97d0ae51de883f3919510383e.js"
+  "precache-manifest.d51deaceb5965037a2e118a41611ee00.js"
 );
 
 self.addEventListener('message', (event) => {
@@ -30,3 +30,5 @@ self.addEventListener('message', (event) => {
  */
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+
+workbox.googleAnalytics.initialize({});

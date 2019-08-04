@@ -74,52 +74,46 @@
 			<p>This is a tool to help you keep track of how quickly you're spending your Flex Points. Choose an option to see how it works, or, if you're a Notre Dame student, see your own results.</p>
 
 			<div class="rowbox-container">
-				<div class="rowbox-box">
+				<app-card>
 					<h4>Quick</h4>
-					<div class="rowbox-content">
-						<p id="label-quickbalance">Enter your current {{ semesterCurrent.name }} balance &amp; press <kbd>Enter</kbd></p>
-						<app-input
-							:min="0" :max="startBalance"
-							:step="0.01"
-							:placeholder="remainingBalanceIdealCurrent.toFixed(2)"
-							aria-labelledby="label-quickbalance"
-							@submit="useQuick"
-						></app-input>
-					</div>
-				</div>
+					<p id="label-quickbalance">Enter your current {{ semesterCurrent.name }} balance &amp; press <kbd>Enter</kbd></p>
+					<app-input
+						:min="0" :max="startBalance"
+						:step="0.01"
+						:placeholder="remainingBalanceIdealCurrent.toFixed(2)"
+						aria-labelledby="label-quickbalance"
+						@submit="useQuick"
+					></app-input>
+				</app-card>
 
-				<div class="rowbox-box">
+				<app-card>
 					<h4>In-depth</h4>
-					<div class="rowbox-content">
-						<p id="label-rawdata">Paste your usage data (see below{{ platformGuess === 'mobile' ? '&mdash;not recommended on mobile' : '' }})</p>
-						<textarea
-							class="appearance-textfield full-width"
-							autocomplete="off"
-							cols="50" rows="1"
-							aria-labelledby="label-rawdata"
-							v-model="rawData"
-							@input="$event.target.blur()"
-						></textarea>
+					<p id="label-rawdata">Paste your usage data (see below{{ platformGuess === 'mobile' ? '&mdash;not recommended on mobile' : '' }})</p>
+					<textarea
+						class="appearance-textfield full-width"
+						autocomplete="off"
+						cols="50" rows="1"
+						aria-labelledby="label-rawdata"
+						v-model="rawData"
+						@input="$event.target.blur()"
+					></textarea>
 
-						<div class="errors" v-cloak>
-							<app-message
-								v-if="rawDataError"
-								type="error"
-								@close="rawDataError = false"
-							>
-								<p>Unable to parse the data you pasted. Make sure there are lines of the form:</p>
-								<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
-							</app-message>
-						</div>
+					<div class="errors" v-cloak>
+						<app-message
+							v-if="rawDataError"
+							type="error"
+							@close="rawDataError = false"
+						>
+							<p>Unable to parse the data you pasted. Make sure there are lines of the form:</p>
+							<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
+						</app-message>
 					</div>
-				</div>
+				</app-card>
 
-				<div class="rowbox-box">
+				<app-card>
 					<h4>Just looking</h4>
-					<div class="rowbox-content">
-						<button class="button full-width" @click="useDemo">View demo</button>
-					</div>
-				</div>
+					<button class="button full-width" @click="useDemo">View demo</button>
+				</app-card>
 			</div>
 
 			<app-collapsible header="In-depth instructions" v-model="collapseInstructions">
@@ -140,7 +134,7 @@
 				</ul>
 
 				<div class="tabs-content" role="tabpanel">
-					<ol>
+					<ol class="fancylist">
 						<li>
 							{{ tabOption === 'mobile' ? 'Tap' : 'Click' }} the link to <strong>log in to
 							<a href="https://get.cbord.com/irish1card/full/login.php" target="_blank" title="Irish1Card GET (opens in a new tab)" rel="noreferrer">Irish1Card&nbsp;GET</a></strong>
@@ -186,27 +180,45 @@
 			<div id="chart"></div>
 
 			<div class="rowbox-container">
-				<div class="rowbox-box rowbox-wide">
+				<app-card :wide="true">
 					<h4>Before now</h4>
 					<ul class="stats-list">
-						<li><span class="stat">{{ rates.past.total | currencySafe }}</span> in total</li>
-						<li><span class="stat">{{ rates.past.perDay | currencySafe }}</span> per day</li>
-						<li><span class="stat">{{ rates.past.perWeek | currencySafe }}</span> per week</li>
+						<li>
+							<i class="fas fa-calendar-alt"></i>
+							<span class="stat">{{ rates.past.total | currencySafe }}</span> in total
+						</li>
+						<li>
+							<i class="fas fa-calendar-day"></i>
+							<span class="stat">{{ rates.past.perDay | currencySafe }}</span> per day
+						</li>
+						<li>
+							<i class="fas fa-calendar-week"></i>
+							<span class="stat">{{ rates.past.perWeek | currencySafe }}</span> per week
+						</li>
 					</ul>
-				</div>
+				</app-card>
 
-				<div class="rowbox-box rowbox-wide">
+				<app-card :wide="true">
 					<h4>After now</h4>
 					<ul class="stats-list stats-list-dashed">
-						<li><span class="stat">{{ rates.future.total | currencySafe }}</span> in total</li>
-						<li><span class="stat">{{ rates.future.perDay | currencySafe }}</span> per day</li>
-						<li><span class="stat">{{ rates.future.perWeek | currencySafe }}</span> per week</li>
+						<li>
+							<i class="fas fa-calendar-alt"></i>
+							<span class="stat">{{ rates.future.total | currencySafe }}</span> in total
+						</li>
+						<li>
+							<i class="fas fa-calendar-day"></i>
+							<span class="stat">{{ rates.future.perDay | currencySafe }}</span> per day
+						</li>
+						<li>
+							<i class="fas fa-calendar-week"></i>
+							<span class="stat">{{ rates.future.perWeek | currencySafe }}</span> per week
+						</li>
 					</ul>
-				</div>
+				</app-card>
 			</div>
 
 			<div class="rowbox-container">
-				<div class="rowbox-box">
+				<app-card>
 					<h4>
 						Start
 						<button
@@ -234,41 +246,39 @@
 							<i title="Reset start day" class="fas fa-redo"></i>
 						</button>
 					</h4>
-					<div class="rowbox-content">
-						<p>{{ semester.start | date }}</p>
-						<app-input
-							:min="0"
-							aria-label="Start balance"
-							v-model="startBalance"
-						></app-input>
-					</div>
-				</div>
 
-				<div class="rowbox-box">
+					<p>{{ semester.start | date }}</p>
+					<app-input
+						:min="0"
+						aria-label="Start balance"
+						v-model="startBalance"
+					></app-input>
+				</app-card>
+
+				<app-card>
 					<h4>Now</h4>
-					<div class="rowbox-content">
-						<p>{{ now | date }}</p>
-						<app-input
-							:min="0" :max="startBalance"
-							:step="0.01"
-							:disabled="!inSemester || rawDataComplete"
-							aria-label="Current remaining balance"
-							:value="remainingBalanceSafe.toFixed(2)"
-							@submit="adjustIncompleteData"
-						></app-input>
+					<p>{{ now | date }}</p>
 
-						<div class="errors errors-above" v-cloak>
-							<app-message
-								v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete"
-								@close="showMessages.rawDataComplete = false"
-							>
-								<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
-							</app-message>
-						</div>
+					<app-input
+						:min="0" :max="startBalance"
+						:step="0.01"
+						:disabled="!inSemester || rawDataComplete"
+						aria-label="Current remaining balance"
+						:value="remainingBalanceSafe.toFixed(2)"
+						@submit="adjustIncompleteData"
+					></app-input>
+
+					<div class="errors errors-above" v-cloak>
+						<app-message
+							v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete"
+							@close="showMessages.rawDataComplete = false"
+						>
+							<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
+						</app-message>
 					</div>
-				</div>
+				</app-card>
 
-				<div class="rowbox-box">
+				<app-card>
 					<h4>
 						End
 						<button
@@ -296,17 +306,16 @@
 							<i title="Reset end day" class="fas fa-redo"></i>
 						</button>
 					</h4>
-					<div class="rowbox-content">
-						<p>{{ semester.end | date }}</p>
-						$<input
-							type="number"
-							class="appearance-textfield hide-steppers"
-							aria-label="End balance (0)"
-							value="0"
-							disabled
-						/>
-					</div>
-				</div>
+
+					<p>{{ semester.end | date }}</p>
+					$<input
+						type="number"
+						class="appearance-textfield hide-steppers"
+						aria-label="End balance (0)"
+						value="0"
+						disabled
+					/>
+				</app-card>
 			</div>
 		</section>
 	</div>
@@ -315,11 +324,11 @@
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126257561-1"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
 
-  gtag('config', 'UA-126257561-1');
+	gtag('config', 'UA-126257561-1');
 </script>
 
 
