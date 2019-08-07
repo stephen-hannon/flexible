@@ -111,22 +111,21 @@ export const getRates = (ms, total) => {
  * other by `step` and are divisible by `step`
  * @param {number} x1 - the starting number
  * @param {number} x2 - the ending number
- * @param {number} step - how much to increase each number by
  * @returns {number[]}
  */
-export const interpolate = (x1, x2, step = MS_PER_DAY) => {
+export const interpolate = (x1, x2) => {
 	const returnArr = [];
-	let x = x1;
+	let dayX = dayjs(x1);
+	const dayXNextDay = dayX.startOf('day').add(1, 'day');
 
-	const startOffset = step - (x1 % step);
-	if (startOffset) {
+	if (!dayX.isSame(dayXNextDay)) {
 		returnArr.push(x1);
-		x += startOffset;
+		dayX = dayXNextDay;
 	}
 
-	while (x < x2) {
-		returnArr.push(x);
-		x += step;
+	while (dayX.isBefore(x2)) {
+		returnArr.push(dayX.valueOf());
+		dayX = dayX.add(1, 'day');
 	}
 
 	returnArr.push(x2);

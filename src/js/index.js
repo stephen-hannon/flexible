@@ -188,12 +188,12 @@ new Vue({
 		// else stays as 'windows'
 		this.tabOption = this.platformGuess;
 
-		// Allow overriding the current date by URL hash. No public interface
+		// Allow overriding the current date/time by URL hash. No public interface
 		// since it could break things.
-		const nowDate = window.location.hash.match(/^#now=(\d{4})-(\d{2})-(\d{2})$/);
+		const nowDate = window.location.hash.match(/^#now=(\d{4}-\d{2}-\d{2})(T\d{2}:\d{2}:\d{2})?$/);
 		if (nowDate !== null) {
-			const [, year, month, day] = nowDate.map(e => Number(e));
-			const now = new Date(year, month - 1, day);
+			let [, date, time] = nowDate;
+			const now = new Date(`${date}${time || 'T00:00:00'}`); // force local timezone
 			this.debugNow = now.getTime();
 			this.now = this.debugNow;
 
