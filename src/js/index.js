@@ -321,11 +321,8 @@ new Vue({
 				currentIdealBalanceIndex = idealBalanceData.length;
 			}
 
-			const MS_PER_MINUTE = 1000 * 60;
-			const nowNearestMinute = Math.floor(this.now / MS_PER_MINUTE) * MS_PER_MINUTE;
-
 			idealBalanceData.splice(currentIdealBalanceIndex, 0, {
-				x: nowNearestMinute,
+				x: this.now,
 				y: this.remainingBalanceIdeal,
 				marker: {
 					enabled: true,
