@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
 
 	<meta name="description" content="A Flex Point analyzer for Notre Dame students">
 
@@ -22,8 +22,7 @@
 	<style>[v-cloak] { display: none !important; }</style>
 
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans|PT+Serif:700&display=fallback" rel="stylesheet preconnect">
-	<link href="main.css" rel="stylesheet">
-</head>
+<link href="main.19f89193627f57fe2ee5.css" rel="stylesheet"></head>
 
 <body>
 <div id="flexible" class="wrapper">
@@ -77,33 +76,16 @@
 				<app-card>
 					<h4>Quick</h4>
 					<p id="label-quickbalance">Enter your current {{ semesterCurrent.name }} balance &amp; press <kbd>Enter</kbd></p>
-					<app-input
-						:min="0" :max="startBalance"
-						:step="0.01"
-						:placeholder="remainingBalanceIdealCurrent.toFixed(2)"
-						aria-labelledby="label-quickbalance"
-						@submit="useQuick"
-					></app-input>
+					<app-input :min="0" :max="startBalance" :step="0.01" :placeholder="remainingBalanceIdealCurrent.toFixed(2)" aria-labelledby="label-quickbalance" @submit="useQuick"></app-input>
 				</app-card>
 
 				<app-card>
 					<h4>In-depth</h4>
 					<p id="label-rawdata">Paste your usage data (see below{{ platformGuess === 'mobile' ? '&mdash;not recommended on mobile' : '' }})</p>
-					<textarea
-						class="appearance-textfield full-width"
-						autocomplete="off"
-						cols="50" rows="1"
-						aria-labelledby="label-rawdata"
-						v-model="rawData"
-						@input="$event.target.blur()"
-					></textarea>
+					<textarea class="appearance-textfield full-width" autocomplete="off" cols="50" rows="1" aria-labelledby="label-rawdata" v-model="rawData" @input="$event.target.blur()"></textarea>
 
 					<div class="errors" v-cloak>
-						<app-message
-							v-if="rawDataError"
-							type="error"
-							@close="rawDataError = false"
-						>
+						<app-message v-if="rawDataError" type="error" @close="rawDataError = false">
 							<p>Unable to parse the data you pasted. Make sure there are lines of the form:</p>
 							<pre class="pre-wrap">Flex Points	September 9, 2019, 6:48PM	C-Store 1	- $5.08</pre>
 						</app-message>
@@ -121,13 +103,7 @@
 
 				<ul class="flatlist tabs" role="tablist">
 					<li v-for="tab in ['windows', 'macos', 'mobile']" role="presentation">
-						<button
-							class="tab"
-							role="tab"
-							:class="{ 'tab-active': tabOption === tab }"
-							:aria-selected="tabOption === tab"
-							@click="tabOption = tab"
-						>
+						<button class="tab" role="tab" :class="{ 'tab-active': tabOption === tab }" :aria-selected="tabOption === tab" @click="tabOption = tab">
 							{{ tabOptions[tab] }}
 						</button>
 					</li>
@@ -167,12 +143,10 @@
 			<h3 id="results-header">
 				{{ semester.name }}
 				<template v-if="processedView">balance: {{ remainingBalance | currency }}
-					(<span
-						:class="{
+					(<span :class="{
 							'color-behind': remainingBalanceRelative &lt; -10,
 							'color-ahead': remainingBalanceRelative &gt; 10,
-						}"
-					>{{ Math.abs(remainingBalanceRelative) | currency }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }}</span>)
+						}">{{ Math.abs(remainingBalanceRelative) | currency }} {{ remainingBalanceRelative &lt; 0 ? 'behind' : 'ahead' }}</span>)
 				</template>
 				<template v-else>ideal balance: {{ remainingBalanceIdeal | currency }}</template>
 			</h3>
@@ -221,58 +195,29 @@
 				<app-card>
 					<h4>
 						Start
-						<button
-							class="icon-button"
-							title="Previous day"
-							@click="changeSemesterDate('start', -1, false)"
-							:disabled="!changeSemesterDate('start', -1, true)"
-						>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('start', -1, false)" :disabled="!changeSemesterDate('start', -1, true)">
 							<i title="Previous day" class="fas fa-arrow-left"></i>
 						</button>
-						<button
-							class="icon-button"
-							title="Next day"
-							@click="changeSemesterDate('start', +1, false)"
-							:disabled="!changeSemesterDate('start', +1, true)"
-						>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('start', +1, false)" :disabled="!changeSemesterDate('start', +1, true)">
 							<i title="Next day" class="fas fa-arrow-right"></i>
 						</button>
-						<button
-							class="icon-button"
-							title="Reset start day"
-							v-if="manualDates.start"
-							@click="manualDates.start = null; makeChart()"
-						>
+						<button class="icon-button" title="Reset start day" v-if="manualDates.start" @click="manualDates.start = null; makeChart()">
 							<i title="Reset start day" class="fas fa-redo"></i>
 						</button>
 					</h4>
 
 					<p>{{ semester.start | date }}</p>
-					<app-input
-						:min="0"
-						aria-label="Start balance"
-						v-model="startBalance"
-					></app-input>
+					<app-input :min="0" aria-label="Start balance" v-model="startBalance"></app-input>
 				</app-card>
 
 				<app-card>
 					<h4>Now</h4>
 					<p>{{ now | date }}</p>
 
-					<app-input
-						:min="0" :max="startBalance"
-						:step="0.01"
-						:disabled="!inSemester || rawDataComplete"
-						aria-label="Current remaining balance"
-						:value="remainingBalanceSafe.toFixed(2)"
-						@submit="adjustIncompleteData"
-					></app-input>
+					<app-input :min="0" :max="startBalance" :step="0.01" :disabled="!inSemester || rawDataComplete" aria-label="Current remaining balance" :value="remainingBalanceSafe.toFixed(2)" @submit="adjustIncompleteData"></app-input>
 
 					<div class="errors errors-above" v-cloak>
-						<app-message
-							v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete"
-							@close="showMessages.rawDataComplete = false"
-						>
+						<app-message v-if="inSemester && !rawDataComplete && showMessages.rawDataComplete" @close="showMessages.rawDataComplete = false">
 							<p>The data you pasted doesn't go back to the beginning of the semester. Enter your current balance here and press <kbd>Enter</kbd> to get accurate results (a guess is fine).</p>
 						</app-message>
 					</div>
@@ -281,40 +226,19 @@
 				<app-card>
 					<h4>
 						End
-						<button
-							class="icon-button"
-							title="Previous day"
-							@click="changeSemesterDate('end', -1, false)"
-							:disabled="!changeSemesterDate('end', -1, true)"
-						>
+						<button class="icon-button" title="Previous day" @click="changeSemesterDate('end', -1, false)" :disabled="!changeSemesterDate('end', -1, true)">
 							<i title="Previous day" class="fas fa-arrow-left"></i>
 						</button>
-						<button
-							class="icon-button"
-							title="Next day"
-							@click="changeSemesterDate('end', +1, false)"
-							:disabled="!changeSemesterDate('end', +1, true)"
-						>
+						<button class="icon-button" title="Next day" @click="changeSemesterDate('end', +1, false)" :disabled="!changeSemesterDate('end', +1, true)">
 							<i title="Next day" class="fas fa-arrow-right"></i>
 						</button>
-						<button
-							class="icon-button"
-							title="Reset end day"
-							v-if="manualDates.end"
-							@click="manualDates.end = null; makeChart()"
-						>
+						<button class="icon-button" title="Reset end day" v-if="manualDates.end" @click="manualDates.end = null; makeChart()">
 							<i title="Reset end day" class="fas fa-redo"></i>
 						</button>
 					</h4>
 
 					<p>{{ semester.end | date }}</p>
-					$ <input
-						type="number"
-						class="appearance-textfield hide-steppers"
-						aria-label="End balance (0)"
-						value="0"
-						disabled
-					/>
+					$ <input type="number" class="appearance-textfield hide-steppers" aria-label="End balance (0)" value="0" disabled="disabled">
 				</app-card>
 			</div>
 		</section>
@@ -330,9 +254,5 @@
 
 	gtag('config', 'UA-126257561-1');
 </script>
-
-
-<script src="./vendors~main.js"></script>
-<script src="./main.js"></script>
-</body>
+<script type="text/javascript" src="vendors~main.414cadabb2ab51e2a88a.js"></script><script type="text/javascript" src="main.a17897058e0a3f1efe02.js"></script></body>
 </html>
