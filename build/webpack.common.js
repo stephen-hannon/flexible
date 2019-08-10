@@ -1,5 +1,6 @@
 /* eslint-env node */
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
@@ -9,7 +10,7 @@ module.exports = (devMode) => ({
 		'./src/scss/style.scss',
 	],
 	output: {
-		filename: '[name].js',
+		filename: devMode ? '[name].js' : '[name].[contenthash].js',
 		path: path.resolve(__dirname, '../dist'),
 	},
 	module: {
@@ -43,16 +44,21 @@ module.exports = (devMode) => ({
 		},
 	},
 	optimization: {
+		moduleIds: 'hashed',
 		splitChunks: {
 			chunks: 'all',
 		},
 	},
 	plugins: [
+		new HtmlWebpackPlugin({
+			template: './src/index.html',
+			minify: !devMode,
+		}),
 		new MiniCssExtractPlugin({
 			// Options similar to the same options in webpackOptions.output
 			// both options are optional
-			filename: '[name].css',
-			chunkFilename: '[id].css',
+			filename: devMode ? '[name].css' : '[name].[hash].css',
+			chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
 		}),
 		new VueLoaderPlugin(),
 	],
