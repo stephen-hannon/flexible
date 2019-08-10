@@ -1,6 +1,6 @@
 {
   "name": "flexible",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Flex Point usage analyzer",
   "private": true,
   "sideEffects": [
@@ -41,6 +41,8 @@
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^2.1.1",
     "eslint": "^6.1.0",
     "html-webpack-plugin": "^3.2.0",

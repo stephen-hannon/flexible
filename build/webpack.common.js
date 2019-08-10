@@ -3,6 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (devMode) => ({
 	entry: [
@@ -52,7 +53,14 @@ module.exports = (devMode) => ({
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: './src/index.html',
-			minify: !devMode,
+			minify: !devMode && {
+				collapseWhitespace: true,
+				customAttrCollapse: /:class/,
+				removeComments: true,
+				removeRedundantAttributes: true,
+				removeScriptTypeAttributes: true,
+				removeStyleLinkTypeAttributes: true,
+			},
 		}),
 		new MiniCssExtractPlugin({
 			// Options similar to the same options in webpackOptions.output
@@ -61,5 +69,10 @@ module.exports = (devMode) => ({
 			chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
 		}),
 		new VueLoaderPlugin(),
+		new CopyPlugin([
+			{
+				from: './static',
+			},
+		]),
 	],
 });
