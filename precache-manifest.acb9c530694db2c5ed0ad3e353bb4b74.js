@@ -28,15 +28,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "favicon.ico"
   },
   {
-    "revision": "7c6d56924cd50423521e3a5473fb2161",
+    "revision": "538bc3a473057c8b331b8e109a43bdcd",
     "url": "index.html"
   },
   {
-    "revision": "267bf1d47cb1525c4b25",
+    "revision": "59c772803cecb69def72",
     "url": "main.a17897058e0a3f1efe02.js"
   },
   {
-    "url": "main.edb2fda1d3115a22d4f5.css"
+    "url": "main.c9bdee46c24d4e3b9cc5.css"
   },
   {
     "revision": "2f7d9a2b7108d0fcc6c3290993e184de",
@@ -49,6 +49,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "b0094fcf5d27a56414258248e688a472",
     "url": "site.webmanifest"
+  },
+  {
+    "revision": "3f5ec01aed628d985cba6947a7995b0a",
+    "url": "social-image.png"
   },
   {
     "revision": "79fe751aa8c033edea16",
