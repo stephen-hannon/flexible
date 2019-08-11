@@ -80,12 +80,13 @@ describe('utils.js', () => {
 	});
 
 	describe('interpolate', () => {
-		// TODO: update these tests!
-		it.skip('interpolates', () => {
-			expect(utils.interpolate(0.5, 3.1, 1))
-				.toEqual([0.5, 1, 2, 3, 3.1]);
-			expect(utils.interpolate(0.1, 0.2, 1))
-				.toEqual([0.1, 0.2]);
+		it('interpolates, taking DST into account', () => {
+			const [date1, date2, date3] = [9, 10, 11].map(date => new Date(2019, 2, date).valueOf());
+
+			expect(utils.interpolate(date1, date3))
+				.toEqual([date1, date2, date3]);
+			expect(utils.interpolate(date1 - 1, date3 + 1))
+				.toEqual([date1 - 1, date1, date2, date3, date3 + 1]);
 		});
 		it('interpolates the same point', () => {
 			expect(utils.interpolate(1, 1))
