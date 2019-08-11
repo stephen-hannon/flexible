@@ -22,4 +22,15 @@ $font-family: $font-sans-serif;
 	stroke-dasharray: 6, 6;
 }
 
+.highcharts-tooltip-box:not(.highcharts-color-none) {
+	.highcharts-label-box {
+		fill: inherit;
+		fill-opacity: 1;
+	}
+
+	text {
+		fill: $color-white;
+	}
+}
+
 @import '~highcharts/css/highcharts';

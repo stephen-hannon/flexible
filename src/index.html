@@ -149,7 +149,7 @@
 							<template v-else>For a shortcut, press <kbd>{{ ctrlOrCmd }}</kbd>+<kbd>A</kbd> to select all and <kbd>{{ ctrlOrCmd }}</kbd>+<kbd>C</kbd> to copy.</template>
 						</li>
 						<li>
-							<strong>Paste it into the text box above.</strong> (Don't worry, all your data stays in your browser.) <template v-if="tabOption !== 'mobile'">For a shortcut, press <kbd>{{ ctrlOrCmd }}</kbd>+<kbd>V</kbd> to paste.</template>
+							<strong>Paste it into the text box above.</strong> (Don't worry, all your data stays in your browser.) <span v-if="tabOption !== 'mobile'">For a shortcut, press <kbd>{{ ctrlOrCmd }}</kbd>+<kbd>V</kbd> to paste.</span>
 						</li>
 					</ol>
 				</div>

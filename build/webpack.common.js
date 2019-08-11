@@ -58,6 +58,7 @@ module.exports = (devMode) => ({
 			minify: !devMode && {
 				collapseWhitespace: true,
 				customAttrCollapse: /:class/,
+				customEventAttributes: /(@|:|v-)\w+/,
 				minifyJS: true,
 				removeComments: true,
 				removeRedundantAttributes: true,
