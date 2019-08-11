@@ -1,5 +1,6 @@
 /* eslint-env node */
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -51,11 +52,13 @@ module.exports = (devMode) => ({
 		},
 	},
 	plugins: [
+		new CleanWebpackPlugin(),
 		new HtmlWebpackPlugin({
 			template: './src/index.html',
 			minify: !devMode && {
 				collapseWhitespace: true,
 				customAttrCollapse: /:class/,
+				minifyJS: true,
 				removeComments: true,
 				removeRedundantAttributes: true,
 				removeScriptTypeAttributes: true,
