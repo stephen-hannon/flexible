@@ -57,6 +57,7 @@ module.exports = (devMode) => ({
 			template: './src/index.html',
 			minify: !devMode && {
 				collapseWhitespace: true,
+				conservativeCollapse: true,
 				customAttrCollapse: /:class/,
 				customEventAttributes: /(@|:|v-)\w+/,
 				minifyJS: true,

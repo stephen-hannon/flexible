@@ -170,7 +170,8 @@ new Vue({
 	},
 
 	mounted () {
-		const MIN_TWO_COLUMN_SIZE = 320 + 320; // max-width of the two primary `section` elements
+		// max-width of the two primary `section` elements, plus padding
+		const MIN_TWO_COLUMN_SIZE = 2 * (300 + 32 * 2);
 		// https://stackoverflow.com/a/8876069/3902568
 		const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 		if (viewportWidth < MIN_TWO_COLUMN_SIZE) {
