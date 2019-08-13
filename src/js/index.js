@@ -23,6 +23,8 @@ import * as utils from './utils';
 import { parseData } from './parse';
 import sampleData from '../assets/sample-data.json';
 
+import '../scss/style.scss';
+
 library.add(
 	faGithub,
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt, faChevronUp,
@@ -314,8 +316,8 @@ new Vue({
 					0,
 				);
 
-			let currentIdealBalanceIndex = idealBalanceData.findIndex(function (value) {
-				return value[0] >= this.now;
+			let currentIdealBalanceIndex = idealBalanceData.findIndex(function ([date]) {
+				return date >= this.now;
 			}, this);
 
 			if (currentIdealBalanceIndex === -1) {
@@ -511,6 +513,10 @@ new Vue({
 		},
 	},
 });
+
+if (module.hot) {
+	module.hot.accept();
+}
 
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
 	window.addEventListener('load', () => {

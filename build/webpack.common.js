@@ -9,7 +9,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = (devMode) => ({
 	entry: [
 		'./src/js/index.js',
-		'./src/scss/style.scss',
 	],
 	output: {
 		filename: devMode ? '[name].js' : '[name].[contenthash].js',
@@ -19,7 +18,7 @@ module.exports = (devMode) => ({
 		rules: [{
 			test: /\.scss$/,
 			use: [{
-				loader: MiniCssExtractPlugin.loader,
+				loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
 			}, {
 				loader: 'css-loader',
 			}, {

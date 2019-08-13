@@ -17,6 +17,8 @@ $color-graph-secondary: $color-rose;
 $font-sans-serif: 'PT Sans', 'Segoe UI', Optima, Tahoma, Geneva, sans-serif;
 $font-serif:      'PT Serif', Baskerville, Georgia, serif;
 
+$font-size-root: 10/16 * 100%; // Make 1rem == 10px on typical browsers
+
 // Sizes
 $size-border: 1.5px;
 $size-line: 2px;
