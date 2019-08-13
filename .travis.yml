@@ -8,7 +8,7 @@ git:
   depth: 3
 
 before_script:
-  - npm run build:prod
+  - npm run build:prod -- --color
 
 script:
   - npm run lint

@@ -9,6 +9,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = (devMode) => ({
 	entry: [
 		'./src/js/index.js',
+		'./src/scss/style.scss',
 	],
 	output: {
 		filename: devMode ? '[name].js' : '[name].[contenthash].js',

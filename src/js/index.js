@@ -23,8 +23,6 @@ import * as utils from './utils';
 import { parseData } from './parse';
 import sampleData from '../assets/sample-data.json';
 
-import '../scss/style.scss';
-
 library.add(
 	faGithub,
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt, faChevronUp,
