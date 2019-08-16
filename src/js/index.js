@@ -17,6 +17,7 @@ import CardComponent from '../components/Card.vue';
 import CollapsibleComponent from '../components/Collapsible.vue';
 import InputComponent from '../components/Input.vue';
 import MessageComponent from '../components/Message.vue';
+import StatsListComponent from '../components/StatsList.vue';
 
 import * as filters from './filters';
 import * as utils from './utils';
@@ -35,15 +36,14 @@ Vue.component('app-card', CardComponent);
 Vue.component('app-collapsible', CollapsibleComponent);
 Vue.component('app-input', InputComponent);
 Vue.component('app-message', MessageComponent);
+Vue.component('app-stats-list', StatsListComponent);
+
+Vue.filter('currency', filters.formatCurrency);
+Vue.filter('currencySafe', filters.formatCurrencySafe);
+Vue.filter('date', filters.formatDate);
 
 new Vue({
 	el: '#flexible',
-
-	filters: {
-		currency: filters.formatCurrency,
-		currencySafe: filters.formatCurrencySafe,
-		date: filters.formatDate,
-	},
 
 	data: {
 		chartData: null,

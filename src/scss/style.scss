@@ -86,6 +86,10 @@ h4 {
 	margin: 0.8rem 0;
 }
 
+p {
+	font-size: 1.6rem;
+}
+
 .color-error {
 	color: $color-rose;
 }
@@ -339,24 +343,6 @@ $header-links-padding-horizontal: 1.6rem;
 }
 .header-links-text {
 	margin-left: 0.8rem;
-}
-
-.stats-list {
-	list-style-type: none;
-	padding: 0;
-	margin: 0.8rem 0;
-
-	li {
-		padding: 0.4rem 0;
-		box-sizing: border-box;
-		border-bottom: $size-line solid $color-graph-primary;
-	}
-}
-.stats-list-dashed li {
-	border-bottom-style: dashed;
-}
-.stat {
-	font-size: 2rem;
 }
 
 #results {

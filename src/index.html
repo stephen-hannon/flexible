@@ -194,38 +194,12 @@
 			<div class="rowbox-container">
 				<app-card :wide="true">
 					<h4>Before now</h4>
-					<ul class="stats-list">
-						<li>
-							<i class="fas fa-calendar-alt"></i>
-							<span class="stat">{{ rates.past.total | currencySafe }}</span> in total
-						</li>
-						<li>
-							<i class="fas fa-calendar-day"></i>
-							<span class="stat">{{ rates.past.perDay | currencySafe }}</span> per day
-						</li>
-						<li>
-							<i class="fas fa-calendar-week"></i>
-							<span class="stat">{{ rates.past.perWeek | currencySafe }}</span> per week
-						</li>
-					</ul>
+					<app-stats-list :rates="rates.past"></app-stats-list>
 				</app-card>
 
 				<app-card :wide="true">
 					<h4>After now</h4>
-					<ul class="stats-list stats-list-dashed">
-						<li>
-							<i class="fas fa-calendar-alt"></i>
-							<span class="stat">{{ rates.future.total | currencySafe }}</span> in total
-						</li>
-						<li>
-							<i class="fas fa-calendar-day"></i>
-							<span class="stat">{{ rates.future.perDay | currencySafe }}</span> per day
-						</li>
-						<li>
-							<i class="fas fa-calendar-week"></i>
-							<span class="stat">{{ rates.future.perWeek | currencySafe }}</span> per week
-						</li>
-					</ul>
+					<app-stats-list :rates="rates.future"></app-stats-list>
 				</app-card>
 			</div>
 
