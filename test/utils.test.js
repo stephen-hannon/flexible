@@ -33,8 +33,7 @@ describe('utils.js', () => {
 			['Fall', 2019, 7, 25],
 			['Spring', 2022, 0, 9],
 			['Spring', 2023, 0, 15],
-		].forEach(semester => {
-			const [season, year, month, date] = semester;
+		].forEach(([season, year, month, date]) => {
 			it(`finds start of ${season} ${year}`, () => {
 				expect(utils.getSemesterStart(year, season).valueOf())
 					.toBe(new Date(year, month, date).valueOf());
@@ -48,8 +47,7 @@ describe('utils.js', () => {
 			['Fall', 2019, 11, 21],
 			['Spring', 2022, 4, 7],
 			['Spring', 2023, 4, 13],
-		].forEach(semester => {
-			const [season, year, month, date] = semester;
+		].forEach(([season, year, month, date]) => {
 			it(`finds end of ${season} ${year}`, () => {
 				expect(utils.getSemesterEnd(year, season).valueOf())
 					.toBe(new Date(year, month, date).valueOf());
@@ -61,7 +59,7 @@ describe('utils.js', () => {
 		it('finds semester of September 1, 2019, with all properties', () => {
 			expect(utils.findSemester(new Date(2019, 8, 1)))
 				.toEqual({
-					year: 2019.2,
+					id: 2019.2,
 					name: 'Fall 2019',
 					start: new Date(2019, 7, 25).valueOf(),
 					end: new Date(2019, 11, 21).valueOf(),
@@ -76,6 +74,22 @@ describe('utils.js', () => {
 		it('finds semester of December 31, 2019', () => {
 			expect(utils.findSemester(new Date(2023, 11, 31)))
 				.toHaveProperty('name', 'Spring 2024');
+		});
+
+		it('finds semester, with manual dates', () => {
+			const insideSoftLimit = utils.softSemesterLimit / utils.MS_PER_DAY - 1;
+			const date = new Date(2019, 4, 11 + insideSoftLimit, 12);
+
+			expect(utils.findSemester(date))
+				.toHaveProperty('name', 'Spring 2019');
+
+			expect(utils.findSemester(
+				date,
+				{
+					start: {},
+					end: { '2019.1': new Date(2019, 4, 10) },
+				}
+			)).toHaveProperty('name', 'Fall 2019');
 		});
 	});
 

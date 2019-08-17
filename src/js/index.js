@@ -52,8 +52,8 @@ new Vue({
 		debugNow: null,
 		loaderShow: true,
 		manualDates: {
-			start: null,
-			end: null,
+			start: {},
+			end: {},
 		},
 		now: Date.now(),
 		platformGuess: 'windows',
@@ -125,14 +125,10 @@ new Vue({
 			return this.remainingBalance == null ? this.remainingBalanceIdeal : this.remainingBalance;
 		},
 		semester () {
-			return this.findSemesterAdjusted(this.now);
+			return utils.findSemester(this.now, this.manualDates);
 		},
 		semesterCurrent () {
-			const semester = utils.findSemester(this.getNow());
-			// this.semester may have customized dates, so use that.
-			// TODO: Customized dates could make findSemester not line up with this.semester.
-			// Move the manualDates logic from `semester` to a reusable method.
-			return (semester.year === this.semester.year) ? this.semester : semester;
+			return utils.findSemester(this.getNow(), this.manualDates);
 		},
 		spentBalance () {
 			return utils.addCurrency(
@@ -144,13 +140,6 @@ new Vue({
 
 
 	watch: {
-		now () {
-			this.manualDates = {
-				start: null,
-				end: null,
-			};
-		},
-
 		rawData (rawData) {
 			if (rawData) {
 				// quick sanity check
@@ -243,31 +232,26 @@ new Vue({
 			if (startOrEnd === 'start') {
 				if (this.semester.start + deltaMs < this.semester.end) {
 					if (validateOnly) return true;
-					this.manualDates.start += deltaMs;
+
+					this.$set(
+						this.manualDates.start,
+						this.semester.id,
+						this.semester.start + deltaMs
+					);
 				}
 			} else if (startOrEnd === 'end') {
 				if (this.semester.end + deltaMs > this.semester.start) {
 					if (validateOnly) return true;
-					this.manualDates.end += deltaMs;
+
+					this.$set(
+						this.manualDates.end,
+						this.semester.id,
+						this.semester.end + deltaMs
+					);
 				}
 			}
 			if (validateOnly) return false;
 			this.makeChart();
-		},
-
-		/**
-		 * Extends `utils.findSemester` to take into account `manualDates`
-		 * @param {string | number | Date} now
-		 */
-		findSemesterAdjusted (now) {
-			const semester = utils.findSemester(now);
-			if (this.manualDates.start) {
-				semester.start += this.manualDates.start;
-			}
-			if (this.manualDates.end) {
-				semester.end += this.manualDates.end;
-			}
-			return semester;
 		},
 
 		getIdealBalanceAtDate (date, semester = this.semester) {
@@ -469,9 +453,9 @@ new Vue({
 			let lastDate;
 			[lastDate, this.remainingBalance] = this.chartData[this.chartData.length - 1];
 
-			const dataSemester = utils.findSemester(lastDate);
+			const dataSemester = utils.findSemester(lastDate, this.manualDates);
 			// If the data was from a different (previous) semester, update `now` to match this semester.
-			if (dataSemester.year !== this.semester.year) {
+			if (dataSemester.id !== this.semester.id) {
 				this.now = lastDate;
 			} else {
 				// `else` because we don't need a duplicate point if `this.now` is already `lastDate`.

@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 
 /**
  * @typedef {Object} semester
- * @property {number} year - year plus 0.1 if spring, 0.2 if fall
+ * @property {number} id - year plus 0.1 if spring, 0.2 if fall
  * @property {string} name - human-readable name: `[Spring|Fall] <year>`
  * @property {number} start - start date, as a unix timestamp in milliseconds
  * @property {number} end - end date, as a unix timestamp in milliseconds
@@ -58,15 +58,22 @@ export const getSemesterEnd = (year, season) => (
 
 /**
  * @param {number | Date | string} now
+ * @param {{end: {}, start: {}}} [manualDates] - key-value pairs of semester IDs and adjusted start/end
+ * dates for that semester, if any
  * @returns {semester}
  */
-export const findSemester = (now) => {
+export const findSemester = (now, manualDates = {end: {}, start: {}}) => {
 	const nowDay = dayjs(now);
 	let year = nowDay.get('year');
 	let season;
 
-	const endFall = getSemesterEnd(year, 'Fall');
-	const endSpring = getSemesterEnd(year, 'Spring');
+	const endFall = manualDates.end[year + 0.2] != undefined
+		? dayjs(manualDates.end[year + 0.2])
+		: getSemesterEnd(year, 'Fall');
+
+	const endSpring = manualDates.end[year + 0.1] != undefined
+		? dayjs(manualDates.end[year + 0.1])
+		: getSemesterEnd(year, 'Spring');
 
 	if (endFall.add(softSemesterLimit, 'ms').isBefore(nowDay)) {
 		year++;
@@ -77,11 +84,13 @@ export const findSemester = (now) => {
 		season = 'Spring';
 	}
 
+	const id = year + (season === 'Spring' ? 0.1 : 0.2);
+
 	return {
-		year: year + (season === 'Spring' ? 0.1 : 0.2),
+		id,
 		name: `${season} ${year}`,
-		start: getSemesterStart(year, season).valueOf(),
-		end: getSemesterEnd(year, season).valueOf(),
+		start: manualDates.start[id] || getSemesterStart(year, season).valueOf(),
+		end: manualDates.end[id] || getSemesterEnd(year, season).valueOf(),
 	};
 };
 
