@@ -182,7 +182,7 @@ new Vue({
 		// since it could break things.
 		const nowDate = window.location.hash.match(/^#now=(\d{4}-\d{2}-\d{2})(T\d{2}:\d{2}:\d{2})?$/);
 		if (nowDate !== null) {
-			let [, date, time] = nowDate;
+			const [, date, time] = nowDate;
 			const now = new Date(`${date}${time || 'T00:00:00'}`); // force local timezone
 			this.debugNow = now.getTime();
 			this.now = this.debugNow;
@@ -266,14 +266,14 @@ new Vue({
 		 * @returns {Highcharts.ChartObject}
 		 */
 		makeChart () {
-			const data = this.processedView === 'quick' ? this.quickData : this.chartData;
+			const actualData = this.processedView === 'quick' ? this.quickData : this.chartData;
 
-			const estimatedData = this.processedView === 'parse' && !this.rawDataComplete
+			const estimatedData = (this.processedView === 'parse' && !this.rawDataComplete)
 				? utils.interpolateLine(
 					this.semester.start,
-					data[0][0],
+					actualData[0][0],
 					this.startBalance,
-					data[0][1],
+					actualData[0][1],
 				)
 				: [];
 
@@ -284,8 +284,8 @@ new Vue({
 				0
 			);
 
-			const idealBalanceData = data
-				? [...estimatedData, ...data, ...projectedData].map(function ([date]) {
+			const idealBalanceData = actualData
+				? [...estimatedData, ...actualData, ...projectedData].map(function ([date]) {
 					return [
 						date,
 						this.getIdealBalanceAtDate(date),
@@ -323,7 +323,7 @@ new Vue({
 				},
 			];
 
-			if (data) {
+			if (actualData) {
 				series.push({
 					name: 'Estimated balance',
 					colorIndex: 0,
@@ -335,7 +335,7 @@ new Vue({
 					name: 'Actual balance',
 					colorIndex: 0,
 					step: (this.processedView !== 'quick') ? 'left' : null,
-					data: data,
+					data: actualData,
 					id: 'actual',
 				}, {
 					name: 'Projected balance',

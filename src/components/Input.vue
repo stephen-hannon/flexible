@@ -21,10 +21,10 @@ export default {
 
 	props: {
 		value: {
-			default: 0,
 			validator (value) {
 				return !isNaN(parseFloat(value));
 			},
+			default: null,
 		},
 	},
 

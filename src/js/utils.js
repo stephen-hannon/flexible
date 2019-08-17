@@ -12,6 +12,11 @@ export const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 export const softSemesterLimit = MS_PER_DAY * 14; // 2 weeks
 
+export const SeasonsEnum = {
+	SPRING: 'Spring',
+	FALL: 'Fall',
+};
+
 /**
  * Adds two numbers that avoids floating-point errors like `.1 + .2 !== .3`
  * @param {number} x
@@ -39,7 +44,7 @@ export const adjustBalances = (data, adjustmentAmount) => adjustmentAmount
  */
 export const getSemesterStart = (year, season) => (
 	dayjs(
-		season === 'Spring' ? new Date(year, 0, 15) : new Date(year, 7, 25)
+		season === SeasonsEnum.SPRING ? new Date(year, 0, 15) : new Date(year, 7, 25)
 	).day(0)
 );
 
@@ -52,7 +57,7 @@ export const getSemesterStart = (year, season) => (
  */
 export const getSemesterEnd = (year, season) => (
 	dayjs(
-		season === 'Spring' ? new Date(year, 4, 7) : new Date(year, 11, 15)
+		season === SeasonsEnum.SPRING ? new Date(year, 4, 7) : new Date(year, 11, 15)
 	).day(6)
 );
 
@@ -62,29 +67,29 @@ export const getSemesterEnd = (year, season) => (
  * dates for that semester, if any
  * @returns {semester}
  */
-export const findSemester = (now, manualDates = {end: {}, start: {}}) => {
+export const findSemester = (now, manualDates = { end: {}, start: {} }) => {
 	const nowDay = dayjs(now);
 	let year = nowDay.get('year');
 	let season;
 
 	const endFall = manualDates.end[year + 0.2] != undefined
 		? dayjs(manualDates.end[year + 0.2])
-		: getSemesterEnd(year, 'Fall');
+		: getSemesterEnd(year, SeasonsEnum.FALL);
 
 	const endSpring = manualDates.end[year + 0.1] != undefined
 		? dayjs(manualDates.end[year + 0.1])
-		: getSemesterEnd(year, 'Spring');
+		: getSemesterEnd(year, SeasonsEnum.SPRING);
 
 	if (endFall.add(softSemesterLimit, 'ms').isBefore(nowDay)) {
 		year++;
-		season = 'Spring';
+		season = SeasonsEnum.SPRING;
 	} else if (endSpring.add(softSemesterLimit, 'ms').isBefore(nowDay)) {
-		season = 'Fall';
+		season = SeasonsEnum.FALL;
 	} else {
-		season = 'Spring';
+		season = SeasonsEnum.SPRING;
 	}
 
-	const id = year + (season === 'Spring' ? 0.1 : 0.2);
+	const id = year + (season === SeasonsEnum.SPRING ? 0.1 : 0.2);
 
 	return {
 		id,

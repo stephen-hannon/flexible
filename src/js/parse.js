@@ -40,7 +40,7 @@ export const parseData = (rawData, startBalance) => {
 	let previousChange = 0;
 	let newStartBalance;
 
-	for(let i = 0; i < data.length && !rawDataComplete; i++) {
+	for (let i = 0; i < data.length && !rawDataComplete; i++) {
 		const parseResult = parseDataRow(data[i]);
 
 		if (parseResult !== null) {
