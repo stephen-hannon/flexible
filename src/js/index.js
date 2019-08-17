@@ -233,21 +233,29 @@ new Vue({
 				if (this.semester.start + deltaMs < this.semester.end) {
 					if (validateOnly) return true;
 
-					this.$set(
-						this.manualDates.start,
-						this.semester.id,
-						this.semester.start + deltaMs
-					);
+					if (this.manualDates.start[this.semester.id] === undefined) {
+						this.$set(
+							this.manualDates.start,
+							this.semester.id,
+							deltaDay
+						);
+					} else {
+						this.manualDates.start[this.semester.id] += deltaDay;
+					}
 				}
 			} else if (startOrEnd === 'end') {
 				if (this.semester.end + deltaMs > this.semester.start) {
 					if (validateOnly) return true;
 
-					this.$set(
-						this.manualDates.end,
-						this.semester.id,
-						this.semester.end + deltaMs
-					);
+					if (this.manualDates.end[this.semester.id] === undefined) {
+						this.$set(
+							this.manualDates.end,
+							this.semester.id,
+							deltaDay
+						);
+					} else {
+						this.manualDates.end[this.semester.id] += deltaDay;
+					}
 				}
 			}
 			if (validateOnly) return false;

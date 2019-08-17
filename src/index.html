@@ -234,7 +234,7 @@
 							class="icon-button"
 							title="Reset start day"
 							v-if="manualDates.start[semester.id]"
-							@click="manualDates.start[semester.id] = null; makeChart()"
+							@click="manualDates.start[semester.id] = 0; makeChart()"
 						>
 							<i title="Reset start day" class="fas fa-redo"></i>
 						</button>
@@ -294,7 +294,7 @@
 							class="icon-button"
 							title="Reset end day"
 							v-if="manualDates.end[semester.id]"
-							@click="manualDates.end[semester.id] = null; makeChart()"
+							@click="manualDates.end[semester.id] = 0; makeChart()"
 						>
 							<i title="Reset end day" class="fas fa-redo"></i>
 						</button>

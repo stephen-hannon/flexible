@@ -87,7 +87,7 @@ describe('utils.js', () => {
 				date,
 				{
 					start: {},
-					end: { '2019.1': new Date(2019, 4, 10) },
+					end: { '2019.1': -1 },
 				}
 			)).toHaveProperty('name', 'Fall 2019');
 		});

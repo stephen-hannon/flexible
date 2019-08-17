@@ -72,13 +72,11 @@ export const findSemester = (now, manualDates = { end: {}, start: {} }) => {
 	let year = nowDay.get('year');
 	let season;
 
-	const endFall = manualDates.end[year + 0.2] != undefined
-		? dayjs(manualDates.end[year + 0.2])
-		: getSemesterEnd(year, SeasonsEnum.FALL);
+	const endFall = getSemesterEnd(year, SeasonsEnum.FALL)
+		.add(manualDates.end[year + 0.2] || 0, 'day');
 
-	const endSpring = manualDates.end[year + 0.1] != undefined
-		? dayjs(manualDates.end[year + 0.1])
-		: getSemesterEnd(year, SeasonsEnum.SPRING);
+	const endSpring = getSemesterEnd(year, SeasonsEnum.SPRING)
+		.add(manualDates.end[year + 0.1] || 0, 'day');
 
 	if (endFall.add(softSemesterLimit, 'ms').isBefore(nowDay)) {
 		year++;
@@ -94,8 +92,12 @@ export const findSemester = (now, manualDates = { end: {}, start: {} }) => {
 	return {
 		id,
 		name: `${season} ${year}`,
-		start: manualDates.start[id] || getSemesterStart(year, season).valueOf(),
-		end: manualDates.end[id] || getSemesterEnd(year, season).valueOf(),
+		start: getSemesterStart(year, season)
+			.add(manualDates.start[id] || 0, 'day')
+			.valueOf(),
+		end: getSemesterEnd(year, season)
+			.add(manualDates.end[id] || 0, 'day')
+			.valueOf(),
 	};
 };
 
