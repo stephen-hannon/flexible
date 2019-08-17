@@ -19,7 +19,7 @@ module.exports = (devMode) => ({
 		rules: [{
 			test: /\.scss$/,
 			use: [{
-				loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+				loader: MiniCssExtractPlugin.loader,
 			}, {
 				loader: 'css-loader',
 			}, {
