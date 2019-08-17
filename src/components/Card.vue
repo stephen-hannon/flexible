@@ -1,7 +1,7 @@
 <template>
 	<div class="card" :class="{'card-wide': wide}">
 		<div class="card-content">
-			<slot></slot>
+			<slot />
 		</div>
 	</div>
 </template>
@@ -11,7 +11,7 @@ export default {
 	props: {
 		wide: Boolean,
 	},
-}
+};
 </script>
 
 <style lang="scss" scoped>

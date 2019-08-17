@@ -1,12 +1,12 @@
 <template>
 	<form @submit.prevent="onSubmit">
 		$ <input
+			v-model.lazy.number="rawValue"
 			type="number"
 			class="appearance-textfield hide-steppers"
 			required
 			v-bind="$attrs"
-			v-model.lazy.number="_value"
-		/>
+		>
 	</form>
 </template>
 
@@ -21,6 +21,7 @@ export default {
 
 	props: {
 		value: {
+			default: 0,
 			validator (value) {
 				return !isNaN(parseFloat(value));
 			},
@@ -29,7 +30,7 @@ export default {
 
 	data () {
 		return {
-			_value: null,
+			rawValue: null,
 		};
 	},
 
@@ -37,7 +38,7 @@ export default {
 		value: {
 			immediate: true,
 			handler (val) {
-				this._value = val;
+				this.rawValue = val;
 			},
 		},
 	},
@@ -47,8 +48,8 @@ export default {
 		 * @param {Event}
 		 */
 		onSubmit ({ target }) {
-			this.$emit('submit', this._value);
-			this._value = null;
+			this.$emit('submit', this.rawValue);
+			this.rawValue = null;
 			if (target && target[0] && target[0].blur) {
 				target[0].blur();
 			}

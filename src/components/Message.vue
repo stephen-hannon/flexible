@@ -5,17 +5,20 @@
 			title="Close message"
 			@click="$emit('close')"
 		>
-			<i class="fas fa-times" title="Close message"></i>
+			<i class="fas fa-times" title="Close message" />
 		</button>
 
-		<slot></slot>
+		<slot />
 	</div>
 </template>
 
 <script>
 export default {
 	props: {
-		type: String,
+		type: {
+			type: String,
+			required: true,
+		},
 	},
 };
 </script>

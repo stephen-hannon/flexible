@@ -5,18 +5,18 @@
 	>
 		<button
 			class="collapsible-header"
-			@click="$emit('toggle', !collapsed)"
 			:title="`Click to ${collapsed ? 'expand' : 'collapse'} section`"
+			@click="$emit('toggle', !collapsed)"
 		>
 			{{ header }}
 			<span class="collapsible-header-icon">
-				<i class="fas fa-chevron-up"></i>
+				<i class="fas fa-chevron-up" />
 			</span>
 		</button>
 
 		<transition name="slide">
-			<div class="collapsible-content" v-if="!collapsed">
-				<slot></slot>
+			<div v-if="!collapsed" class="collapsible-content">
+				<slot />
 			</div>
 		</transition>
 	</div>
@@ -31,9 +31,12 @@ export default {
 
 	props: {
 		collapsed: Boolean,
-		header: String,
+		header: {
+			type: String,
+			required: true,
+		},
 	},
-}
+};
 </script>
 
 <style lang="scss" scoped>

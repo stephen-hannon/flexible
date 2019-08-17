@@ -1,8 +1,14 @@
 {
-    "editor.rulers": [
-        100
-    ],
-    "editor.detectIndentation": false,
+	"editor.rulers": [
+		100
+	],
+	"editor.detectIndentation": false,
 	"editor.insertSpaces": false,
 	"files.insertFinalNewline": true,
+	"eslint.validate": [
+		"javascript",
+		"javascriptreact",
+		{ "language": "vue", "autoFix": true },
+	],
+	"vetur.validation.template": false,
 }
