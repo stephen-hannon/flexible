@@ -15,6 +15,7 @@ import {
 
 import CardComponent from '../components/Card.vue';
 import CollapsibleComponent from '../components/Collapsible.vue';
+import DateAdjustComponent from '../components/DateAdjust.vue';
 import InputComponent from '../components/Input.vue';
 import MessageComponent from '../components/Message.vue';
 import StatsListComponent from '../components/StatsList.vue';
@@ -34,6 +35,7 @@ dom.watch();
 Vue.config.productionTip = false;
 Vue.component('app-card', CardComponent);
 Vue.component('app-collapsible', CollapsibleComponent);
+Vue.component('app-date-adjust', DateAdjustComponent);
 Vue.component('app-input', InputComponent);
 Vue.component('app-message', MessageComponent);
 Vue.component('app-stats-list', StatsListComponent);
@@ -222,43 +224,21 @@ new Vue({
 
 		/**
 		 * Modifies the semester start or end date by adding or subtracting days
-		 * @param {'start'|'end'} startOrEnd - whether the start or end date should be changed
 		 * @param {number} deltaDay - how many days to add (can be negative)
-		 * @param {boolean} validateOnly - if the function should only validate if the change can be made
-		 * @returns {boolean|void} whether the change can be made, if `validateOnly` is truthy
+		 * @param {'start' | 'end'} startOrEnd - whether the start or end date should be changed
 		 */
-		changeSemesterDate (startOrEnd, deltaDay, validateOnly) {
-			const deltaMs = deltaDay * utils.MS_PER_DAY;
-			if (startOrEnd === 'start') {
-				if (this.semester.start + deltaMs < this.semester.end) {
-					if (validateOnly) return true;
-
-					if (this.manualDates.start[this.semester.id] === undefined) {
-						this.$set(
-							this.manualDates.start,
-							this.semester.id,
-							deltaDay
-						);
-					} else {
-						this.manualDates.start[this.semester.id] += deltaDay;
-					}
-				}
-			} else if (startOrEnd === 'end') {
-				if (this.semester.end + deltaMs > this.semester.start) {
-					if (validateOnly) return true;
-
-					if (this.manualDates.end[this.semester.id] === undefined) {
-						this.$set(
-							this.manualDates.end,
-							this.semester.id,
-							deltaDay
-						);
-					} else {
-						this.manualDates.end[this.semester.id] += deltaDay;
-					}
-				}
+		changeSemesterDate (deltaDay, startOrEnd) {
+			const datesObj = this.manualDates[startOrEnd];
+			if (datesObj[this.semester.id] === undefined || deltaDay === 0) {
+				this.$set(
+					datesObj,
+					this.semester.id,
+					deltaDay
+				);
+			} else {
+				datesObj[this.semester.id] += deltaDay;
 			}
-			if (validateOnly) return false;
+
 			this.makeChart();
 		},
 

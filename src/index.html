@@ -214,30 +214,12 @@
 				<app-card>
 					<h4>
 						Start
-						<button
-							class="icon-button"
-							title="Previous day"
-							@click="changeSemesterDate('start', -1, false)"
-							:disabled="!changeSemesterDate('start', -1, true)"
-						>
-							<i title="Previous day" class="fas fa-arrow-left"></i>
-						</button>
-						<button
-							class="icon-button"
-							title="Next day"
-							@click="changeSemesterDate('start', +1, false)"
-							:disabled="!changeSemesterDate('start', +1, true)"
-						>
-							<i title="Next day" class="fas fa-arrow-right"></i>
-						</button>
-						<button
-							class="icon-button"
-							title="Reset start day"
-							v-if="manualDates.start[semester.id]"
-							@click="manualDates.start[semester.id] = 0; makeChart()"
-						>
-							<i title="Reset start day" class="fas fa-redo"></i>
-						</button>
+						<app-date-adjust
+							:is-start="true"
+							:semester="semester"
+							:show-reset="!!manualDates.start[semester.id]"
+							@date-change="changeSemesterDate"
+						></app-date-adjust>
 					</h4>
 
 					<p>{{ semester.start | date }}</p>
@@ -274,30 +256,12 @@
 				<app-card>
 					<h4>
 						End
-						<button
-							class="icon-button"
-							title="Previous day"
-							@click="changeSemesterDate('end', -1, false)"
-							:disabled="!changeSemesterDate('end', -1, true)"
-						>
-							<i title="Previous day" class="fas fa-arrow-left"></i>
-						</button>
-						<button
-							class="icon-button"
-							title="Next day"
-							@click="changeSemesterDate('end', +1, false)"
-							:disabled="!changeSemesterDate('end', +1, true)"
-						>
-							<i title="Next day" class="fas fa-arrow-right"></i>
-						</button>
-						<button
-							class="icon-button"
-							title="Reset end day"
-							v-if="manualDates.end[semester.id]"
-							@click="manualDates.end[semester.id] = 0; makeChart()"
-						>
-							<i title="Reset end day" class="fas fa-redo"></i>
-						</button>
+						<app-date-adjust
+							:is-start="false"
+							:semester="semester"
+							:show-reset="!!manualDates.end[semester.id]"
+							@date-change="changeSemesterDate"
+						></app-date-adjust>
 					</h4>
 
 					<p>{{ semester.end | date }}</p>
