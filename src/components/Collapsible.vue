@@ -6,11 +6,11 @@
 		<button
 			class="collapsible-header"
 			:title="`Click to ${collapsed ? 'expand' : 'collapse'} section`"
-			@click="$emit('toggle', !collapsed)"
+			@click="$emit('update:collapsed', !collapsed)"
 		>
 			{{ header }}
 			<span class="collapsible-header-icon">
-				<i class="fas fa-chevron-up" />
+				<i class="fas fa-chevron-up" :title="collapsed ? 'Collapsed' : 'Expanded'" />
 			</span>
 		</button>
 
@@ -24,11 +24,6 @@
 
 <script>
 export default {
-	model: {
-		prop: 'collapsed',
-		event: 'toggle',
-	},
-
 	props: {
 		collapsed: Boolean,
 		header: {
