@@ -196,7 +196,11 @@
 				<template v-else>ideal balance: {{ remainingBalanceIdeal | currency }}</template>
 			</h3>
 
-			<div id="chart"></div>
+			<app-chart
+				class="chart"
+				v-bind="chartProps"
+			></app-chart>
+			<div id="chart" style="display: none;"></div>
 
 			<div class="rowbox-container">
 				<app-card :wide="true">
