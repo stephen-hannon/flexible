@@ -14,6 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import CardComponent from '../components/Card.vue';
+import ChartComponent from '../components/Chart.vue';
 import CollapsibleComponent from '../components/Collapsible.vue';
 import DateAdjustComponent from '../components/DateAdjust.vue';
 import InputComponent from '../components/Input.vue';
@@ -34,6 +35,7 @@ dom.watch();
 
 Vue.config.productionTip = false;
 Vue.component('app-card', CardComponent);
+Vue.component('app-chart', ChartComponent);
 Vue.component('app-collapsible', CollapsibleComponent);
 Vue.component('app-date-adjust', DateAdjustComponent);
 Vue.component('app-input', InputComponent);
@@ -78,6 +80,17 @@ new Vue({
 	},
 
 	computed: {
+		chartProps () {
+			return {
+				chartData: this.chartData,
+				now: this.now,
+				processedView: this.processedView,
+				rawDataComplete: this.rawDataComplete,
+				remainingBalance: this.remainingBalance,
+				semester: this.semester,
+				startBalance: this.startBalance,
+			};
+		},
 		/**
 		 * @returns {string} A representation of the command or control key,
 		 * depending on whether the macOS tab is selected or not
@@ -155,9 +168,9 @@ new Vue({
 			}
 		},
 
-		startBalance () {
-			this.makeChart();
-		},
+		// startBalance () {
+		// 	this.makeChart();
+		// },
 	},
 
 	mounted () {
