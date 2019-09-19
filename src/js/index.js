@@ -62,11 +62,11 @@ new Vue({
 		now: Date.now(),
 		platformGuess: 'windows',
 		/** @type {'quick' | 'parse' | 'demo'} */
-		processedView: null,
+		processedView: 'quick',
 		rawData: '',
 		rawDataComplete: true,
 		rawDataError: false,
-		remainingBalance: null,
+		remainingBalance: 150,
 		showMessages: {
 			rawDataComplete: false,
 		},
@@ -87,6 +87,7 @@ new Vue({
 				processedView: this.processedView,
 				rawDataComplete: this.rawDataComplete,
 				remainingBalance: this.remainingBalance,
+				remainingBalanceIdeal: this.remainingBalanceIdeal,
 				semester: this.semester,
 				startBalance: this.startBalance,
 			};
