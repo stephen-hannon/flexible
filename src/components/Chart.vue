@@ -62,22 +62,7 @@ export default {
 					spacingLeft: 0,
 					spacingRight: 0,
 					events: {
-						render () {
-							console.log(this.get('idealNow'), this.get('actualNow'), this.get('actualNowAnnotation'));
-							console.log(this.annotations[0]);
-						},
-						// load: this.processedView !== 'demo'
-						// 	? function () {
-						// 		const pointIdeal = this.get('ideal').data[currentIdealBalanceIndex];
-						// 		const pointActual = this.get('actual')
-						// 			&& this.get('actual').data[currentIdealBalanceIndex];
-
-						// 		this.tooltip.refresh(
-						// 			pointActual ? [pointIdeal, pointActual] : [pointIdeal]
-						// 		);
-						// 	}
-						// 	: undefined,
-						// render: this.showTooltips,
+						render: this.showTooltips,
 					},
 				},
 				plotOptions: {
@@ -114,31 +99,6 @@ export default {
 		chartOptions () {
 			return {
 				...this.staticOptions,
-				annotations: [
-					{
-						labels: [
-							{
-								point: 'idealNow',
-								text: 'Current ideal balance: ${y:.2f}',
-							},
-							!this.remainingBalance ? null : {
-								// point: {
-								// 	xAxis: 0,
-								// 	yAxis: 0,
-								// 	x: this.now,
-								// 	y: this.remainingBalance,
-								// },
-								point: 'actualNow',
-								text: 'Current actual balance: ${y:.2f}',
-								id: 'actualNowAnnotation',
-							},
-						],
-						labelOptions: {
-							align: 'right',
-							shape: 'connector',
-						},
-					},
-				],
 				series: this.series,
 				title: {
 					// Easter egg :)
@@ -164,15 +124,6 @@ export default {
 
 			if (data) {
 				data[this.findCurrentIndex(data)].push('actualNow', true);
-				// data[this.findCurrentIndex(data)] = {
-				// 	x: this.now,
-				// 	y: this.remainingBalance,
-				// 	id: 'actualNow',
-				// 	marker: {
-				// 		enabled: true,
-				// 	},
-				// };
-				console.log(data[this.findCurrentIndex(data)], data);
 			}
 
 			return data;
@@ -285,7 +236,6 @@ export default {
 
 	methods: {
 		findCurrentIndex (data) {
-			// console.log({data});
 			const currentIndex = data.findIndex(function ([date]) {
 				return date >= this.now;
 			}, this);
@@ -294,26 +244,14 @@ export default {
 		},
 
 		showTooltips ({ target: chart }) {
-			// 		const pointIdeal = this.get('ideal').data[currentIdealBalanceIndex];
-			// 		const pointActual = this.get('actual')
-			// 			&& this.get('actual').data[currentIdealBalanceIndex];
+			if (this.processedView === 'demo') return;
 
-			// 		this.tooltip.refresh(
-			// 			pointActual ? [pointIdeal, pointActual] : [pointIdeal]
-			// 		);
-			console.log(chart);
+			const pointIdeal = chart.get('idealNow');
+			const pointActual = chart.get('actualNow');
 
-			const seriesIdeal = chart.get('ideal').data;
-			const seriesActual = chart.get('actual') && chart.get('actual').data;
-			console.log({seriesIdeal, seriesActual});
-
-			const pointIdeal = seriesIdeal[this.findCurrentIndex(this.dataIdeal)];
-			const pointActual = seriesActual && seriesActual[this.findCurrentIndex(this.dataActual)];
-			console.log({pointIdeal, pointActual});
-
-			// chart.tooltip.refresh(
-			// 	pointActual ? [pointIdeal, pointActual] : [pointIdeal]
-			// );
+			chart.tooltip.refresh(
+				pointActual ? [pointIdeal, pointActual] : [pointIdeal]
+			);
 		},
 	},
 };
