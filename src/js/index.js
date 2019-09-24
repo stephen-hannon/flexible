@@ -2,7 +2,6 @@
 /* eslint-env browser, node */
 
 import Vue from 'vue';
-import Highcharts from 'highcharts';
 
 import { library, dom } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -168,10 +167,6 @@ new Vue({
 				this.rawData = null;
 			}
 		},
-
-		// startBalance () {
-		// 	this.makeChart();
-		// },
 	},
 
 	mounted () {
@@ -208,8 +203,6 @@ new Vue({
 		}
 
 		this.loaderShow = false;
-
-		this.makeChart();
 	},
 
 	methods: {
@@ -232,7 +225,6 @@ new Vue({
 					this.chartData,
 					remainingBalance - this.chartData[this.chartData.length - 1][1]
 				);
-				this.makeChart();
 			}
 		},
 
@@ -252,8 +244,6 @@ new Vue({
 			} else {
 				datesObj[this.semester.id] += deltaDay;
 			}
-
-			this.makeChart();
 		},
 
 		getIdealBalanceAtDate (date, semester = this.semester) {
@@ -262,156 +252,6 @@ new Vue({
 
 		getNow () {
 			return this.debugNow || Date.now();
-		},
-
-		/**
-		 * @returns {Highcharts.ChartObject}
-		 */
-		makeChart () {
-			const actualData = this.processedView === 'quick' ? this.quickData : this.chartData;
-
-			const estimatedData = (this.processedView === 'parse' && !this.rawDataComplete)
-				? utils.interpolateLine(
-					this.semester.start,
-					actualData[0][0],
-					this.startBalance,
-					actualData[0][1],
-				)
-				: [];
-
-			const projectedData = utils.interpolateLine(
-				this.now,
-				Math.max(this.semester.end, this.now),
-				this.remainingBalance,
-				0
-			);
-
-			const idealBalanceData = actualData
-				? [...estimatedData, ...actualData, ...projectedData].map(function ([date]) {
-					return [
-						date,
-						this.getIdealBalanceAtDate(date),
-					];
-				}, this)
-				: utils.interpolateLine(
-					this.semester.start,
-					this.semester.end,
-					this.startBalance,
-					0,
-				);
-
-			let currentIdealBalanceIndex = idealBalanceData.findIndex(function ([date]) {
-				return date >= this.now;
-			}, this);
-
-			if (currentIdealBalanceIndex === -1) {
-				currentIdealBalanceIndex = idealBalanceData.length;
-			}
-
-			idealBalanceData.splice(currentIdealBalanceIndex, 0, {
-				x: this.now,
-				y: this.remainingBalanceIdeal,
-				marker: {
-					enabled: true,
-				},
-			});
-
-			const series = [
-				{
-					name: 'Ideal balance',
-					colorIndex: 1,
-					data: idealBalanceData,
-					id: 'ideal',
-				},
-			];
-
-			if (actualData) {
-				series.push({
-					name: 'Estimated balance',
-					colorIndex: 0,
-					className: 'line-dash',
-					data: estimatedData,
-					id: 'estimated',
-					linkedTo: 'actual',
-				}, {
-					name: 'Actual balance',
-					colorIndex: 0,
-					step: (this.processedView !== 'quick') ? 'left' : null,
-					data: actualData,
-					id: 'actual',
-				}, {
-					name: 'Projected balance',
-					colorIndex: 0,
-					className: 'line-dash',
-					data: projectedData,
-					id: 'projected',
-					linkedTo: ':previous',
-				});
-			}
-
-			return Highcharts.chart('chart', {
-				chart: {
-					type: 'line',
-					styledMode: true,
-					spacingLeft: 0,
-					spacingRight: 0,
-					events: {
-						load: this.processedView !== 'demo'
-							? function () {
-								const pointIdeal = this.get('ideal').data[currentIdealBalanceIndex];
-								const pointActual = this.get('actual')
-									&& this.get('actual').data[currentIdealBalanceIndex];
-
-								this.tooltip.refresh(
-									pointActual ? [pointIdeal, pointActual] : [pointIdeal]
-								);
-							}
-							: undefined,
-					},
-				},
-				plotOptions: {
-					line: {
-						marker: {
-							enabled: false,
-						},
-					},
-				},
-				series,
-				time: {
-					useUTC: false,
-				},
-				title: {
-					// Easter egg :)
-					text: this.remainingBalance === 246.01 ? 'My name is Jean Valjean' : undefined,
-				},
-				tooltip: {
-					split: true,
-					valueDecimals: 2,
-					valuePrefix: '$',
-					xDateFormat: '%a, %B %e, %Y, %l:%M %p',
-				},
-				xAxis: {
-					crosshair: {
-						snap: false,
-					},
-					labels: {
-						format: '{value:%b %e}',
-					},
-					type: 'datetime',
-				},
-				yAxis: {
-					crosshair: {
-						snap: false,
-					},
-					max: this.startBalance,
-					title: {
-						text: 'Flex Points',
-					},
-					labels: {
-						format: '${value}',
-					},
-				},
-			});
 		},
 
 		parseRawData (rawData) {
@@ -465,7 +305,6 @@ new Vue({
 			}
 
 			this.processedView = 'parse';
-			this.makeChart();
 		},
 
 		scrollToResults () {
@@ -483,7 +322,6 @@ new Vue({
 			[this.now, this.remainingBalance] = sampleData[sampleData.length - 1];
 
 			this.processedView = 'demo';
-			this.makeChart();
 		},
 
 		useQuick (quickBalance) {
@@ -493,7 +331,6 @@ new Vue({
 
 			this.remainingBalance = quickBalance;
 			this.processedView = 'quick';
-			this.makeChart();
 		},
 	},
 });
