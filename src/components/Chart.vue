@@ -3,11 +3,7 @@
 </template>
 
 <script>
-import Highcharts from 'highcharts';
-import annotationsInit from 'highcharts/modules/annotations';
 import { Chart } from 'highcharts-vue';
-
-annotationsInit(Highcharts);
 
 import {
 	interpolateLine,
@@ -158,21 +154,10 @@ export default {
 					0,
 				);
 
-			// const currentIdealBalanceIndex = this.findCurrentIndex(idealBalanceData)l
-
-			// console.log(this.findCurrentIndex(idealBalanceData));
 			idealBalanceData.splice(
 				this.findCurrentIndex(idealBalanceData),
 				0,
 				[this.now, this.remainingBalanceIdeal, 'idealNow', true]
-				// {
-				// 	x: this.now,
-				// 	y: this.remainingBalanceIdeal,
-				// 	id: 'idealNow',
-				// 	marker: {
-				// 		enabled: true,
-				// 	},
-				// }
 			);
 
 			return idealBalanceData;
