@@ -169,7 +169,7 @@
 							<template v-else>For a shortcut, press <kbd>{{ ctrlOrCmd }}</kbd>+<kbd>A</kbd> to select all and <kbd>{{ ctrlOrCmd }}</kbd>+<kbd>C</kbd> to copy.</template>
 						</li>
 						<li>
-							<strong>Paste it into the text box above.</strong> (Don't worry, all your data stays in your browser.)
+							<strong>Paste it into the text box labelled "In depth" above.</strong> (Don't worry, all your data stays in your browser.)
 							<template v-if="tabOption !== 'mobile'">For a shortcut, press <kbd>{{ ctrlOrCmd }}</kbd>+<kbd>V</kbd> to paste.</template>
 						</li>
 					</ol>
@@ -200,7 +200,6 @@
 				class="chart"
 				v-bind="chartProps"
 			></app-chart>
-			<div id="chart" style="display: none;"></div>
 
 			<div class="rowbox-container">
 				<app-card :wide="true">
