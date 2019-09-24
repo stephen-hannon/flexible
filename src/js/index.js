@@ -62,11 +62,11 @@ new Vue({
 		now: Date.now(),
 		platformGuess: 'windows',
 		/** @type {'quick' | 'parse' | 'demo'} */
-		processedView: 'quick',
+		processedView: null,
 		rawData: '',
 		rawDataComplete: true,
 		rawDataError: false,
-		remainingBalance: 150,
+		remainingBalance: null,
 		showMessages: {
 			rawDataComplete: false,
 		},
