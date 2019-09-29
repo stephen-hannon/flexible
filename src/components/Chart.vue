@@ -120,6 +120,20 @@ export default {
 
 			if (data) {
 				data[this.findCurrentIndex(data)].push('actualNow', true);
+
+				// Explicly add a point at the beginning and end of the semester so ideal balance
+				// line is always straight
+				const startIndex = data.findIndex(function ([date]) {
+					return date >= this.semester.start;
+				}, this);
+				data.splice(startIndex, 0, [this.semester.start, this.startBalance]);
+
+				if (this.now > this.semester.end) {
+					const endIndex = data.findIndex(function ([date]) {
+						return date >= this.semester.end;
+					}, this);
+					data.splice(endIndex === -1 ? data.length : endIndex, 0, [this.semester.end, 0]);
+				}
 			}
 
 			return data;
