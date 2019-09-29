@@ -120,6 +120,16 @@ export default {
 
 			if (data) {
 				data[this.findCurrentIndex(data)].push('actualNow', true);
+
+				const startIndex = data.findIndex(function ([date]) {
+					return date >= this.semester.start;
+				}, this);
+				data.splice(startIndex, 0, [this.semester.start, this.startBalance]);
+
+				const endIndex = data.findIndex(function ([date]) {
+					return date >= this.semester.end;
+				}, this);
+				data.splice(endIndex, 0, [this.semester.end, 0]);
 			}
 
 			return data;
