@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { format } from 'date-fns';
 
 /**
  * @param {number} num - the currency amount, as a float
@@ -15,4 +15,4 @@ export const formatCurrencySafe = num => (
 	(typeof num === 'number' && !isNaN(num)) ? formatCurrency(num) : '$\u2014'
 );
 
-export const formatDate = date => dayjs(date).format('ddd, MMMM D, YYYY');
+export const formatDate = date => format(date, 'EEE, MMMM d, yyyy');

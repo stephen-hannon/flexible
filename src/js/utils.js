@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { setDay, addDays, addMilliseconds, getYear, isBefore, startOfDay } from 'date-fns';
 
 /**
  * @typedef {Object} semester
@@ -40,12 +40,11 @@ export const adjustBalances = (data, adjustmentAmount) => adjustmentAmount
  * For fall: Sunday, August 19-25
  * @param {number} year
  * @param {'Spring' | 'Fall'} season
- * @returns {dayjs.Dayjs} the start date of the given semester
+ * @returns {Date} the start date of the given semester
  */
-export const getSemesterStart = (year, season) => (
-	dayjs(
-		season === SeasonsEnum.SPRING ? new Date(year, 0, 15) : new Date(year, 7, 25)
-	).day(0)
+export const getSemesterStart = (year, season) => setDay(
+	season === SeasonsEnum.SPRING ? new Date(year, 0, 15) : new Date(year, 7, 25),
+	0
 );
 
 /**
@@ -53,35 +52,37 @@ export const getSemesterStart = (year, season) => (
  * For fall: Saturday, December 15-21
  * @param {number} year
  * @param {'Spring' | 'Fall'} season
- * @returns {dayjs.Dayjs} the end date of the given semester
+ * @returns {Date} the end date of the given semester
  */
-export const getSemesterEnd = (year, season) => (
-	dayjs(
-		season === SeasonsEnum.SPRING ? new Date(year, 4, 7) : new Date(year, 11, 15)
-	).day(6)
+export const getSemesterEnd = (year, season) => setDay(
+	season === SeasonsEnum.SPRING ? new Date(year, 4, 7) : new Date(year, 11, 15),
+	6
 );
 
 /**
- * @param {number | Date | string} now
+ * @param {number | Date} now
  * @param {{end: {}, start: {}}} [manualDates] - key-value pairs of semester IDs and adjusted start/end
  * dates for that semester, if any
  * @returns {semester}
  */
 export const findSemester = (now, manualDates = { end: {}, start: {} }) => {
-	const nowDay = dayjs(now);
-	let year = nowDay.get('year');
+	let year = getYear(now);
 	let season;
 
-	const endFall = getSemesterEnd(year, SeasonsEnum.FALL)
-		.add(manualDates.end[year + 0.2] || 0, 'day');
+	const endFall = addDays(
+		getSemesterEnd(year, SeasonsEnum.FALL),
+		manualDates.end[year + 0.2] || 0
+	);
 
-	const endSpring = getSemesterEnd(year, SeasonsEnum.SPRING)
-		.add(manualDates.end[year + 0.1] || 0, 'day');
+	const endSpring = addDays(
+		getSemesterEnd(year, SeasonsEnum.SPRING),
+		manualDates.end[year + 0.1] || 0
+	);
 
-	if (endFall.add(softSemesterLimit, 'ms').isBefore(nowDay)) {
+	if (isBefore(addMilliseconds(endFall, softSemesterLimit), now)) {
 		year++;
 		season = SeasonsEnum.SPRING;
-	} else if (endSpring.add(softSemesterLimit, 'ms').isBefore(nowDay)) {
+	} else if (isBefore(addMilliseconds(endSpring, softSemesterLimit), now)) {
 		season = SeasonsEnum.FALL;
 	} else {
 		season = SeasonsEnum.SPRING;
@@ -92,12 +93,8 @@ export const findSemester = (now, manualDates = { end: {}, start: {} }) => {
 	return {
 		id,
 		name: `${season} ${year}`,
-		start: getSemesterStart(year, season)
-			.add(manualDates.start[id] || 0, 'day')
-			.valueOf(),
-		end: getSemesterEnd(year, season)
-			.add(manualDates.end[id] || 0, 'day')
-			.valueOf(),
+		start: addDays(getSemesterStart(year, season), manualDates.start[id] || 0),
+		end: addDays(getSemesterEnd(year, season), manualDates.end[id] || 0),
 	};
 };
 
@@ -130,18 +127,12 @@ export const getRates = (ms, total) => {
  * @returns {number[]}
  */
 export const interpolate = (x1, x2) => {
-	const returnArr = [];
-	let dayX = dayjs(x1);
-	const dayXNextDay = dayX.startOf('day').add(1, 'day');
+	const returnArr = [x1];
+	let dateX = startOfDay(addDays(x1, 1));
 
-	if (!dayX.isSame(dayXNextDay)) {
-		returnArr.push(x1);
-		dayX = dayXNextDay;
-	}
-
-	while (dayX.isBefore(x2)) {
-		returnArr.push(dayX.valueOf());
-		dayX = dayX.add(1, 'day');
+	while (isBefore(dateX, x2)) {
+		returnArr.push(dateX.valueOf());
+		dateX = addDays(dateX, 1);
 	}
 
 	returnArr.push(x2);

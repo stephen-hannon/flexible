@@ -61,8 +61,8 @@ describe('utils.js', () => {
 				.toEqual({
 					id: 2019.2,
 					name: 'Fall 2019',
-					start: new Date(2019, 7, 25).valueOf(),
-					end: new Date(2019, 11, 21).valueOf(),
+					start: new Date(2019, 7, 25),
+					end: new Date(2019, 11, 21),
 				});
 		});
 
@@ -71,7 +71,7 @@ describe('utils.js', () => {
 				.toHaveProperty('name', 'Spring 2019');
 		});
 
-		it('finds semester of December 31, 2019', () => {
+		it('finds semester of December 31, 2023', () => {
 			expect(utils.findSemester(new Date(2023, 11, 31)))
 				.toHaveProperty('name', 'Spring 2024');
 		});
