@@ -15,7 +15,12 @@ module.exports = {
 	"rules": {
 		"array-callback-return": "warn",
 		"brace-style": "warn",
-		"comma-dangle": ["warn", "always-multiline"],
+		"comma-dangle": ["warn", {
+			"arrays": "always-multiline",
+			"objects": "always-multiline",
+			"imports": "always-multiline",
+			"functions": "only-multiline"
+		}],
 		"indent": [
 			"warn",
 			"tab",

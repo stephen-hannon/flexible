@@ -126,6 +126,7 @@ export default {
 				const startIndex = data.findIndex(function ([date]) {
 					return date >= this.semester.start;
 				}, this);
+				// TODO: This might be mutating this.dataQuick or this.chartData
 				data.splice(startIndex, 0, [this.semester.start, this.startBalance]);
 
 				if (this.now > this.semester.end) {

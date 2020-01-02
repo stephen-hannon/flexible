@@ -93,8 +93,8 @@ export const findSemester = (now, manualDates = { end: {}, start: {} }) => {
 	return {
 		id,
 		name: `${season} ${year}`,
-		start: addDays(getSemesterStart(year, season), manualDates.start[id] || 0),
-		end: addDays(getSemesterEnd(year, season), manualDates.end[id] || 0),
+		start: addDays(getSemesterStart(year, season), manualDates.start[id] || 0).valueOf(),
+		end: addDays(getSemesterEnd(year, season), manualDates.end[id] || 0).valueOf(),
 	};
 };
 

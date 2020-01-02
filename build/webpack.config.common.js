@@ -28,7 +28,9 @@ module.exports = (devMode) => ({
 				loader: 'sass-loader',
 				options: {
 					implementation: require('sass'),
-					outputStyle: devMode ? 'expanded' : 'compressed',
+					sassOptions: {
+						outputStyle: devMode ? 'expanded' : 'compressed',
+					},
 				},
 			}],
 		}, {

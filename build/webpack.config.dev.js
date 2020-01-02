@@ -1,7 +1,7 @@
 /* eslint-env node */
 const path = require('path');
 const merge = require('webpack-merge');
-const common = require('./webpack.common.js')(true);
+const common = require('./webpack.config.common.js')(true);
 
 module.exports = merge(common, {
 	mode: 'development',

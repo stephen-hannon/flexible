@@ -1,7 +1,7 @@
 /* eslint-env node */
 const merge = require('webpack-merge');
 const WorkboxPlugin = require('workbox-webpack-plugin');
-const common = require('./webpack.common.js')(false);
+const common = require('./webpack.config.common.js')(false);
 
 module.exports = merge(common, {
 	mode: 'production',
