@@ -126,11 +126,10 @@ export default {
 
 			// Explicly add a point at the beginning and end of the semester so ideal balance
 			// line is always straight
-			if (this.now > this.semester.start) {
+			if (this.processedView === 'quick' && this.now > this.semester.start) {
 				const startIndex = data.findIndex(function ([date]) {
 					return date >= this.semester.start;
 				}, this);
-				console.log(startIndex);
 				data.splice(startIndex, 0, [this.semester.start, this.startBalance]);
 			}
 

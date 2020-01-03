@@ -1,3 +1,4 @@
+import { parse } from 'date-fns';
 import {
 	addCurrency,
 } from './utils';
@@ -85,11 +86,7 @@ export const parseDataRow = row => {
 
 	if (amount === undefined || category !== 'Flex Points') return null;
 
-	// TODO: use a library to parse the date dependably
-	const dateStringFormatted = dateString
-		.replace(/\s/g, ' ')
-		.replace(/\B[AP]M/, ' $&'); // Add space before AM or PM so Date.parse understands it.
-	const date = Date.parse(dateStringFormatted);
+	const date = parse(dateString, 'MMMM d, yyyy hh:mma', new Date()).valueOf();
 	const spentMatch = amount.match(/[\d.]+/);
 
 	if (isNaN(date) || !spentMatch) return null;
