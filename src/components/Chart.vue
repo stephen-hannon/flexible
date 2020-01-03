@@ -116,25 +116,29 @@ export default {
 		},
 
 		dataActual () {
-			const data = this.processedView === 'quick' ? this.dataQuick : this.chartData;
+			const dataSource = this.processedView === 'quick' ? this.dataQuick : this.chartData;
 
-			if (data) {
-				data[this.findCurrentIndex(data)].push('actualNow', true);
+			if (!dataSource) return dataSource;
 
-				// Explicly add a point at the beginning and end of the semester so ideal balance
-				// line is always straight
+			const data = [...dataSource];
+			const currentIndex = this.findCurrentIndex(data);
+			data[currentIndex] = [...data[currentIndex], 'actualNow', true];
+
+			// Explicly add a point at the beginning and end of the semester so ideal balance
+			// line is always straight
+			if (this.now > this.semester.start) {
 				const startIndex = data.findIndex(function ([date]) {
 					return date >= this.semester.start;
 				}, this);
-				// TODO: This might be mutating this.dataQuick or this.chartData
+				console.log(startIndex);
 				data.splice(startIndex, 0, [this.semester.start, this.startBalance]);
+			}
 
-				if (this.now > this.semester.end) {
-					const endIndex = data.findIndex(function ([date]) {
-						return date >= this.semester.end;
-					}, this);
-					data.splice(endIndex === -1 ? data.length : endIndex, 0, [this.semester.end, 0]);
-				}
+			if (this.now > this.semester.end) {
+				const endIndex = data.findIndex(function ([date]) {
+					return date >= this.semester.end;
+				}, this);
+				data.splice(endIndex === -1 ? data.length : endIndex, 0, [this.semester.end, 0]);
 			}
 
 			return data;
