@@ -11,6 +11,9 @@ import {
 	faArrowLeft, faArrowRight, faRedo, faTimes, faBars, faUser, faCommentAlt, faChevronUp,
 	faCalendarAlt, faCalendarDay, faCalendarWeek,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+	differenceInMilliseconds, addMinutes, startOfMinute,
+} from 'date-fns';
 
 import CardComponent from '../components/Card.vue';
 import ChartComponent from '../components/Chart.vue';
@@ -70,6 +73,7 @@ new Vue({
 			rawDataComplete: false,
 		},
 		startBalance: 500,
+		timeoutId: 0,
 		tabOption: null, // currently selected tab
 		tabOptions: {
 			macos: 'macOS',
@@ -202,7 +206,13 @@ new Vue({
 			console.log('Setting debug date to', now);
 		}
 
+		this.updateNowSet();
+
 		this.loaderShow = false;
+	},
+
+	beforeDestroy () {
+		this.updateNowClear();
 	},
 
 	methods: {
@@ -255,7 +265,7 @@ new Vue({
 		},
 
 		parseRawData (rawData) {
-			this.now = this.getNow(); // in case the page has been loaded for a long time
+			this.now = this.getNow();
 
 			const {
 				parsedRawData,
@@ -331,6 +341,28 @@ new Vue({
 
 			this.remainingBalance = quickBalance;
 			this.processedView = 'quick';
+		},
+
+		updateNowClear () {
+			if (this.timeoutId) {
+				clearTimeout(this.timeoutId);
+				this.timeoutId = 0;
+			}
+		},
+
+		/**
+		 * Set a timeout to update now every minute if it's being set to Date.now()
+		 */
+		updateNowSet () {
+			if (!this.debugNow && this.processedView !== 'demo' && this.processedView !== 'parse') {
+				this.now = this.getNow();
+			}
+
+			const msUntilNextMinute = differenceInMilliseconds(
+				addMinutes(startOfMinute(this.now), 1),
+				this.now
+			);
+			this.timeoutId = setTimeout(this.updateNowSet, msUntilNextMinute);
 		},
 	},
 });

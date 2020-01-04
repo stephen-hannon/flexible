@@ -1,6 +1,6 @@
 {
   "name": "flexible",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "Flex Point usage analyzer",
   "private": true,
   "sideEffects": [
