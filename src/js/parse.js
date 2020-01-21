@@ -86,7 +86,9 @@ export const parseDataRow = row => {
 
 	if (amount === undefined || category !== 'Flex Points') return null;
 
-	const date = parse(dateString, 'MMMM d, yyyy hh:mma', new Date()).valueOf();
+	// Different views use different comma placements, so get rid of them for standardization
+	const dateStringNoCommas = dateString.replace(/,/g, '');
+	let date = parse(dateStringNoCommas, 'MMMM d yyyy hh:mma', new Date()).valueOf();
 	const spentMatch = amount.match(/[\d.]+/);
 
 	if (isNaN(date) || !spentMatch) return null;

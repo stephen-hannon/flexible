@@ -118,7 +118,7 @@ export default {
 		dataActual () {
 			const dataSource = this.processedView === 'quick' ? this.dataQuick : this.chartData;
 
-			if (!dataSource) return dataSource;
+			if (!dataSource || !dataSource.length) return dataSource;
 
 			const data = [...dataSource];
 			const currentIndex = this.findCurrentIndex(data);
