@@ -2,14 +2,12 @@ import * as utils from '../src/js/utils';
 
 describe('utils.js', () => {
 	describe('addCurrency', () => {
-		it('adds 0.1 and 0.2', () => {
-			expect(utils.addCurrency(0.1, 0.2)).toBe(0.3);
-		});
-		it('adds 0.01 and 0.05', () => {
-			expect(utils.addCurrency(0.01, 0.05)).toBe(0.06);
-		});
-		it('adds 0.3 and -0.2', () => {
-			expect(utils.addCurrency(0.3, -0.2)).toBe(0.1);
+		it.each([
+			[0.1, 0.2, 0.3],
+			[0.01, 0.05, 0.06],
+			[0.3, -0.2, 0.1],
+		])('adds %f and %f', (a, b, result) => {
+			expect(utils.addCurrency(a, b)).toBe(result);
 		});
 	});
 
@@ -28,30 +26,26 @@ describe('utils.js', () => {
 	});
 
 	describe('getSemesterStart', () => {
-		[
+		it.each([
 			['Fall', 2018, 7, 19],
 			['Fall', 2019, 7, 25],
 			['Spring', 2022, 0, 9],
 			['Spring', 2023, 0, 15],
-		].forEach(([season, year, month, date]) => {
-			it(`finds start of ${season} ${year}`, () => {
-				expect(utils.getSemesterStart(year, season).valueOf())
-					.toBe(new Date(year, month, date).valueOf());
-			});
+		])('finds start of %s %i', (season, year, month, date) => {
+			expect(utils.getSemesterStart(year, season).valueOf())
+				.toBe(new Date(year, month, date).valueOf());
 		});
 	});
 
 	describe('getSemesterEnd', () => {
-		[
+		it.each([
 			['Fall', 2018, 11, 15],
 			['Fall', 2019, 11, 21],
 			['Spring', 2022, 4, 7],
 			['Spring', 2023, 4, 13],
-		].forEach(([season, year, month, date]) => {
-			it(`finds end of ${season} ${year}`, () => {
-				expect(utils.getSemesterEnd(year, season).valueOf())
-					.toBe(new Date(year, month, date).valueOf());
-			});
+		])('finds end of %s %i', (season, year, month, date) => {
+			expect(utils.getSemesterEnd(year, season).valueOf())
+				.toBe(new Date(year, month, date).valueOf());
 		});
 	});
 
@@ -109,10 +103,12 @@ describe('utils.js', () => {
 	});
 
 	describe('interpolatePoint', () => {
-		it('interpolates a point', () => {
-			expect(utils.interpolatePoint(2, 1, 4, 0, 6)).toBe(2);
-			expect(utils.interpolatePoint(2, 0, 1, 0, 1)).toBe(1);
-			expect(utils.interpolatePoint(-1, 0, 1, 0, 1)).toBe(0);
+		it.each([
+			[2, 1, 4, 0, 6, 2],
+			[2, 0, 1, 0, 1, 1],
+			[-1, 0, 1, 0, 1, 0],
+		])('iterpolates y when x = %i, x1 = %i, x2 = %i y1 = %i, y2 = %i', (x, x1, x2, y1, y2, y) => {
+			expect(utils.interpolatePoint(x, x1, x2, y1, y2)).toBe(y);
 		});
 	});
 });
