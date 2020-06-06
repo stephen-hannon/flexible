@@ -22,13 +22,6 @@ $font-family: $font-sans-serif;
 	stroke-dasharray: 6, 6;
 }
 
-// Temporary workaround pending fix of https://github.com/highcharts/highcharts/issues/12711
-.highcharts-tooltip-header .highcharts-label-box {
-	fill: #f7f7f7;
-	stroke-width: 1px;
-	stroke: $neutral-color-80;
-}
-
 .highcharts-tooltip-box:not(.highcharts-tooltip-header) {
 	.highcharts-label-box {
 		fill: inherit;
