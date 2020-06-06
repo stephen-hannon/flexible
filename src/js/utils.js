@@ -17,6 +17,18 @@ export const SeasonsEnum = {
 	FALL: 'Fall',
 };
 
+export const SEMESTER_START_OVERRIDES = {
+	2020: {
+		[SeasonsEnum.FALL]: new Date(2020, 7, 9),
+	},
+};
+
+export const SEMESTER_END_OVERRIDES = {
+	2020: {
+		[SeasonsEnum.FALL]: new Date(2020, 10, 21), // estimated
+	},
+};
+
 /**
  * Adds two numbers that avoids floating-point errors like `.1 + .2 !== .3`
  * @param {number} x
@@ -42,9 +54,9 @@ export const adjustBalances = (data, adjustmentAmount) => adjustmentAmount
  * @param {'Spring' | 'Fall'} season
  * @returns {Date} the start date of the given semester
  */
-export const getSemesterStart = (year, season) => setDay(
-	season === SeasonsEnum.SPRING ? new Date(year, 0, 15) : new Date(year, 7, 25),
-	0
+export const getSemesterStart = (year, season) => (
+	(SEMESTER_START_OVERRIDES[year] && SEMESTER_START_OVERRIDES[year][season])
+	|| setDay(season === SeasonsEnum.SPRING ? new Date(year, 0, 15) : new Date(year, 7, 25), 0)
 );
 
 /**
@@ -54,9 +66,9 @@ export const getSemesterStart = (year, season) => setDay(
  * @param {'Spring' | 'Fall'} season
  * @returns {Date} the end date of the given semester
  */
-export const getSemesterEnd = (year, season) => setDay(
-	season === SeasonsEnum.SPRING ? new Date(year, 4, 7) : new Date(year, 11, 15),
-	6
+export const getSemesterEnd = (year, season) => (
+	(SEMESTER_END_OVERRIDES[year] && SEMESTER_END_OVERRIDES[year][season])
+	|| setDay(season === SeasonsEnum.SPRING ? new Date(year, 4, 7) : new Date(year, 11, 15), 6)
 );
 
 /**
