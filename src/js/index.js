@@ -95,6 +95,7 @@ new Vue({
 				remainingBalanceIdeal: this.remainingBalanceIdeal,
 				semester: this.semester,
 				startBalance: this.startBalance,
+				subject: this.subject,
 			};
 		},
 		/**
@@ -158,10 +159,10 @@ new Vue({
 			);
 		},
 		subjectPrefix () {
-			return this.subject === 'flex' ? '$' : '';
+			return utils.getPrefix(this.subject);
 		},
 		subjectSuffix () {
-			return this.subject === 'flex' ? '' : 'meals';
+			return utils.getSuffix(this.subject);
 		},
 	},
 

@@ -8,6 +8,8 @@ import { Chart } from 'highcharts-vue';
 import {
 	interpolateLine,
 	interpolatePoint,
+	getPrefix,
+	getSuffix,
 } from '../js/utils';
 
 export default {
@@ -47,6 +49,12 @@ export default {
 			type: Number,
 			required: true,
 		},
+		subject: {
+			validator (value) {
+				return value === 'flex' || value === 'meals';
+			},
+			required: true,
+		},
 	},
 
 	data () {
@@ -72,12 +80,6 @@ export default {
 				time: {
 					useUTC: false,
 				},
-				tooltip: {
-					split: true,
-					valueDecimals: 2,
-					valuePrefix: '$',
-					xDateFormat: '%a, %B %e, %Y, %l:%M %p',
-				},
 				xAxis: {
 					crosshair: {
 						snap: false,
@@ -100,6 +102,13 @@ export default {
 					// Easter egg :)
 					text: this.remainingBalance === 246.01 ? 'My name is Jean Valjean' : undefined,
 				},
+				tooltip: {
+					split: true,
+					valueDecimals: 2,
+					valuePrefix: getPrefix(this.subject),
+					valueSuffix: getSuffix(this.subject),
+					xDateFormat: '%a, %B %e, %Y, %l:%M %p',
+				},
 				yAxis: {
 					crosshair: {
 						snap: false,
@@ -109,7 +118,7 @@ export default {
 						text: 'Flex Points',
 					},
 					labels: {
-						format: '${value}',
+						format: this.subject === 'flex' ? '${value}' : undefined,
 					},
 				},
 			};

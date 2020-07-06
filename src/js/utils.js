@@ -184,3 +184,13 @@ export const interpolateLine = (x1, x2, y1, y2) => {
 			[x2, y2],
 		];
 };
+
+/**
+ * @param {'flex' | 'meals'} subject
+ */
+export const getPrefix = (subject) => subject === 'flex' ? '$' : '';
+
+/**
+ * @param {'flex' | 'meals'} subject
+ */
+export const getSuffix = (subject) => subject === 'flex' ? '' : ' meals';
