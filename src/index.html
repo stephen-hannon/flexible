@@ -93,6 +93,8 @@
 						:min="0" :max="startBalance"
 						:step="0.01"
 						:placeholder="remainingBalanceIdealCurrent.toFixed(2)"
+						:prefix="subjectPrefix"
+						:suffix="subjectSuffix"
 						aria-labelledby="label-quickbalance"
 						@submit="useQuick"
 					></app-input>
@@ -228,6 +230,8 @@
 					<p>{{ semester.start | date }}</p>
 					<app-input
 						:min="0"
+						:prefix="subjectPrefix"
+						:suffix="subjectSuffix"
 						aria-label="Start balance"
 						v-model="startBalance"
 					></app-input>
@@ -241,6 +245,8 @@
 						:min="0" :max="startBalance"
 						:step="0.01"
 						:disabled="!inSemester || rawDataComplete"
+						:prefix="subjectPrefix"
+						:suffix="subjectSuffix"
 						aria-label="Current remaining balance"
 						:value="remainingBalanceSafe.toFixed(2)"
 						@submit="adjustIncompleteData"
@@ -268,13 +274,15 @@
 					</h4>
 
 					<p>{{ semester.end | date }}</p>
-					$ <input
+					{{ subjectPrefix }}
+					<input
 						type="number"
 						class="appearance-textfield hide-steppers"
 						aria-label="End balance (0)"
 						value="0"
 						disabled
 					/>
+					{{ subjectSuffix }}
 				</app-card>
 			</div>
 		</section>

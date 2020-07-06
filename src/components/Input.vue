@@ -1,12 +1,14 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		$ <input
+		{{ prefix }}
+		<input
 			v-model.lazy.number="rawValue"
 			type="number"
 			class="appearance-textfield hide-steppers"
 			required
 			v-bind="$attrs"
 		>
+		{{ suffix }}
 	</form>
 </template>
 
@@ -20,6 +22,14 @@ export default {
 	},
 
 	props: {
+		prefix: {
+			type: String,
+			default: '',
+		},
+		suffix: {
+			type: String,
+			default: '',
+		},
 		value: {
 			validator (value) {
 				return !isNaN(parseFloat(value));

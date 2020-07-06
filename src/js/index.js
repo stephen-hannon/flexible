@@ -73,6 +73,8 @@ new Vue({
 			rawDataComplete: false,
 		},
 		startBalance: 500,
+		/** @type {'flex' | 'meals'} */
+		subject: 'flex',
 		timeoutId: 0,
 		tabOption: null, // currently selected tab
 		tabOptions: {
@@ -154,6 +156,12 @@ new Vue({
 				this.startBalance,
 				-this.remainingBalanceSafe
 			);
+		},
+		subjectPrefix () {
+			return this.subject === 'flex' ? '$' : '';
+		},
+		subjectSuffix () {
+			return this.subject === 'flex' ? '' : 'meals';
 		},
 	},
 
