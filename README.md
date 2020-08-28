@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/stephen-hannon/flexible.svg?branch=master)](https://travis-ci.com/stephen-hannon/flexible)
 
-See it in action at https://stephen-hannon.github.io/flexible
+See it in action at https://hannon.dev/flexible
 
 ## Development
 
