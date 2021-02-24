@@ -21,11 +21,17 @@ export const SEMESTER_START_OVERRIDES = {
 	2020: {
 		[SeasonsEnum.FALL]: new Date(2020, 7, 9),
 	},
+	2021: {
+		[SeasonsEnum.SPRING]: new Date(2021, 0, 31),
+	},
 };
 
 export const SEMESTER_END_OVERRIDES = {
 	2020: {
 		[SeasonsEnum.FALL]: new Date(2020, 10, 21), // estimated
+	},
+	2021: {
+		[SeasonsEnum.SPRING]: new Date(2021, 4, 19),
 	},
 };
 
